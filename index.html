@@ -2,51 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 
-        /* Reset and Strict Mobile Lock */
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030712; font-family: 'Outfit', system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; }
-        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8); transition: background-color 0.4s ease; }
+        /* Minimal Reset & Strict Mobile Lock */
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030408; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; background: #030408; }
+        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #080a10; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,1); transition: background-color 0.5s ease, filter 0.5s ease; }
 
-        /* Smooth Entrance */
-        @keyframes slideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-        .animate-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        /* Smooth Cinematic Animations */
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
-        /* Pop In Animation for Notifications */
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(-20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(-10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
-        /* Hide Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Dynamic Category Animations */
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 30px var(--glow-color); } }
-        .theme-pulse { animation: pulseGlow 3s infinite ease-in-out; }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px rgba(0,0,0,0.4); } 50% { box-shadow: 0 0 25px var(--glow-color); } }
+        .theme-pulse { animation: pulseGlow 4s infinite ease-in-out; }
 
-        /* Initial Page Loader Animations */
-        @keyframes logoBreath { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(236,72,153,0.5)); } 50% { transform: scale(1.1); filter: drop-shadow(0 0 35px rgba(236,72,153,0.9)); } }
-        .animate-logo-breath { animation: logoBreath 1.5s ease-in-out infinite; }
+        /* Stealth Incognito Mode */
+        .incognito-active { background-color: #020202 !important; }
+        .incognito-active::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 20%, rgba(88, 28, 135, 0.12) 100%); pointer-events: none; z-index: 1; }
+        .incognito-active header, .incognito-active .search-bar-container { background-color: rgba(2,2,2,0.85) !important; border-bottom-color: rgba(255,255,255,0.03) !important; }
+        .incognito-active nav { background-color: rgba(17, 19, 26, 0.95) !important; border-color: rgba(255,255,255,0.05) !important; }
+        .incognito-active .feed-card { background-color: #050505 !important; border-color: rgba(147, 51, 234, 0.2) !important; box-shadow: 0 4px 20px rgba(147, 51, 234, 0.05) !important; }
+        
+        /* Premium Minimal Feed Cards */
+        .feed-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translateZ(0); }
+        .feed-card:active { transform: scale(0.97); filter: brightness(1.1); }
+        
+        /* Online Status Ring */
+        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; }
 
-        @keyframes fadeOutLoader { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; } }
-        .hide-loader { animation: fadeOutLoader 0.5s ease-out forwards; }
+        /* Notification Dropdown */
+        .notif-dropdown { transform-origin: top right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .notif-open { transform: scale(1); opacity: 1; pointer-events: auto; }
+        .notif-closed { transform: scale(0.95); opacity: 0; pointer-events: none; }
 
-        /* Incognito Mode Styles */
-        .incognito-active { background-color: #000000 !important; }
-        .incognito-active header { background-color: rgba(0,0,0,0.9) !important; border-bottom-color: #1a1a1a !important; }
-        .incognito-active .search-bar-container { background-color: rgba(0,0,0,0.9) !important; border-bottom-color: #1a1a1a !important; }
-        .incognito-active nav { background-color: rgba(0,0,0,0.95) !important; border-top-color: #1a1a1a !important; }
-        .incognito-active .feed-card { background-color: #050505 !important; border-color: #2e1065 !important; box-shadow: 0 0 15px rgba(147, 51, 234, 0.1) !important; }
-        .incognito-active .feed-card-title { color: #d8b4fe !important; }
+        /* Elegant Skeleton Loading Shimmer */
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
+        
+        /* Physics Pull to Refresh */
+        #ptr-indicator { transition: height 0.2s ease, opacity 0.2s ease; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+        .spin-slow { animation: spinSlow 1s linear infinite; }
+        
+        /* Interactive Double Tap Wave Physics */
+        @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px); opacity: 0; } }
+        .floating-wave { position: absolute; font-size: 30px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
     </style>
 </head>
 <body>
@@ -54,109 +69,119 @@
     <div id="app-wrapper">
         <div id="mobile-container">
 
-            <div id="initialAppLoader" class="absolute inset-0 z-[99999] bg-[#030712] flex flex-col items-center justify-center">
-                <div class="w-24 h-24 bg-gray-900 rounded-3xl flex items-center justify-center mb-6 border border-gray-800 relative overflow-hidden animate-logo-breath">
-                    <i class="fa-solid fa-leaf text-pink-500 text-5xl drop-shadow-md z-10"></i>
-                    <div class="absolute inset-0 bg-gradient-to-tr from-pink-500/20 to-purple-600/20"></div>
-                </div>
-                <h1 class="text-white text-4xl font-extrabold tracking-tight">HealSpace.</h1>
-                <div class="mt-8 flex gap-2">
-                    <div class="w-2 h-2 rounded-full bg-pink-500 animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style="animation-delay: 0.2s"></div>
-                    <div class="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style="animation-delay: 0.3s"></div>
-                </div>
-            </div>
-
-            <div id="customNotification" class="hidden absolute top-20 left-4 right-4 z-[9999] bg-gray-900 border border-pink-500/50 rounded-2xl p-4 shadow-[0_10px_25px_rgba(236,72,153,0.3)] cursor-pointer hover:bg-gray-800 transition">
+            <div id="customNotification" class="hidden absolute top-4 left-3 right-3 z-[9999] bg-[#1c1c1e]/95 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-4 shadow-2xl cursor-pointer hover:bg-gray-800 transition">
                 <div class="flex items-start gap-3 pointer-events-none">
-                    <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center shrink-0">
-                        <i id="notifIcon" class="fa-solid fa-comment-dots text-pink-400"></i>
+                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                        <i id="notifIcon" class="fa-solid fa-bell text-blue-400"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 id="notifTitle" class="text-white font-bold text-sm">New Message</h4>
-                        <p id="notifMessage" class="text-gray-300 text-xs mt-1 truncate">Tap to view...</p>
+                        <h4 id="notifTitle" class="text-white font-bold text-[13px]">Notification</h4>
+                        <p id="notifMessage" class="text-gray-400 text-[11px] mt-0.5 truncate">Tap to view...</p>
                     </div>
-                    <button onclick="closeNotification(event)" class="text-gray-500 hover:text-white transition pointer-events-auto">
-                        <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+
+            <div id="notifDropdownMenu" class="absolute top-16 right-4 w-72 bg-[#1c1c1e]/95 backdrop-blur-3xl rounded-[20px] border border-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex-col z-[150] notif-closed">
+                <div class="p-3.5 border-b border-gray-800 flex justify-between items-center">
+                    <h3 class="text-white font-bold text-[15px] tracking-tight">Notifications</h3>
+                    <button onclick="toggleNotifCenter()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-2" id="notifList">
+                    <div class="text-center text-gray-500 text-[11px] py-4">No new alerts</div>
+                </div>
+            </div>
+
+            <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
+                <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
+                    <div class="w-10 h-1 bg-gray-700 rounded-full mb-6"></div>
+                    <div class="w-20 h-20 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3" id="mpAvatar">👤</div>
+                    <h2 class="text-white text-[22px] font-bold tracking-tight" id="mpName">Username</h2>
+                    <p class="text-gray-400 text-[12px] font-medium mt-1 mb-5 bg-black/40 px-3 py-1 rounded-full border border-gray-800/50" id="mpVibe">Chilling right now ✨</p>
+                    <button onclick="sendPrivateRequest()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-[14px] py-3.5 rounded-xl active:scale-95 transition flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-paper-plane text-xs"></i> Request Private Chat
                     </button>
                 </div>
             </div>
 
-            <header id="mainHeader" class="flex justify-between items-center px-5 pt-12 pb-4 z-30 bg-[#0B0E14]/90 backdrop-blur-md border-b border-gray-800/60 sticky top-0 shrink-0 transition-all duration-500">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center transition-all duration-500" id="logoIconContainer">
-                        <i class="fa-solid fa-leaf text-pink-500 text-sm transition-colors" id="logoIcon"></i>
+            <header id="mainHeader" class="flex justify-between items-center px-4 pt-12 pb-3 z-30 bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 sticky top-0 shrink-0 transition-all duration-500">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center theme-pulse transition-all duration-500 shadow-lg" id="logoIconContainer">
+                        <i class="fa-solid fa-leaf text-pink-500 text-[14px] transition-colors" id="logoIcon"></i>
                     </div>
-                    <h1 class="text-xl font-extrabold tracking-tight text-white">HealSpace.</h1>
+                    <h1 class="text-[18px] font-bold tracking-tight text-white drop-shadow-md">HealSpace.</h1>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="toggleSearch()" class="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center border border-gray-700 hover:bg-gray-700 transition active:scale-95">
-                        <i class="fa-solid fa-magnifying-glass text-gray-300 text-sm"></i>
+                <div class="flex gap-2.5 relative z-50">
+                    <button onclick="toggleSearch()" class="w-8 h-8 rounded-full bg-gray-800/60 flex items-center justify-center border border-gray-700/50 hover:bg-gray-700 transition active:scale-95 shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass text-gray-300 text-[12px]"></i>
                     </button>
-                    <button onclick="handleNotification(this)" class="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center border border-gray-700 hover:bg-gray-700 transition active:scale-95 relative">
-                        <i class="fa-solid fa-bell text-gray-300 text-sm"></i>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden" id="notifDot"></span>
+                    <button onclick="toggleNotifCenter()" class="w-8 h-8 rounded-full bg-gray-800/60 flex items-center justify-center border border-gray-700/50 hover:bg-gray-700 transition active:scale-95 shadow-sm relative">
+                        <i class="fa-solid fa-bell text-gray-300 text-[12px]"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden animate-pulse" id="notifDot"></span>
                     </button>
                 </div>
             </header>
 
-            <div id="searchContainer" class="hidden search-bar-container px-5 pb-3 pt-2 bg-[#0B0E14]/90 backdrop-blur-md border-b border-gray-800/60 sticky top-[72px] z-20 transition-all duration-300">
-                <div class="bg-gray-900 rounded-xl px-4 py-2 flex items-center gap-3 border border-gray-700">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
-                    <input type="text" id="searchInput" onkeyup="filterFeed()" placeholder="Search users by name..." class="bg-transparent border-none outline-none text-white text-sm w-full placeholder-gray-500">
+            <div id="searchContainer" class="hidden search-bar-container px-4 pb-2 pt-2 bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 sticky top-[70px] z-20 transition-all duration-300">
+                <div class="bg-gray-900/80 rounded-xl px-3 py-2 flex items-center gap-2 border border-gray-700 focus-within:border-blue-500/50 transition-colors shadow-inner">
+                    <i class="fa-solid fa-magnifying-glass text-gray-500 text-[11px]"></i>
+                    <input type="text" id="searchInput" onkeyup="filterFeed()" placeholder="Search users..." class="bg-transparent border-none outline-none text-white text-[13px] w-full placeholder-gray-500 font-medium">
                 </div>
             </div>
 
-            <main class="flex-1 overflow-y-auto no-scrollbar w-full p-4 z-10 pb-[90px] relative">
-
-                <div class="mb-5 animate-enter" style="animation-delay: 0.1s;">
-                    <h2 id="pageTitle" class="text-3xl font-extrabold text-white leading-tight tracking-tight">Someone is here <br>to listen.</h2>
-                    <p id="pageSubtitle" class="text-gray-400 text-sm mt-1 font-medium">Connect with people who match your energy.</p>
+            <main id="mainScrollArea" class="flex-1 overflow-y-auto no-scrollbar w-full px-2 py-3 z-10 pb-[100px] relative">
+                
+                <div id="ptr-indicator" class="w-full h-0 flex items-center justify-center opacity-0 mb-2">
+                    <i class="fa-solid fa-circle-notch text-gray-500 text-lg spin-slow"></i>
                 </div>
 
-                <div id="loverTabs" class="flex gap-2 mb-5 hidden animate-enter" style="animation-delay: 0.15s;">
-                    <button id="tabCouple" onclick="switchLoverTab('couple')" class="flex-1 py-2.5 bg-rose-500/20 text-rose-400 rounded-xl font-extrabold text-xs border border-rose-500/50 shadow-md transition">In Love ❤️</button>
-                    <button id="tabHeartbreak" onclick="switchLoverTab('heartbreak')" class="flex-1 py-2.5 bg-gray-800/80 text-gray-400 rounded-xl font-extrabold text-xs border border-gray-700 transition">Heartbreak 💔</button>
+                <div class="mb-4 px-1 animate-enter" style="animation-delay: 0.05s;">
+                    <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Good Morning,<br>we're here.</h2>
+                    <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Connect with people who match your energy.</p>
                 </div>
 
-                <div id="incognitoToggleContainer" class="hidden justify-between items-center bg-gray-900/60 backdrop-blur-md p-4 rounded-2xl mb-5 border border-purple-900/30 animate-enter shadow-lg" style="animation-delay: 0.2s;">
+                <div id="loverTabs" class="flex gap-2 mb-4 hidden animate-enter px-1" style="animation-delay: 0.1s;">
+                    <button id="tabCouple" onclick="switchLoverTab('couple')" class="flex-1 py-2 bg-rose-500/10 text-rose-400 rounded-xl font-bold text-[11px] border border-rose-500/30 shadow-sm transition active:scale-95">In Love ❤️</button>
+                    <button id="tabHeartbreak" onclick="switchLoverTab('heartbreak')" class="flex-1 py-2 bg-gray-800/40 text-gray-400 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95">Heartbreak 💔</button>
+                </div>
+
+                <div id="incognitoToggleContainer" class="hidden justify-between items-center bg-gray-900/40 backdrop-blur-md px-3 py-2.5 rounded-xl mb-4 border border-purple-900/20 animate-enter shadow-sm mx-1" style="animation-delay: 0.15s;">
                     <div>
-                        <h4 class="text-white font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-mask text-purple-400"></i> Incognito Mode</h4>
-                        <p class="text-gray-400 text-[10px] mt-0.5 font-medium">Private chats. Stealth browsing.</p>
+                        <h4 class="text-white font-bold flex items-center gap-1.5 text-[12px]"><i class="fa-solid fa-mask text-purple-400"></i> Incognito</h4>
+                        <p class="text-gray-500 text-[9px] mt-0.5 font-medium">Private, stealth browsing.</p>
                     </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
+                    <label class="relative inline-flex items-center cursor-pointer transform scale-90">
                       <input type="checkbox" id="incognitoCheckbox" class="sr-only peer" onchange="toggleIncognito()">
-                      <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                      <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500 shadow-inner"></div>
                     </label>
                 </div>
 
-                <div id="feedContainer"></div>
+                <div id="feedContainer" class="relative z-10 w-full"></div>
 
-                <div class="mt-10 mb-4 text-center animate-enter" style="animation-delay: 0.8s;">
-                    <p class="text-[11px] text-gray-600 font-medium">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
+                <div class="mt-8 mb-4 text-center animate-enter" style="animation-delay: 0.8s;">
+                    <p class="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
                 </div>
 
             </main>
 
-            <nav id="mainNav" class="absolute bottom-0 w-full bg-[#0b0f19] border-t border-gray-800 h-[65px] z-30 pb-safe shrink-0 transition-colors duration-400">
-                <ul class="flex justify-around items-center h-full px-2">
-                    <a href="index.html" class="flex items-center gap-2 bg-[#1e1e24] text-[#f91880] px-4 py-2.5 rounded-full transition-all shadow-lg border border-[#f91880]/20">
-                        <i class="fa-solid fa-house text-[20px]"></i>
-                        <span class="font-normal text-[16px] tracking-widest" style="font-family: 'Metal Mania', cursive; margin-top: 1px;">Home</span>
+            <nav id="mainNav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] bg-[#11131a]/90 backdrop-blur-xl rounded-[32px] border border-gray-800/50 h-[64px] z-30 shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-colors duration-400 pb-0">
+                <ul class="flex justify-between items-center h-full px-4">
+                    <a href="index.html" class="flex items-center gap-1.5 bg-[#1a1c23] text-pink-500 px-3 py-2 rounded-full transition-all shadow-sm border border-pink-500/10">
+                        <i class="fa-solid fa-house text-[16px]"></i>
+                        <span class="font-normal text-[13px] tracking-widest" style="font-family: 'Metal Mania', cursive; margin-top: 1px;">Home</span>
                     </a>
 
-                    <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1">
-                        <i class="fa-solid fa-compass text-[22px]"></i>
+                    <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
+                        <i class="fa-solid fa-compass text-[18px]"></i>
                     </a>
-                    <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1">
-                        <i class="fa-solid fa-user-group text-[22px]"></i>
+                    <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
+                        <i class="fa-solid fa-user-group text-[18px]"></i>
                     </a>
-                    <a href="chat.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 relative hover:-translate-y-1">
-                        <i class="fa-solid fa-comment text-[22px]"></i>
-                        <span class="absolute top-1.5 right-1 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-[#0B0E14] hidden" id="navChatDot"></span>
+                    <a href="chat.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 relative active:scale-90">
+                        <i class="fa-solid fa-message text-[18px]"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden" id="navChatDot"></span>
                     </a>
-                    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1">
-                        <i class="fa-solid fa-circle-user text-[22px]"></i>
+                    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
+                        <i class="fa-solid fa-circle-user text-[18px]"></i>
                     </a>
                 </ul>
             </nav>
@@ -165,29 +190,25 @@
     </div>
 
     <audio id="sndPop" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
+    <audio id="sndSwoosh" src="https://actions.google.com/sounds/v1/ui/click.ogg"></audio>
 
-    <div class="hidden text-rose-200 bg-rose-900/40 border-rose-700/50 hover:border-rose-500/50 from-rose-500 text-rose-400 bg-rose-500/10 hover:bg-rose-500 border-rose-500/30 text-rose-500"></div>
-    <div class="hidden text-emerald-200 bg-emerald-900/40 border-emerald-700/50 hover:border-emerald-500/50 from-emerald-500 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500 border-emerald-500/30 text-emerald-500"></div>
-    <div class="hidden text-teal-200 bg-teal-900/40 border-teal-700/50 hover:border-teal-500/50 from-teal-500 text-teal-400 bg-teal-500/10 hover:bg-teal-500 border-teal-500/30 text-teal-500"></div>
-    <div class="hidden text-blue-200 bg-blue-900/40 border-blue-700/50 hover:border-blue-500/50 from-blue-500 text-blue-400 bg-blue-500/10 hover:bg-blue-500 border-blue-500/30 text-blue-500"></div>
-    <div class="hidden text-cyan-200 bg-cyan-900/40 border-cyan-700/50 hover:border-cyan-500/50 from-cyan-500 text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500 border-cyan-500/30 text-cyan-500"></div>
-    <div class="hidden text-yellow-200 bg-yellow-900/40 border-yellow-700/50 hover:border-yellow-500/50 from-yellow-500 text-yellow-400 bg-yellow-500/10 hover:bg-yellow-500 border-yellow-500/30 text-yellow-500"></div>
-    <div class="hidden text-orange-200 bg-orange-900/40 border-orange-700/50 hover:border-orange-500/50 from-orange-500 text-orange-400 bg-orange-500/10 hover:bg-orange-500 border-orange-500/30 text-orange-500"></div>
-    <div class="hidden text-purple-200 bg-purple-900/40 border-purple-700/50 hover:border-purple-500/50 from-purple-500 text-purple-400 bg-purple-500/10 hover:bg-purple-500 border-purple-500/30 text-purple-500"></div>
+    <div class="hidden text-rose-200 bg-rose-900/30 border-rose-700/30 hover:border-rose-500/40 from-rose-500 text-rose-400 bg-rose-500/10 hover:bg-rose-500 border-rose-500/20 text-rose-500"></div>
+    <div class="hidden text-emerald-200 bg-emerald-900/30 border-emerald-700/30 hover:border-emerald-500/40 from-emerald-500 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500 border-emerald-500/20 text-emerald-500"></div>
+    <div class="hidden text-teal-200 bg-teal-900/30 border-teal-700/30 hover:border-teal-500/40 from-teal-500 text-teal-400 bg-teal-500/10 hover:bg-teal-500 border-teal-500/20 text-teal-500"></div>
+    <div class="hidden text-blue-200 bg-blue-900/30 border-blue-700/30 hover:border-blue-500/40 from-blue-500 text-blue-400 bg-blue-500/10 hover:bg-blue-500 border-blue-500/20 text-blue-500"></div>
+    <div class="hidden text-cyan-200 bg-cyan-900/30 border-cyan-700/30 hover:border-cyan-500/40 from-cyan-500 text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500 border-cyan-500/20 text-cyan-500"></div>
+    <div class="hidden text-yellow-200 bg-yellow-900/30 border-yellow-700/30 hover:border-yellow-500/40 from-yellow-500 text-yellow-400 bg-yellow-500/10 hover:bg-yellow-500 border-yellow-500/20 text-yellow-500"></div>
+    <div class="hidden text-orange-200 bg-orange-900/30 border-orange-700/30 hover:border-orange-500/40 from-orange-500 text-orange-400 bg-orange-500/10 hover:bg-orange-500 border-orange-500/20 text-orange-500"></div>
+    <div class="hidden text-purple-200 bg-purple-900/30 border-purple-700/30 hover:border-purple-500/40 from-purple-500 text-purple-400 bg-purple-500/10 hover:bg-purple-500 border-purple-500/20 text-purple-500"></div>
 
     <script>
-        // --- UPDATED AUTHENTICATION GUARD ---
+        // --- CORE GUARD ---
         const currentUserId = localStorage.getItem("healspace_userId");
         let currentRole = localStorage.getItem("healspace_logged_role");
 
-        // Redirect to Replit Login Page
-        if (!currentUserId || !currentRole) {
-            window.location.replace("login.html");
-        }
+        if (!currentUserId || !currentRole) { window.location.replace("login.html"); }
 
         const myAlias = localStorage.getItem("healspace_alias") || "User";
-
-        // --- APPS SCRIPT INTEGRATION ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
 
         // --- STATE ---
@@ -195,62 +216,100 @@
         let isIncognito = false;
         let allRealUsers = []; 
 
-        // --- THEME TEXTS BASED ON ROLE ---
-        const roleTexts = {
-            seeker: { title: "Ready to listen.", subtitle: "Connect with verified listeners and motivators." },
-            motivator: { title: "Share your light.", subtitle: "These people are looking for some motivation today." },
-            lover_couple: { title: "Couple Space.", subtitle: "Connect with other couples or chat privately." },
-            lover_heartbreak: { title: "Heal your heart.", subtitle: "Connect with others who understand heartbreak." },
-            friend: { title: "Find your vibe.", subtitle: "Connect with people who share your exact energy." },
-            all: { title: "Welcome to <br>the Hub.", subtitle: "Explore all spaces across HealSpace." }
-        };
+        // --- HAPTIC ENGINE ---
+        function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
+
+        // --- TIME-AWARE CONTEXTUAL GREETING ---
+        function setDynamicGreeting(role) {
+            const hour = new Date().getHours();
+            let timeGreet = "Good evening";
+            if(hour < 12) timeGreet = "Good morning";
+            else if(hour < 18) timeGreet = "Good afternoon";
+
+            const roleTexts = {
+                seeker: { title: `${timeGreet},<br>we're here.`, subtitle: "Connect with verified listeners." },
+                motivator: { title: `${timeGreet},<br>share your light.`, subtitle: "People looking for motivation today." },
+                lover_couple: { title: "Couple Space.", subtitle: "Connect with other couples." },
+                lover_heartbreak: { title: "Heal your heart.", subtitle: "Connect with others who understand." },
+                friend: { title: "Find your vibe.", subtitle: "People who share your exact energy." },
+                all: { title: "Welcome to <br>the Hub.", subtitle: "Explore all spaces across HealSpace." }
+            };
+
+            const data = roleTexts[role] || roleTexts['seeker'];
+            document.getElementById('pageTitle').innerHTML = data.title;
+            document.getElementById('pageSubtitle').innerText = data.subtitle;
+        }
 
         // --- INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", function() {
-
-            // Native Push Notification Permissions
             document.body.addEventListener('click', () => {
-                if ("Notification" in window && Notification.permission === "default") {
-                    Notification.requestPermission();
-                }
+                if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
             }, { once: true });
 
-            // Handle Loading Animation
-            setTimeout(() => {
-                document.getElementById('initialAppLoader').classList.add('hide-loader');
+            // INSTANT BOOT SKELETON
+            applyThemeAnimations(currentRole || 'seeker');
+            
+            if (currentRole === 'lover') {
+                document.getElementById('loverTabs').classList.remove('hidden');
+                document.getElementById('loverTabs').classList.add('flex');
+                switchLoverTab('couple'); 
+            } else {
+                fetchRealFeed(currentRole || 'seeker');
+            }
 
-                applyThemeAnimations(currentRole || 'seeker');
-                if (currentRole === 'lover') {
-                    document.getElementById('loverTabs').classList.remove('hidden');
-                    document.getElementById('loverTabs').classList.add('flex');
-                    switchLoverTab('couple'); 
-                } else {
-                    fetchRealFeed(currentRole || 'seeker');
-                }
-            }, 2000);
-
-            // INITIALIZE THE GLOBAL REAL-TIME ENGINE
             initGlobalCore();
+            initPullToRefresh();
         });
 
+        // --- PHYSICS PULL TO REFRESH ENGINE ---
+        function initPullToRefresh() {
+            const scrollArea = document.getElementById('mainScrollArea');
+            const ptrIndicator = document.getElementById('ptr-indicator');
+            let startY = 0;
+            let isPulling = false;
+
+            scrollArea.addEventListener('touchstart', e => {
+                if (scrollArea.scrollTop === 0) { startY = e.touches[0].clientY; isPulling = true; }
+            }, {passive: true});
+
+            scrollArea.addEventListener('touchmove', e => {
+                if (!isPulling) return;
+                let diff = e.touches[0].clientY - startY;
+                if (diff > 0 && scrollArea.scrollTop === 0) {
+                    let height = Math.min(diff * 0.3, 40); 
+                    ptrIndicator.style.height = height + 'px';
+                    ptrIndicator.style.opacity = height / 40;
+                }
+            }, {passive: true});
+
+            scrollArea.addEventListener('touchend', e => {
+                if (!isPulling) return;
+                isPulling = false;
+                
+                if (parseInt(ptrIndicator.style.height) >= 35) {
+                    hapticFeedback(15);
+                    ptrIndicator.style.height = '35px';
+                    ptrIndicator.style.opacity = '1';
+                    fetchRealFeed(currentRole === 'lover' ? activeLoverTab : currentRole || 'seeker');
+                    setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 800);
+                } else {
+                    ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
+                }
+            });
+        }
+
         // ==========================================
-        // UNIFIED GLOBAL CORE (Native Notifications)
+        // UNIFIED GLOBAL CORE 
         // ==========================================
         let globalPeer;
 
         function initGlobalCore() {
             if (!myAlias || myAlias === "User" || myAlias === "Anonymous") return;
 
-            // 1. Backend Polling (Heartbeat & Missed Messages Queue)
             setInterval(async () => {
                 try {
-                    const res = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify({ action: 'sync_core', user: myAlias })
-                    });
+                    const res = await fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'sync_core', user: myAlias }) });
                     const data = await res.json();
-
                     if (data.messages && data.messages.length > 0) {
                         data.messages.forEach(m => {
                             let msgData = JSON.parse(m.msgData);
@@ -261,10 +320,7 @@
                 } catch(e) {}
             }, 5000);
 
-            // 2. PeerJS Fast-Lane Initialization
-            const myPeerId = "hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-            globalPeer = new Peer(myPeerId);
-
+            globalPeer = new Peer("hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
             globalPeer.on('disconnected', () => { globalPeer.reconnect(); });
 
             globalPeer.on('connection', (conn) => {
@@ -275,12 +331,9 @@
                             pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); });
                         } catch(e) {}
                     }
-                    else if (data.action === 'chat_sync') {
-                        if (data.isSecret) return; 
-
+                    else if (data.action === 'chat_sync' && !data.isSecret) {
                         saveMessageLocally(data.sender, data.msgData);
                         showGlobalNotification(data.sender, data.msgData.text || "Attachment", false);
-
                         try {
                             const receiptConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true });
                             receiptConn.on('open', () => { receiptConn.send({ action: 'delivered', sender: myAlias, msgId: data.msgData.id }); });
@@ -294,104 +347,60 @@
             });
         }
 
-        // --- SAFE JSON PARSING & HISTORY SAVING ---
-        function safeParseJSON(str, fallback) {
-            try {
-                if (!str || str === "undefined" || str === "null") return fallback;
-                return JSON.parse(str) || fallback;
-            } catch(e) { return fallback; }
-        }
-        function getChatHistory(alias) {
-            return safeParseJSON(localStorage.getItem(`hs_chat_${myAlias}_${alias}`), []);
-        }
+        // --- SAFE JSON & HISTORY ---
+        function safeParseJSON(str, fallback) { try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; } }
+        function getChatHistory(alias) { return safeParseJSON(localStorage.getItem(`hs_chat_${myAlias}_${alias}`), []); }
 
         function saveMessageLocally(sender, newMsg) {
             let history = getChatHistory(sender);
             if (!history.find(m => m.id === newMsg.id)) {
-                newMsg.type = 'recv';
-                newMsg.read = false; 
-
-                if (newMsg.file && (newMsg.file.data instanceof Blob || newMsg.file.data instanceof ArrayBuffer)) {
-                    const blob = newMsg.file.data instanceof Blob ? newMsg.file.data : new Blob([newMsg.file.data], { type: newMsg.file.type });
-                    newMsg.file.data = URL.createObjectURL(blob);
-                }
-
+                newMsg.type = 'recv'; newMsg.read = false; 
                 let historyMsg = JSON.parse(JSON.stringify(newMsg));
                 if (historyMsg.file) historyMsg.file.data = null; 
-
                 history.push(historyMsg);
                 history.sort((a,b) => parseInt(a.id) - parseInt(b.id));
                 localStorage.setItem(`hs_chat_${myAlias}_${sender}`, JSON.stringify(history));
-
                 const chatDot = document.getElementById('navChatDot');
                 if(chatDot) chatDot.classList.remove('hidden');
             }
         }
 
         function showGlobalNotification(sender, text, isCall) {
-            // 1. Trigger the In-App HTML Popup
+            hapticFeedback(20);
+            document.getElementById('notifDot').classList.remove('hidden');
+            
             const popup = document.getElementById('customNotification');
             if(popup) {
                 document.getElementById('notifTitle').innerText = isCall ? "Incoming Call" : "New Message from " + sender;
-                document.getElementById('notifMessage').innerText = isCall ? "Tap to open HealSpace..." : text.substring(0,30) + "...";
-                document.getElementById('notifIcon').className = isCall ? "fa-solid fa-phone-volume text-green-400" : "fa-solid fa-comment-dots text-blue-400";
-
-                popup.onclick = () => { 
-                    popup.classList.add('hidden');
-                    window.location.href = `chat.html?chatWith=${encodeURIComponent(sender)}`;
-                };
-
-                popup.classList.remove('hidden');
-                popup.classList.add('animate-pop');
+                document.getElementById('notifMessage').innerText = isCall ? "Tap to answer..." : text.substring(0,30) + "...";
+                popup.onclick = () => { popup.classList.add('hidden'); window.location.href = `chat.html?chatWith=${encodeURIComponent(sender)}`; };
+                popup.classList.remove('hidden'); popup.classList.add('animate-pop');
                 try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
-
-                setTimeout(() => {
-                    popup.classList.remove('animate-pop');
-                    popup.classList.add('hidden');
-                }, 5000);
+                setTimeout(() => { popup.classList.remove('animate-pop'); popup.classList.add('hidden'); }, 5000);
             }
 
-            // 2. Trigger the Native OS Browser Push 
             if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    const title = isCall ? `Incoming Call from ${sender}` : `HealSpace: ${sender}`;
-                    const nativeNotif = new Notification(title, {
-                        body: isCall ? "Tap to answer..." : text.substring(0,40) + "...",
-                        icon: "https://cdn-icons-png.flaticon.com/512/3114/3114491.png",
-                        requireInteraction: isCall
-                    });
-                    nativeNotif.onclick = () => {
-                        window.focus();
-                        window.location.href = `chat.html?chatWith=${encodeURIComponent(sender)}`;
-                    };
-                } catch (e) {
-                    console.log("Native Push blocked by mobile browser strict mode.");
-                }
+                try { new Notification(isCall ? `Incoming Call: ${sender}` : `HealSpace: ${sender}`, { body: text.substring(0,40) + "...", icon: "https://cdn-icons-png.flaticon.com/512/3114/3114491.png" }); } catch (e) {}
             }
         }
 
-        function closeNotification(e) {
-            if(e) e.stopPropagation(); 
-            const popup = document.getElementById('customNotification');
-            if(popup) { popup.classList.remove('animate-pop'); popup.classList.add('hidden'); }
-        }
+        function closeNotification(e) { if(e) e.stopPropagation(); const p = document.getElementById('customNotification'); if(p) { p.classList.remove('animate-pop'); p.classList.add('hidden'); } }
 
-        function handleNotification(btn) {
-            document.getElementById('notifDot').classList.add('hidden');
-            const popup = document.getElementById('customNotification');
-
-            document.getElementById('notifTitle').innerText = "System";
-            document.getElementById('notifMessage').innerText = "You're all caught up!";
-            document.getElementById('notifIcon').className = "fa-solid fa-check-circle text-blue-400";
-
-            popup.onclick = null;
-            popup.classList.remove('hidden');
-            popup.classList.add('animate-pop');
-            setTimeout(() => { popup.classList.remove('animate-pop'); popup.classList.add('hidden'); }, 3000);
+        function toggleNotifCenter() {
+            hapticFeedback();
+            const hub = document.getElementById('notifDropdownMenu');
+            if(hub.classList.contains('notif-closed')) {
+                hub.classList.remove('notif-closed', 'hidden'); hub.classList.add('notif-open', 'flex');
+                document.getElementById('notifDot').classList.add('hidden'); 
+            } else {
+                hub.classList.add('notif-closed'); hub.classList.remove('notif-open');
+                setTimeout(()=> hub.classList.replace('flex','hidden'), 300);
+            }
         }
 
         // --- UI FUNCTIONS ---
         function toggleSearch() {
+            hapticFeedback(10);
             const searchContainer = document.getElementById('searchContainer');
             if(searchContainer.classList.contains('hidden')) {
                 searchContainer.classList.remove('hidden');
@@ -405,10 +414,6 @@
 
         // --- DYNAMIC THEME ANIMATIONS ---
         function applyThemeAnimations(role) {
-            const header = document.getElementById('mainHeader');
-            const logo = document.getElementById('logoIconContainer');
-            const icon = document.getElementById('logoIcon');
-
             const themeMap = {
                 'seeker': { color: '#3b82f6', icon: 'fa-arrow-trend-up' },
                 'motivator': { color: '#10b981', icon: 'fa-leaf' },
@@ -416,78 +421,77 @@
                 'friend': { color: '#eab308', icon: 'fa-face-smile-beam' },
                 'all': { color: '#a855f7', icon: 'fa-star' }
             };
-
             const t = themeMap[role] || themeMap['seeker'];
-
-            document.documentElement.style.setProperty('--glow-color', `rgba(${hexToRgb(t.color)}, 0.4)`);
-
-            logo.className = `w-8 h-8 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center theme-pulse transition-all duration-500`;
-            icon.className = `fa-solid ${t.icon} text-sm transition-colors duration-500`;
+            document.documentElement.style.setProperty('--glow-color', `rgba(${hexToRgb(t.color)}, 0.3)`);
+            const icon = document.getElementById('logoIcon');
+            icon.className = `fa-solid ${t.icon} text-[14px] transition-colors duration-500`;
             icon.style.color = t.color;
-            header.style.borderBottomColor = `rgba(${hexToRgb(t.color)}, 0.2)`;
         }
 
         function hexToRgb(hex) {
-            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+            let r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : null;
         }
 
         function switchLoverTab(tab) {
-            activeLoverTab = tab;
-            const btnCouple = document.getElementById('tabCouple');
-            const btnHeartbreak = document.getElementById('tabHeartbreak');
+            hapticFeedback(); activeLoverTab = tab;
+            const bC = document.getElementById('tabCouple'); const bH = document.getElementById('tabHeartbreak');
             const incToggle = document.getElementById('incognitoToggleContainer');
 
             if (tab === 'couple') {
-                btnCouple.className = "flex-1 py-2.5 bg-rose-500/20 text-rose-400 rounded-xl font-extrabold text-xs border border-rose-500/50 shadow-md transition";
-                btnHeartbreak.className = "flex-1 py-2.5 bg-gray-800/80 text-gray-400 rounded-xl font-extrabold text-xs border border-gray-700 transition";
+                bC.className = "flex-1 py-2 bg-rose-500/10 text-rose-400 rounded-xl font-bold text-[11px] border border-rose-500/30 shadow-sm transition active:scale-95";
+                bH.className = "flex-1 py-2 bg-gray-800/40 text-gray-500 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95";
                 incToggle.classList.remove('hidden'); incToggle.classList.add('flex');
-                filterAndRenderFeed('lover_couple');
+                setDynamicGreeting('lover_couple'); fetchRealFeed('lover_couple');
             } else {
-                btnCouple.className = "flex-1 py-2.5 bg-gray-800/80 text-gray-400 rounded-xl font-extrabold text-xs border border-gray-700 transition";
-                btnHeartbreak.className = "flex-1 py-2.5 bg-purple-500/20 text-purple-400 rounded-xl font-extrabold text-xs border border-purple-500/50 shadow-md transition";
+                bC.className = "flex-1 py-2 bg-gray-800/40 text-gray-500 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95";
+                bH.className = "flex-1 py-2 bg-purple-500/10 text-purple-400 rounded-xl font-bold text-[11px] border border-purple-500/30 shadow-sm transition active:scale-95";
                 incToggle.classList.add('hidden'); incToggle.classList.remove('flex');
                 if(isIncognito) document.getElementById('incognitoCheckbox').click(); 
-                filterAndRenderFeed('lover_heartbreak');
+                setDynamicGreeting('lover_heartbreak'); fetchRealFeed('lover_heartbreak');
             }
         }
 
         function toggleIncognito() {
+            hapticFeedback([10, 15]);
             isIncognito = document.getElementById('incognitoCheckbox').checked;
             const container = document.getElementById('mobile-container');
             const icon = document.getElementById('logoIcon');
-
-            if (isIncognito) {
-                container.classList.add('incognito-active');
-                icon.className = 'fa-solid fa-mask text-purple-500 text-sm';
-            } else {
-                container.classList.remove('incognito-active');
-                applyThemeAnimations(currentRole); 
-            }
+            if (isIncognito) { container.classList.add('incognito-active'); icon.className = 'fa-solid fa-mask text-purple-500 text-[14px]'; } 
+            else { container.classList.remove('incognito-active'); applyThemeAnimations(currentRole); }
         }
 
-        // --- FETCH API FOR REAL FEED ---
+        // --- SKELETON & FETCH API ---
         async function fetchRealFeed(roleKey) {
             const feedContainer = document.getElementById('feedContainer');
+            setDynamicGreeting(roleKey);
 
-            const roleData = roleTexts[roleKey] || roleTexts['seeker'];
-            document.getElementById('pageTitle').innerHTML = roleData.title;
-            document.getElementById('pageSubtitle').innerText = roleData.subtitle;
-
-            feedContainer.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-16 animate-enter">
-                    <i class="fa-solid fa-circle-notch fa-spin text-pink-500 text-4xl mb-4 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]"></i>
-                    <p class="text-gray-400 text-sm font-bold tracking-wide">Finding real energies...</p>
-                </div>
-            `;
+            let skeletonHTML = '';
+            for(let i=0; i<4; i++) {
+                skeletonHTML += `
+                <div class="bg-gray-900/40 rounded-[20px] p-4 border border-gray-800/40 mb-3 w-full flex gap-3 animate-enter" style="animation-delay: ${0.05 * i}s">
+                    <div class="w-12 h-12 rounded-full skeleton-bg shrink-0"></div>
+                    <div class="flex-1 py-1">
+                        <div class="h-3 skeleton-bg rounded-md w-1/2 mb-2"></div>
+                        <div class="h-2 skeleton-bg rounded-md w-1/3 mb-3"></div>
+                        <div class="h-1.5 skeleton-bg rounded-md w-3/4 mb-1.5"></div>
+                        <div class="h-1.5 skeleton-bg rounded-md w-2/4"></div>
+                    </div>
+                </div>`;
+            }
+            feedContainer.innerHTML = skeletonHTML;
 
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
                 processUsersData(data, roleKey);
             } catch(err) {
-                console.log("Fetch error:", err);
-                showFetchError();
+                feedContainer.innerHTML = `
+                    <div class="text-center py-10 animate-enter">
+                        <i class="fa-solid fa-wifi text-gray-700 text-3xl mb-2"></i>
+                        <p class="text-red-400 text-[12px] font-bold">Network Offline</p>
+                        <p class="text-gray-600 text-[10px] mt-1">Pull down to refresh.</p>
+                    </div>`;
             }
         }
 
@@ -502,131 +506,88 @@
             filterAndRenderFeed(roleKey);
         }
 
-        function showFetchError() {
-            const feedContainer = document.getElementById('feedContainer');
-            feedContainer.innerHTML = `
-                <div class="text-center py-10 animate-enter">
-                    <i class="fa-solid fa-wifi text-gray-600 text-4xl mb-3"></i>
-                    <p class="text-red-400 text-sm font-bold">Failed to connect to HealSpace network.</p>
-                    <p class="text-gray-500 text-xs mt-1">Please check your connection and try again.</p>
-                </div>`;
-        }
-
-        // --- GENERATE USER DATA WITH LANGUAGE SUPPORT ---
         function getDeterministicCardData(user) {
-            const alias = user.alias || "User";
-            const role = user.role || 'seeker';
-
             const colors = ['rose', 'emerald', 'teal', 'blue', 'cyan', 'yellow', 'orange', 'purple'];
-            const idx = alias.length % colors.length;
+            const idx = user.alias.length % colors.length;
             const color = colors[idx];
-            const age = 18 + (alias.length % 15);
-
+            const age = 18 + (user.alias.length % 15);
+            
             let bio = "Here to connect and share good vibes.";
             let tags = ['Chat 💬', 'New Here'];
             let displayRole = 'Member';
 
-            if(role === 'seeker') { displayRole = 'Motivation Seeker'; bio = "Looking for some motivation and advice."; tags = ['Listening Ear', 'Advice']; }
-            if(role === 'motivator') { displayRole = 'Verified Motivator'; bio = "Happy to listen and help you through it."; tags = ['Mental Health', 'Support']; }
-            if(role === 'lover') { displayRole = 'Heart/Couple Space'; bio = "Looking for connections and deep talks."; tags = ['Relationships', 'Deep Talks']; }
-            if(role === 'friend') { displayRole = 'Looking for Friends'; bio = "Always down for a random deep conversation."; tags = ['Extrovert', 'Gaming 🎮']; }
+            if(user.role === 'seeker') { displayRole = 'Motivation Seeker'; tags = ['Listening Ear', 'Advice']; }
+            if(user.role === 'motivator') { displayRole = 'Verified Motivator'; tags = ['Mental Health', 'Support']; }
+            if(user.role === 'lover') { displayRole = 'Heart/Couple Space'; tags = ['Relationships', 'Deep Talks']; }
+            if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; }
 
-            // Language Concept Integration
-            const defaultLangs = [
-                { main: 'English 🇬🇧', spoken: 'English, Spanish' },
-                { main: 'Hindi 🇮🇳', spoken: 'Hindi, English' },
-                { main: 'English 🇬🇧', spoken: 'English, French' },
-                { main: 'Spanish 🇪🇸', spoken: 'Spanish, English' }
-            ];
-            const langData = defaultLangs[idx % defaultLangs.length];
+            const defaultLangs = [ { main: 'English 🇬🇧' }, { main: 'Hindi 🇮🇳' }, { main: 'Spanish 🇪🇸' } ];
+            const mainLang = user.mainLanguage || defaultLangs[idx % defaultLangs.length].main;
 
-            // Checks if backend has 'mainLanguage' or falls back to generated
-            const mainLang = user.mainLanguage || langData.main;
-            const spokenLangs = user.languages || langData.spoken;
-
-            return { color, age, bio, tags, displayRole, mainLang, spokenLangs };
+            return { color, age, bio, tags, displayRole, mainLang };
         }
 
-        // --- UPDATED ALL & LOVER LOGIC ---
         function filterAndRenderFeed(roleKey) {
-            let primaryUsers = [];
-            let secondaryUsers = [];
-
+            let primary = [], secondary = [];
             allRealUsers.forEach(u => {
-                if (roleKey === 'all') {
-                    primaryUsers.push(u);
-                } 
-                else if (roleKey.startsWith('lover')) {
-                    if (u.role === 'lover') primaryUsers.push(u);
-                }
-                else if(roleKey === 'seeker') {
-                    if (u.role === 'motivator') primaryUsers.push(u);
-                    else if (u.role !== 'lover') secondaryUsers.push(u);
-                } else if (roleKey === 'motivator') {
-                    if (u.role === 'seeker') primaryUsers.push(u);
-                    else if (u.role !== 'lover') secondaryUsers.push(u);
-                } else if (roleKey === 'friend') {
-                    if (u.role === 'friend') primaryUsers.push(u);
-                    else if (u.role !== 'lover') secondaryUsers.push(u);
-                } 
+                if (roleKey === 'all') primary.push(u); 
+                else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
+                else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                else if (roleKey === 'motivator') { if (u.role === 'seeker') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                else if (roleKey === 'friend') { if (u.role === 'friend') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
             });
 
             const searchQ = document.getElementById('searchInput').value.toLowerCase();
             if(searchQ) {
-                primaryUsers = primaryUsers.filter(u => u.alias.toLowerCase().includes(searchQ));
-                secondaryUsers = secondaryUsers.filter(u => u.alias.toLowerCase().includes(searchQ));
+                primary = primary.filter(u => u.alias.toLowerCase().includes(searchQ));
+                secondary = secondary.filter(u => u.alias.toLowerCase().includes(searchQ));
             }
-
-            renderFeedCards(primaryUsers, secondaryUsers, roleKey);
+            renderFeedCards(primary, secondary, roleKey);
         }
 
         function getInnerAvatarHTML(avatarData) {
-            if (!avatarData) return `<i class="fa-solid fa-user text-gray-400 text-xl"></i>`;
-            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) {
-                return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-            } else {
-                return `<span class="w-full h-full flex items-center justify-center text-3xl">${avatarData}</span>`;
-            }
+            if (!avatarData) return `<i class="fa-solid fa-user text-gray-500 text-[16px]"></i>`;
+            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
+            else return `<span class="w-full h-full flex items-center justify-center text-[22px]">${avatarData}</span>`;
         }
 
         function generateCardHTML(user, index) {
-            const delay = 0.1 + (index * 0.1); 
-            // Pass the entire user object to support the new Language tags
-            const cardData = getDeterministicCardData(user);
-
-            const tagsHTML = cardData.tags.map(tag => 
-                `<span class="text-[10px] font-bold text-${cardData.color}-200 bg-${cardData.color}-900/40 px-2.5 py-1.5 rounded-xl border border-${cardData.color}-700/50 backdrop-blur-sm shadow-sm">${tag}</span>`
-            ).join('');
-
+            const delay = 0.05 + (index * 0.05); 
+            const d = getDeterministicCardData(user);
+            const tagsHTML = d.tags.map(tag => `<span class="text-[9px] font-bold text-${d.color}-200 bg-${d.color}-900/30 px-2 py-1 rounded-lg border border-${d.color}-700/30 shadow-sm">${tag}</span>`).join('');
             const avatarContent = user.avatar || user.emoji || '✨';
+            const currentVibe = localStorage.getItem(`hs_remote_vibe_${user.alias}`);
+            const isOnline = user.isOnline ? true : false;
+            const onlineRingClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${d.color}-500 to-gray-500`;
 
             return `
-                <div class="feed-card bg-gray-900/60 backdrop-blur-md rounded-3xl p-5 border border-gray-800 hover:border-${cardData.color}-500/50 transition-all animate-enter shadow-lg mb-4" style="animation-delay: ${delay}s;">
-                    <div class="flex items-center gap-4">
-                        <div class="w-[56px] h-[56px] rounded-full bg-gradient-to-tr from-${cardData.color}-500 to-gray-400 p-[2px] shadow-[0_0_15px_rgba(0,0,0,0.5)] flex-shrink-0">
-                            <div class="w-full h-full bg-[#0B0E14] rounded-full overflow-hidden flex items-center justify-center">
-                                ${getInnerAvatarHTML(avatarContent)}
-                            </div>
+                <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
+                    <div class="flex items-start gap-3">
+                        <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                            <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(avatarContent)}</div>
+                            ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
                         </div>
-                        <div class="flex-1 overflow-hidden">
-                            <h3 class="feed-card-title text-white font-extrabold text-lg flex items-center gap-2 truncate transition-colors">
-                                ${user.alias} <span class="text-gray-400 text-xs font-bold bg-gray-800 px-2 py-0.5 rounded-md border border-gray-700">${cardData.age}</span>
+                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                            <h3 class="feed-card-title text-white font-bold text-[15px] flex items-center gap-1.5 truncate transition-colors">
+                                ${user.alias} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${d.age}</span>
                             </h3>
-                            <p class="text-${cardData.color}-400 text-[10px] font-extrabold uppercase tracking-widest mt-1">${cardData.displayRole}</p>
-
-                            <div class="mt-1.5 flex flex-col gap-0.5">
-                                <p class="text-gray-300 text-[10px] font-medium flex items-center gap-1.5"><i class="fa-solid fa-globe text-${cardData.color}-500"></i> Main: <span class="text-white font-bold">${cardData.mainLang}</span></p>
-                                <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-comments"></i> Speaks: ${cardData.spokenLangs}</p>
+                            <p class="text-${d.color}-400 text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-90">${d.displayRole}</p>
+                            <div class="mt-1 flex flex-col gap-0.5">
+                                ${currentVibe ? `<p class="text-gray-400 text-[10px] font-medium italic truncate mb-0.5 leading-tight">"${currentVibe}"</p>` : ''}
+                                <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
                             </div>
                         </div>
-                        <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-12 h-12 rounded-full bg-${cardData.color}-500/10 text-${cardData.color}-400 flex items-center justify-center hover:bg-${cardData.color}-500 hover:text-white transition-all disabled:opacity-50 flex-shrink-0 border border-${cardData.color}-500/30 active:scale-90 shadow-md">
-                            <i class="fa-solid fa-paper-plane text-lg"></i>
-                        </button>
+                        
+                        <div class="flex flex-col gap-1.5 flex-shrink-0 pt-0.5">
+                            <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-9 h-9 rounded-full bg-${d.color}-500/10 text-${d.color}-400 flex items-center justify-center hover:bg-${d.color}-500 hover:text-white transition-all disabled:opacity-50 border border-${d.color}-500/20 active:scale-90 shadow-sm">
+                                <i class="fa-solid fa-paper-plane text-[12px]"></i>
+                            </button>
+                            <button onclick="sendWave('${user.alias}', this)" class="w-9 h-7 rounded-full bg-gray-800/50 text-gray-400 flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all border border-gray-700/50 active:scale-90 shadow-sm text-[12px]">
+                                👋
+                            </button>
+                        </div>
                     </div>
-
-                    <p class="text-gray-300 text-xs mt-4 font-medium italic border-t border-gray-800 pt-3">"${cardData.bio}"</p>
-
-                    <div class="flex flex-wrap gap-2 mt-3">
+                    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-800/40">
                         ${tagsHTML}
                     </div>
                 </div>
@@ -638,59 +599,109 @@
             feedContainer.innerHTML = ''; 
 
             if(primaryUsers.length === 0 && secondaryUsers.length === 0) {
-                feedContainer.innerHTML = `<div class="text-center text-gray-500 py-10 text-sm font-medium">No users found matching this criteria.</div>`;
-                return;
+                feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[12px] font-medium">No users found.</div>`; return;
             }
 
             if (primaryUsers.length > 0) {
-                let headerText = "Recommended for you";
-                if (roleKey.startsWith('lover')) headerText = "Heartbreak / Couple Space";
-                if (roleKey === 'all') headerText = "All HealSpace Users";
+                let headerText = "Recommended";
+                if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
+                if (roleKey === 'all') headerText = "All Users";
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-3 px-1 animate-enter">
-                        <h3 class="text-white font-bold text-sm tracking-wide">${headerText}</h3>
-                        <span class="text-gray-500 text-xs font-semibold">${primaryUsers.length} users</span>
+                    <div class="flex justify-between items-end mb-2.5 px-1 animate-enter">
+                        <h3 class="text-white font-bold text-[12px] tracking-wide uppercase">${headerText}</h3>
+                        <span class="text-gray-500 text-[9px] font-bold bg-gray-800/40 px-1.5 py-0.5 rounded border border-gray-800/50">${primaryUsers.length} ONLINE</span>
                     </div>
                 `;
-                primaryUsers.forEach((user, index) => {
-                    feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index));
-                });
+                primaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
             if (secondaryUsers.length > 0 && !roleKey.startsWith('lover') && roleKey !== 'all') {
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-3 mt-8 px-1 animate-enter border-t border-gray-800 pt-6">
-                        <h3 class="text-gray-400 font-bold text-sm tracking-wide">Other spaces you might like</h3>
-                        <span class="text-gray-500 text-xs font-semibold">${secondaryUsers.length} users</span>
+                    <div class="flex justify-between items-end mb-2.5 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
+                        <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">Other spaces</h3>
+                        <span class="text-gray-600 text-[9px] font-bold">${secondaryUsers.length} users</span>
                     </div>
                 `;
-                secondaryUsers.forEach((user, index) => {
-                    feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index));
-                });
+                secondaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
         }
 
-        // --- UPDATED ROUTING LOGIC ---
+        // --- INTERACTIONS ---
         function startChat(targetName, targetRole, btnElement) {
-            btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-lg"></i>';
+            hapticFeedback(20);
+            try { document.getElementById('sndSwoosh').play().catch(()=>{}); } catch(e){}
+            btnElement.innerHTML = '<i class="fa-solid fa-check text-[14px]"></i>';
+            btnElement.classList.add('bg-green-500', 'text-white', 'border-green-500');
             btnElement.disabled = true;
 
-            let chatUrl = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
-
-            // If both the current user and the target user are lovers, generate a secret chat instance
-            if (currentRole === 'lover' && targetRole === 'lover') {
-                const uniqueSecretId = Math.random().toString(36).substring(2, 10);
-                chatUrl += `&secret=true&id=${uniqueSecretId}`;
-
-                // Automatically turn on incognito mode locally if it isn't already on
-                if (!isIncognito) {
-                    document.getElementById('incognitoCheckbox').click();
+            setTimeout(() => {
+                let chatUrl = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
+                if (currentRole === 'lover' && targetRole === 'lover') {
+                    const uniqueSecretId = Math.random().toString(36).substring(2, 10);
+                    chatUrl += `&secret=true&id=${uniqueSecretId}`;
+                    if (!isIncognito) document.getElementById('incognitoCheckbox').click();
                 }
-            }
-
-            window.location.href = chatUrl;
+                window.location.href = chatUrl;
+            }, 300);
         }
+
+        function sendWave(targetName, btnElement) {
+            hapticFeedback(15);
+            btnElement.innerHTML = '<i class="fa-solid fa-check text-green-400"></i>';
+            btnElement.disabled = true;
+            if (globalPeer && !globalPeer.destroyed) {
+                const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: {id: Date.now().toString(), text: "👋 Waved at you!"}, isSecret: false }); }); } catch(e){}
+            }
+            setTimeout(() => { btnElement.innerHTML = '👋'; btnElement.disabled = false; }, 2000);
+        }
+
+        function sendDoubleTapWave(targetName, event) {
+            hapticFeedback([10, 20]);
+            const wave = document.createElement('div');
+            wave.innerHTML = '👋'; wave.className = 'floating-wave';
+            wave.style.left = (event.clientX - 15) + 'px'; wave.style.top = (event.clientY - 15) + 'px';
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 800);
+
+            if (globalPeer && !globalPeer.destroyed) {
+                const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: {id: Date.now().toString(), text: "👋 Waved at you!"}, isSecret: false }); }); } catch(e){}
+            }
+        }
+
+        // --- MINI PROFILE MODAL ---
+        function openMiniProfile(alias, avatarContent, color) {
+            hapticFeedback();
+            document.getElementById('mpName').innerText = alias;
+            document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(avatarContent);
+            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3`;
+            
+            let vibe = localStorage.getItem(`hs_remote_vibe_${alias}`) || "Chilling right now ✨";
+            document.getElementById('mpVibe').innerText = vibe;
+
+            const modal = document.getElementById('miniProfileModal');
+            const sheet = document.getElementById('miniProfileSheet');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
+        }
+
+        function closeMiniProfile(e) {
+            if(e && e.target !== document.getElementById('miniProfileModal') && e !== true) return;
+            const modal = document.getElementById('miniProfileModal');
+            const sheet = document.getElementById('miniProfileSheet');
+            modal.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+
+        function sendPrivateRequest() {
+            hapticFeedback([10, 20]);
+            const targetUser = document.getElementById('mpName').innerText;
+            closeMiniProfile(true);
+            setTimeout(() => { window.location.href = `chat.html?chatWith=${encodeURIComponent(targetUser)}`; }, 300);
+        }
+
     </script>
 </body>
 </html>
