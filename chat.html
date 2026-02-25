@@ -11,9 +11,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
         
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030712; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #000000; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; }
-        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #080a10; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8); transition: background-color 0.3s ease; }
+        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #0a0a0c; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,1); transition: background-color 0.3s ease; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -21,172 +21,191 @@
         /* Animations */
         @keyframes slideInRight { 0% { transform: translateX(100%); } 100% { transform: translateX(0); } }
         @keyframes slideOutRight { 0% { transform: translateX(0); } 100% { transform: translateX(100%); } }
-        .screen-enter { animation: slideInRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
-        .screen-exit { animation: slideOutRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .screen-enter { animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .screen-exit { animation: slideOutRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95) translateY(5px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         .animate-fade { animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         @keyframes slideInLeft { from { transform: translateX(-15px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .inbox-item-anim { animation: slideInLeft 0.4s ease-out forwards; opacity: 0; }
+        .inbox-item-anim { animation: slideInLeft 0.3s ease-out forwards; opacity: 0; }
 
         @keyframes pulseBubble { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .pulse-anim { animation: pulseBubble 0.3s ease-out; }
 
-        @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
-        .animate-ripple { animation: ripple 2s infinite cubic-bezier(0.0, 0.0, 0.2, 1); }
-        .animate-ripple-delay { animation: ripple 2s infinite cubic-bezier(0.0, 0.0, 0.2, 1); animation-delay: 1s; }
-
         /* Instagram Gradient Ring */
-        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2.5px; border-radius: 50%; }
+        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; border-radius: 50%; }
 
-        /* --- THEME SYSTEM --- */
-        /* 1. Default Theme */
-        .chat-bg { background-color: #080a10; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231f2937' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); background-attachment: fixed; transition: all 0.3s ease; }
-        .chat-bubble-sent { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 18px 18px 4px 18px; align-self: flex-end; max-width: 75%; padding: 10px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; box-shadow: 0 2px 8px rgba(29, 78, 216, 0.25); transition: background 0.3s ease; }
-        .chat-bubble-recv { background-color: #1f2937; color: #f3f4f6; border-radius: 18px 18px 18px 4px; align-self: flex-start; max-width: 75%; padding: 10px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+        /* --- 6 PREMIUM THEME SYSTEM --- */
+        /* 1. Default Dark */
+        .chat-bg { background-color: #0a0a0c; transition: all 0.3s ease; }
+        .chat-bubble-sent { background: #2563eb; color: white; border-radius: 18px 18px 4px 18px; align-self: flex-end; max-width: 75%; padding: 8px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); }
+        .chat-bubble-recv { background-color: #1f2937; color: #f3f4f6; border-radius: 18px 18px 18px 4px; align-self: flex-start; max-width: 75%; padding: 8px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; }
         
-        /* 2. Instagram Theme */
-        .theme-instagram .chat-bg { background-color: #000000; background-image: none; }
+        /* 2. Instagram Gradient */
+        .theme-instagram .chat-bg { background-color: #000000; }
         .theme-instagram .chat-bubble-sent { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); box-shadow: 0 2px 10px rgba(220, 39, 67, 0.25); }
-        .theme-instagram .chat-bubble-recv { background-color: #1c1c1e; }
+        .theme-instagram .chat-bubble-recv { background-color: #262626; border: 1px solid #333; }
 
-        /* 3. Telegram Theme */
-        .theme-telegram .chat-bg { background-color: #0e1621; }
+        /* 3. Telegram Blue */
+        .theme-telegram .chat-bg { background-color: #0e1621; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231f2937' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
         .theme-telegram .chat-bubble-sent { background: #2b5278; box-shadow: none; border-radius: 12px 12px 0px 12px; }
         .theme-telegram .chat-bubble-recv { background-color: #182533; border-radius: 12px 12px 12px 0px; }
 
-        /* 4. Purple Theme */
-        .theme-purple .chat-bg { background-color: #1e1b4b; background-image: none; }
-        .theme-purple .chat-bubble-sent { background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3); }
-        .theme-purple .chat-bubble-recv { background-color: #312e81; }
+        /* 4. Neon Cyberpunk */
+        .theme-cyberpunk .chat-bg { background-color: #050510; }
+        .theme-cyberpunk .chat-bubble-sent { background: transparent; border: 1px solid #00ffcc; color: #00ffcc; box-shadow: inset 0 0 10px rgba(0,255,204,0.2), 0 0 10px rgba(0,255,204,0.2); }
+        .theme-cyberpunk .chat-bubble-recv { background-color: transparent; border: 1px solid #ff007f; color: #ff007f; box-shadow: inset 0 0 10px rgba(255,0,127,0.2); }
+
+        /* 5. Midnight Velvet */
+        .theme-midnight .chat-bg { background-color: #1a1a2e; }
+        .theme-midnight .chat-bubble-sent { background: #4a4e69; border-radius: 20px; }
+        .theme-midnight .chat-bubble-recv { background-color: #22223b; border-radius: 20px; }
+
+        /* 6. Sakura Blossom */
+        .theme-sakura .chat-bg { background-color: #1c1018; }
+        .theme-sakura .chat-bubble-sent { background: #ff758f; color: white; box-shadow: 0 2px 15px rgba(255,117,143,0.3); }
+        .theme-sakura .chat-bubble-recv { background-color: #2b1c24; color: #ffccd5; }
         /* --------------------- */
 
         .bubble-active { transform: scale(0.97); filter: brightness(1.2); transition: 0.2s; }
-        .date-badge { align-self: center; background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(8px); color: #9ca3af; font-size: 0.7rem; font-weight: 600; padding: 6px 14px; border-radius: 12px; margin: 12px 0 8px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .date-badge { align-self: center; background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(8px); color: #888; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 12px; margin: 16px 0 8px 0; border: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 1px; }
 
         .vibe-note { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #262626; border-radius: 12px; padding: 5px 10px; font-size: 0.7rem; color: white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; border: 1px solid #3f3f46; max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
         .vibe-note::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: #262626; border-right: 1px solid #3f3f46; border-bottom: 1px solid #3f3f46; }
 
         @font-face { font-family: 'HealSpaceNav'; src: local('cursive'); }
         textarea { resize: none; overflow-y: auto; transition: height 0.1s ease-out; }
-        .reaction-btn { font-size: 2rem; transition: transform 0.2s; }
+        
+        .reaction-btn { font-size: 1.8rem; transition: transform 0.2s; }
         .reaction-btn:active { transform: scale(1.3); }
-        .reaction-badge { position: absolute; bottom: -10px; right: 4px; background: #2c2c2e; padding: 2px 6px; border-radius: 12px; font-size: 14px; border: 1px solid #4b5563; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; animation: popIn 0.2s ease-out forwards;}
+        .reaction-badge { position: absolute; bottom: -8px; right: 4px; background: #2c2c2e; padding: 2px 6px; border-radius: 12px; font-size: 12px; border: 1px solid #4b5563; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; animation: popIn 0.2s ease-out forwards;}
         .chat-bubble-recv .reaction-badge { right: auto; left: 4px; }
         
-        @keyframes floatUpAndFade { 0% { opacity: 1; transform: scale(0.5) translateY(0); } 50% { transform: scale(1.5) translateY(-20px); } 100% { opacity: 0; transform: scale(1) translateY(-40px); } }
-        .floating-heart { position: fixed; font-size: 45px; pointer-events: none; z-index: 9999; animation: floatUpAndFade 0.8s ease-out forwards; }
+        /* Glass Input Area */
+        .glass-input-area { background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* Dynamic Typing Dots */
+        .typing-indicator span { display: inline-block; width: 4px; height: 4px; background-color: #3b82f6; border-radius: 50%; margin: 0 2px; animation: typingBounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body>
     <div id="app-wrapper">
         <div id="mobile-container">
             
-            <div id="customNotification" class="hidden absolute top-4 left-4 right-4 z-[9999] bg-gray-900 border border-blue-500/50 rounded-2xl p-4 shadow-[0_10px_25px_rgba(59,130,246,0.3)] cursor-pointer hover:bg-gray-800 transition">
+            <div id="customNotification" class="hidden absolute top-4 left-4 right-4 z-[9999] bg-[#1c1c1e] border border-gray-700 rounded-2xl p-4 shadow-2xl cursor-pointer hover:bg-gray-800 transition">
                 <div class="flex items-start gap-3 pointer-events-none">
                     <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
                         <i id="notifIcon" class="fa-solid fa-comment-dots text-blue-400"></i>
                     </div>
                     <div class="flex-1">
                         <h4 id="notifTitle" class="text-white font-bold text-sm">New Message</h4>
-                        <p id="notifMessage" class="text-gray-300 text-xs mt-1 truncate">Tap to view...</p>
+                        <p id="notifMessage" class="text-gray-400 text-xs mt-0.5 truncate">Tap to view...</p>
                     </div>
                 </div>
             </div>
 
-            <div id="incomingCallPopup" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-[#1c1c1e] border border-gray-700 rounded-3xl p-4 shadow-2xl z-[9999] flex flex-col items-center gap-4 w-11/12 max-w-sm transition-transform duration-500 -translate-y-[150%]">
-                <div class="flex items-center gap-4 w-full">
-                    <div id="incomingCallAvatar" class="w-14 h-14 rounded-full overflow-hidden shrink-0 border border-gray-600 flex items-center justify-center bg-gray-900 shadow-inner"></div>
-                    <div class="flex flex-col flex-1 overflow-hidden">
-                        <h3 class="text-white font-bold text-lg truncate" id="incomingCallerName">User</h3>
-                        <p class="text-green-400 text-sm font-medium animate-pulse" id="incomingCallType">Incoming Call...</p>
-                    </div>
-                </div>
-                <div class="flex justify-between w-full gap-3 mt-1">
-                    <button onclick="declineIncomingCall()" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-bold transition shadow-lg shadow-red-500/20 active:scale-95"><i class="fa-solid fa-phone-slash mr-2"></i>Decline</button>
-                    <button onclick="acceptIncomingCall()" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 rounded-2xl font-bold transition shadow-lg shadow-green-500/20 active:scale-95"><i class="fa-solid fa-phone mr-2"></i>Accept</button>
-                </div>
-            </div>
-            <audio id="sndRingtone" src="https://actions.google.com/sounds/v1/alarms/phone_ringing.ogg" loop></audio>
-
-            <div id="view-inbox" class="absolute inset-0 flex flex-col z-10 bg-[#080a10]">
-                <header class="pt-12 pb-2 px-5 flex justify-between items-center shrink-0 sticky top-0 bg-[#080a10] z-20">
+            <div id="view-inbox" class="absolute inset-0 flex flex-col z-10 bg-[#0a0a0c]">
+                <header class="pt-12 pb-2 px-5 flex justify-between items-center shrink-0 sticky top-0 bg-[#0a0a0c] z-20">
                     <div class="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition" onclick="openSwitchAccountModal()">
-                        <div class="relative w-10 h-10 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center overflow-hidden" id="mainHeaderAvatarContainer"></div>
-                        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                             <span id="inboxUserIdText">@userid</span> 
-                            <i class="fa-solid fa-chevron-down text-[12px] text-gray-400"></i>
+                            <i class="fa-solid fa-chevron-down text-[12px] text-gray-500"></i>
                         </h1>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="window.location.reload()" class="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition active:scale-95 bg-gray-800/50 border border-gray-700/50"><i class="fa-solid fa-arrows-rotate text-[15px]"></i></button>
-                        <button onclick="openNewMessageScreen()" class="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition active:scale-95 bg-blue-600/20 text-blue-400 border border-blue-500/30"><i class="fa-regular fa-pen-to-square text-[18px]"></i></button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.location.reload()" class="text-white hover:text-gray-300 transition active:scale-90"><i class="fa-solid fa-arrows-rotate text-lg"></i></button>
+                        <button onclick="openNewMessageScreen()" class="text-white hover:text-gray-300 transition active:scale-90"><i class="fa-regular fa-pen-to-square text-xl"></i></button>
                     </div>
                 </header>
 
-                <main class="flex-1 w-full overflow-y-auto no-scrollbar pb-[80px] pt-4 relative">
-                    <div class="px-5 mb-5">
-                        <div class="bg-[#1f2937] border border-gray-700 rounded-2xl px-4 py-3 flex items-center gap-3 focus-within:border-blue-500 transition-colors">
-                            <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
-                            <input type="text" id="userSearchInput" onkeyup="filterInbox()" placeholder="Search conversations..." class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-500 font-medium">
+                <main class="flex-1 w-full overflow-y-auto no-scrollbar pb-[80px] pt-2 relative">
+                    <div class="px-4 mb-4">
+                        <div class="bg-[#1c1c1e] rounded-xl px-4 py-2.5 flex items-center gap-3 focus-within:bg-[#2c2c2e] transition-colors">
+                            <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
+                            <input type="text" id="userSearchInput" onkeyup="filterInbox()" placeholder="Search" class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-500 font-medium">
                         </div>
                     </div>
 
-                    <div class="flex gap-4 overflow-x-auto no-scrollbar px-5 mb-6 pb-4 pt-3" id="vibesList"></div>
-                    <div class="px-5 mb-2 flex justify-between items-center text-white font-bold text-lg"><h2>Messages</h2></div>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 mb-4 pb-2" id="vibesList"></div>
+                    
+                    <div class="px-5 mb-2 flex justify-between items-center text-white font-bold text-[17px]"><h2>Messages</h2><span class="text-blue-500 text-sm font-semibold">Requests</span></div>
 
-                    <div id="inboxList" class="flex flex-col px-3 pb-10 gap-1">
+                    <div id="inboxList" class="flex flex-col px-2 pb-10 gap-0">
                         <div class="flex flex-col items-center justify-center mt-12 opacity-60">
-                            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-500 mb-3"></i>
-                            <p class="text-center text-gray-400 text-[14px]">Syncing cloud history...</p>
+                            <div class="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin mb-3"></div>
+                            <p class="text-center text-gray-400 text-[13px]">Syncing chats...</p>
                         </div>
                     </div>
                 </main>
 
-                <nav class="absolute bottom-0 w-full bg-[#0b0f19] border-t border-gray-800 h-[65px] z-30 pb-safe shrink-0">
+                <nav class="absolute bottom-0 w-full bg-[#0a0a0c]/90 backdrop-blur-lg border-t border-gray-800 h-[65px] z-30 pb-safe shrink-0">
                     <ul class="flex justify-around items-center h-full px-2">
                         <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-house text-[22px]"></i></a>
                         <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-compass text-[22px]"></i></a>
                         <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-user-group text-[22px]"></i></a>
-                        <a href="chat.html" class="flex items-center gap-2 bg-[#1e1e24] text-[#f91880] px-4 py-2.5 rounded-full transition-all shadow-lg border border-[#f91880]/20"><i class="fa-solid fa-comment text-[20px]"></i><span class="font-bold text-[15px] tracking-wide" style="font-family: 'HealSpaceNav', cursive;">Chat</span></a>
+                        <a href="chat.html" class="flex flex-col items-center text-white transition-all p-2 relative">
+                            <i class="fa-solid fa-comment text-[22px]"></i>
+                            <div class="absolute -bottom-2 w-1 h-1 bg-white rounded-full"></div>
+                        </a>
                         <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-circle-user text-[22px]"></i></a>
                     </ul>
                 </nav>
             </div>
 
-            <div id="view-chat" class="absolute inset-0 flex flex-col z-[60] bg-[#080a10] hidden">
-                <header class="pt-12 pb-3 px-4 flex justify-between items-center border-b border-gray-800 shrink-0 bg-[#080a10]/95 backdrop-blur-md z-20 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <button onclick="closeChat()" class="text-white hover:text-gray-300 transition active:scale-90 p-1"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+            <div id="userOptionsOverlay" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideUserOptions()">
+                <div class="bg-[#1c1c1e] w-full rounded-t-[28px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col" id="userOptionsSheet" onclick="event.stopPropagation()">
+                    <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1.5 bg-gray-600 rounded-full"></div></div>
+                    <div class="px-6 py-4 border-b border-gray-800 flex items-center gap-3">
+                        <span id="optionsUserName" class="text-white font-bold text-lg" style="font-family: monospace;">Username</span>
+                    </div>
+                    <div class="flex flex-col text-white pb-6 pt-2">
+                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[16px] text-left"><i class="fa-regular fa-clock text-xl w-6 text-center text-gray-300"></i> Set reminder</button>
+                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[16px] text-left"><i class="fa-regular fa-envelope text-xl w-6 text-center text-gray-300"></i> Mark as Unread</button>
+                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[16px] text-left"><i class="fa-solid fa-thumbtack text-xl w-6 text-center text-gray-300"></i> Pin</button>
+                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[16px] text-left text-red-500" onclick="deleteConversation()"><i class="fa-regular fa-trash-can text-xl w-6 text-center"></i> Delete</button>
+                        <div class="h-[1px] bg-gray-800 my-2 mx-6"></div>
+                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[16px] text-left"><i class="fa-solid fa-bell-slash text-xl w-6 text-center text-gray-300"></i> Mute messages</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-chat" class="absolute inset-0 flex flex-col z-[60] bg-[#0a0a0c] hidden">
+                <header class="pt-12 pb-3 px-4 flex justify-between items-center border-b border-white/5 shrink-0 bg-transparent backdrop-blur-xl z-20">
+                    <div class="flex items-center gap-2">
+                        <button onclick="closeChat()" class="text-white hover:text-gray-300 transition active:scale-90 p-1 mr-1"><i class="fa-solid fa-arrow-left text-xl"></i></button>
                         <div class="flex items-center gap-3 cursor-pointer">
-                            <div class="w-10 h-10 rounded-full overflow-hidden relative border border-gray-600 flex items-center justify-center bg-gray-800" id="chatTargetAvatarContainer"></div>
+                            <div class="w-9 h-9 rounded-full overflow-hidden relative bg-gray-800" id="chatTargetAvatarContainer"></div>
                             <div class="flex flex-col justify-center">
-                                <h3 class="text-white font-bold text-[16px] leading-none" id="chatTargetName">User</h3>
-                                <p class="text-[12px] text-gray-500 font-medium mt-1 transition-all" id="chatTargetStatus">Connecting...</p>
+                                <h3 class="text-white font-semibold text-[15px] leading-tight tracking-wide" id="chatTargetName">User</h3>
+                                <p class="text-[11px] text-gray-500 font-medium transition-all" id="chatTargetStatus">Connecting...</p>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 text-blue-400">
-                        <button class="hover:text-blue-300 transition active:scale-90" onclick="openThemeSelector()"><i class="fa-solid fa-palette text-[18px]"></i></button>
-                        <button class="hover:text-blue-300 transition active:scale-90" onclick="startCall('audio')"><i class="fa-solid fa-phone text-[19px]"></i></button>
-                        <button class="hover:text-blue-300 transition active:scale-90" onclick="startCall('video')"><i class="fa-solid fa-video text-[21px]"></i></button>
+                    <div class="flex items-center gap-4 text-white">
+                        <button class="hover:text-gray-300 transition active:scale-90" onclick="openThemeSelector()"><i class="fa-solid fa-palette text-[18px]"></i></button>
+                        <button class="hover:text-gray-300 transition active:scale-90" onclick="startCall('audio')"><i class="fa-solid fa-phone text-[18px]"></i></button>
+                        <button class="hover:text-gray-300 transition active:scale-90" onclick="startCall('video')"><i class="fa-solid fa-video text-[19px]"></i></button>
                     </div>
                 </header>
 
-                <main id="chatMessageArea" class="chat-bg flex-1 overflow-y-auto no-scrollbar p-4 flex flex-col gap-[6px] pb-4 relative"></main>
+                <main id="chatMessageArea" class="chat-bg flex-1 overflow-y-auto no-scrollbar p-4 flex flex-col gap-1.5 pb-4 relative"></main>
 
-                <footer class="bg-[#080a10] border-t border-gray-800 p-3 pb-safe shrink-0 relative z-20">
-                    <div id="replyPreviewContainer" class="hidden absolute -top-[42px] left-3 right-3 bg-[#1f2937] border-l-4 border-blue-500 rounded-t-xl px-3 py-2 flex justify-between items-center shadow-lg z-[-1]">
-                        <div class="flex flex-col overflow-hidden w-full"><span class="text-blue-400 text-[11px] font-bold">Replying to...</span><span id="replyPreviewText" class="text-gray-300 text-[13px] truncate"></span></div>
+                <footer class="glass-input-area p-3 pb-safe shrink-0 relative z-20">
+                    <div id="replyPreviewContainer" class="hidden absolute -top-[40px] left-3 right-3 bg-[#1c1c1e] border-l-4 border-blue-500 rounded-t-xl px-3 py-2 flex justify-between items-center shadow-lg z-[-1]">
+                        <div class="flex flex-col overflow-hidden w-full"><span class="text-blue-400 text-[10px] font-bold uppercase tracking-wider">Replying to</span><span id="replyPreviewText" class="text-gray-300 text-[12px] truncate"></span></div>
                         <button onclick="cancelReply()" class="text-gray-400 hover:text-white p-1 ml-2"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <div class="flex items-end gap-2 relative bg-[#080a10]">
-                        <button class="w-10 h-10 rounded-full flex shrink-0 items-center justify-center text-gray-400 hover:text-white transition active:scale-90 mb-0.5" onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-paperclip text-xl"></i></button>
+                    <div class="flex items-end gap-2 relative">
+                        <div class="w-10 h-10 rounded-full bg-[#1c1c1e] flex shrink-0 items-center justify-center text-white hover:bg-gray-700 transition active:scale-90 mb-0.5 cursor-pointer" onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-camera text-[18px]"></i></div>
                         <input type="file" id="fileUpload" class="hidden" accept="*/*" onchange="handleFileUpload(event)">
-                        <div class="flex-1 bg-[#1f2937] rounded-3xl flex items-end px-4 py-2 relative border border-gray-700 focus-within:border-blue-500 transition-colors min-h-[44px]">
-                            <textarea id="chatInput" rows="1" placeholder="Message..." class="bg-transparent border-none outline-none text-white text-[15px] placeholder-gray-400 w-full pr-10 py-1 max-h-[100px] leading-tight"></textarea>
-                            <button id="sendBtn" class="absolute right-3 bottom-2 text-blue-500 hover:text-blue-400 transition active:scale-90 hidden" onclick="processSendText()"><i class="fa-solid fa-circle-arrow-up text-2xl"></i></button>
+                        
+                        <div class="flex-1 bg-[#1c1c1e] rounded-[24px] flex items-end px-4 py-2 relative border border-gray-800 focus-within:border-gray-500 transition-colors min-h-[44px]">
+                            <textarea id="chatInput" rows="1" placeholder="Message..." class="bg-transparent border-none outline-none text-white text-[15px] placeholder-gray-500 w-full pr-10 py-1 max-h-[100px] leading-snug"></textarea>
+                            <button id="sendBtn" class="absolute right-3 bottom-2 text-white hover:text-blue-400 transition active:scale-90 hidden" onclick="processSendText()"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                         </div>
                     </div>
                 </footer>
@@ -194,130 +213,100 @@
             
             <div id="themeModal" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeThemeSelector()">
                 <div class="bg-[#1c1c1e] border-t border-gray-700 w-full rounded-t-3xl p-6 shadow-2xl transform translate-y-full transition-transform duration-300" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-4">
+                    <div class="flex justify-between items-center mb-6">
                         <h3 class="text-white text-xl font-bold">Chat Themes</h3>
-                        <button onclick="closeThemeSelector()" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+                        <button onclick="closeThemeSelector()" class="text-gray-400 hover:text-white text-2xl bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 pb-4">
-                        <button onclick="applyTheme('default')" class="bg-[#1f2937] border border-gray-600 rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-gray-700 transition">
-                            <div class="w-10 h-10 rounded-full bg-blue-600"></div><span class="text-white text-sm font-semibold">Default</span>
+                    <div class="grid grid-cols-3 gap-3 pb-4">
+                        <button onclick="applyTheme('default')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95">
+                            <div class="w-10 h-10 rounded-full bg-[#2563eb]"></div><span class="text-white text-xs font-semibold">Dark Default</span>
                         </button>
-                        <button onclick="applyTheme('instagram')" class="bg-[#1f2937] border border-gray-600 rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-gray-700 transition">
-                            <div class="w-10 h-10 rounded-full insta-ring"></div><span class="text-white text-sm font-semibold">Instagram</span>
+                        <button onclick="applyTheme('instagram')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95">
+                            <div class="w-10 h-10 rounded-full insta-ring"></div><span class="text-white text-xs font-semibold">Instagram</span>
                         </button>
-                        <button onclick="applyTheme('telegram')" class="bg-[#1f2937] border border-gray-600 rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-gray-700 transition">
-                            <div class="w-10 h-10 rounded-full bg-[#2b5278]"></div><span class="text-white text-sm font-semibold">Telegram</span>
+                        <button onclick="applyTheme('telegram')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95">
+                            <div class="w-10 h-10 rounded-full bg-[#2b5278]"></div><span class="text-white text-xs font-semibold">Telegram</span>
                         </button>
-                        <button onclick="applyTheme('purple')" class="bg-[#1f2937] border border-gray-600 rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-gray-700 transition">
-                            <div class="w-10 h-10 rounded-full bg-purple-600"></div><span class="text-white text-sm font-semibold">Neon Purple</span>
+                        <button onclick="applyTheme('cyberpunk')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95 border border-[#00ffcc]/30">
+                            <div class="w-10 h-10 rounded-full bg-[#050510] border-2 border-[#00ffcc] shadow-[0_0_10px_#00ffcc]"></div><span class="text-[#00ffcc] text-xs font-semibold">Cyberpunk</span>
+                        </button>
+                        <button onclick="applyTheme('midnight')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95">
+                            <div class="w-10 h-10 rounded-full bg-[#4a4e69]"></div><span class="text-white text-xs font-semibold">Midnight</span>
+                        </button>
+                        <button onclick="applyTheme('sakura')" class="bg-[#2c2c2e] rounded-2xl p-3 flex flex-col items-center gap-2 hover:bg-gray-700 transition active:scale-95">
+                            <div class="w-10 h-10 rounded-full bg-[#ff758f]"></div><span class="text-white text-xs font-semibold">Sakura</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div id="new-message-screen" class="absolute inset-0 z-[50] bg-[#080a10] hidden flex-col transition-transform duration-300 transform translate-x-full">
-                <header class="pt-12 pb-3 px-4 flex items-center justify-between border-b border-gray-800 shrink-0 bg-[#080a10]/95 backdrop-blur-md">
-                    <div class="flex items-center gap-5"><button onclick="closeNewMessageScreen()" class="text-white hover:text-gray-300 text-xl p-1 transition active:scale-90"><i class="fa-solid fa-arrow-left"></i></button><h2 class="text-white text-xl font-bold" id="newMessageTitle">New message</h2></div>
+            <div id="new-message-screen" class="absolute inset-0 z-[50] bg-[#0a0a0c] hidden flex-col transition-transform duration-300 transform translate-x-full">
+                <header class="pt-12 pb-3 px-4 flex items-center justify-between border-b border-gray-800 shrink-0 bg-[#0a0a0c]">
+                    <div class="flex items-center gap-5"><button onclick="closeNewMessageScreen()" class="text-white hover:text-gray-300 text-xl p-1 transition active:scale-90"><i class="fa-solid fa-arrow-left"></i></button><h2 class="text-white text-lg font-bold" id="newMessageTitle">New message</h2></div>
                 </header>
-                <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-3"><span class="text-white font-semibold">To:</span><input type="text" id="newMsgSearch" onkeyup="filterNewMessageUsers()" placeholder="Search users..." class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-500"></div>
+                <div class="px-4 py-3 border-b border-gray-800 flex items-center gap-3"><span class="text-white font-semibold">To:</span><input type="text" id="newMsgSearch" onkeyup="filterNewMessageUsers()" placeholder="Search..." class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-500"></div>
                 <div class="flex-1 overflow-y-auto no-scrollbar pb-10"><div id="suggestedUsersList" class="flex flex-col mt-2"><div class="text-center text-gray-500 mt-10 text-[14px]">Loading users...</div></div></div>
             </div>
 
             <div id="contextMenuOverlay" class="absolute inset-0 z-[70] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideContextMenu(event)">
                 <div class="bg-[#1c1c1e] w-full rounded-t-[28px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col" id="contextMenuSheet" onclick="event.stopPropagation()">
-                    <div class="text-center text-gray-300 text-[14px] font-medium py-3 shrink-0">Tap and hold to super react</div>
-                    <div class="flex justify-between items-center px-5 pb-5 mb-2 mx-1 shrink-0">
+                    <div class="flex justify-between items-center px-6 pt-6 pb-4 shrink-0">
                         <button class="reaction-btn" onclick="handleReaction('❤️')">❤️</button>
                         <button class="reaction-btn" onclick="handleReaction('😂')">😂</button>
                         <button class="reaction-btn" onclick="handleReaction('😮')">😮</button>
                         <button class="reaction-btn" onclick="handleReaction('😢')">😢</button>
                         <button class="reaction-btn" onclick="handleReaction('😡')">😡</button>
                         <button class="reaction-btn" onclick="handleReaction('👍')">👍</button>
-                        <button class="text-[26px] w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-gray-300 active:scale-90 transition ml-1" onclick="toggleEmojiPicker()"><i class="fa-solid fa-plus"></i></button>
+                        <button class="text-[20px] w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-white active:scale-90 transition" onclick="toggleEmojiPicker()"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div id="emojiPickerGrid" class="hidden grid-cols-6 sm:grid-cols-8 gap-y-5 gap-x-3 px-6 pb-6 max-h-[250px] overflow-y-auto no-scrollbar border-t border-gray-700/50 pt-5 shrink-0"></div>
-                    <div id="menuOptionsList" class="flex flex-col text-white bg-[#2c2c2e] rounded-3xl overflow-hidden mx-4 mb-8 shrink-0 pb-1">
-                        <div class="flex items-center gap-5 px-6 py-[14px] hover:bg-[#3a3a3c] transition cursor-pointer text-[17px] font-medium" onclick="handleMenuAction('reply')"><i class="fa-solid fa-reply text-xl w-6 text-center text-gray-100"></i> Reply</div>
-                        <div class="flex items-center gap-5 px-6 py-[14px] hover:bg-[#3a3a3c] transition cursor-pointer text-[17px] font-medium border-t border-gray-700/50" onclick="handleMenuAction('sticker')"><i class="fa-regular fa-face-smile text-xl w-6 text-center text-gray-100"></i> Add sticker</div>
-                        <div class="flex items-center gap-5 px-6 py-[14px] hover:bg-[#3a3a3c] transition cursor-pointer text-[17px] font-medium border-t border-gray-700/50" onclick="handleMenuAction('copy')"><i class="fa-regular fa-copy text-xl w-6 text-center text-gray-100"></i> Copy</div>
+                    <div id="menuOptionsList" class="flex flex-col text-white bg-[#2c2c2e] rounded-3xl overflow-hidden mx-4 mb-8 shrink-0 pb-1 mt-2">
+                        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition cursor-pointer text-[15px] font-medium" onclick="handleMenuAction('reply')"><i class="fa-solid fa-reply text-lg w-6 text-center text-gray-200"></i> Reply</div>
+                        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition cursor-pointer text-[15px] font-medium border-t border-gray-700/50" onclick="handleMenuAction('copy')"><i class="fa-regular fa-copy text-lg w-6 text-center text-gray-200"></i> Copy</div>
                         <div id="menuDynamicBtnContainer" class="border-t border-gray-700/50"></div>
                     </div>
                 </div>
             </div>
 
             <div id="vibeModal" class="absolute inset-0 z-[70] bg-black/80 backdrop-blur-md flex flex-col hidden opacity-0 transition-opacity duration-300">
-                <header class="p-5 flex justify-between items-center z-10"><button onclick="closeVibeModal()" class="text-white text-3xl active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button><button onclick="shareVibe()" class="text-blue-500 font-bold text-lg active:scale-95 transition">Share</button></header>
+                <header class="p-5 flex justify-between items-center z-10"><button onclick="closeVibeModal()" class="text-white text-3xl active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button><button onclick="shareVibe()" class="text-white bg-blue-600 px-4 py-1.5 rounded-full font-bold text-sm active:scale-95 transition">Share</button></header>
                 <main class="flex-1 flex flex-col items-center justify-center relative -mt-20">
                     <div class="bg-[#262626] rounded-3xl px-4 py-3 text-center relative mb-5 shadow-xl border border-gray-600 min-w-[200px]">
                         <input type="text" id="vibeInput" placeholder="Share a thought..." maxlength="60" class="bg-transparent text-white placeholder-gray-400 outline-none text-center font-semibold w-full">
                         <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#262626] border-b border-r border-gray-600 rotate-45"></div>
                     </div>
-                    <div class="w-28 h-28 rounded-full bg-gray-800 p-[4px] relative shadow-2xl border-2 border-gray-500" id="vibeModalAvatarContainer"></div>
-                    <div class="mt-8 hidden" id="deleteVibeContainer"><button onclick="deleteVibe()" class="text-red-500 font-bold text-[15px] px-6 py-2.5 bg-red-500/10 rounded-full border border-red-500/20 active:scale-95 transition"><i class="fa-solid fa-trash-can mr-2"></i>Delete Note</button></div>
+                    <div class="w-28 h-28 rounded-full bg-gray-800 p-[4px] relative shadow-2xl border border-gray-600" id="vibeModalAvatarContainer"></div>
+                    <div class="mt-8 hidden" id="deleteVibeContainer"><button onclick="deleteVibe()" class="text-red-500 font-bold text-[14px] px-6 py-2.5 bg-red-500/10 rounded-full border border-red-500/20 active:scale-95 transition">Delete Note</button></div>
                 </main>
             </div>
-            
-            <div id="switchAccountModal" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
-                <div class="bg-[#1c1c1e] border-t border-gray-700 w-full rounded-t-3xl p-6 shadow-2xl transform translate-y-full transition-transform duration-300" id="switchAccountContent" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4"><h3 class="text-white text-xl font-bold" style="font-family: monospace;">Switch Account</h3><button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button></div>
-                    <div id="accountList" class="space-y-2 mb-6 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
-                    <button onclick="window.location.href='index.html'" class="w-full bg-transparent border border-gray-600 text-gray-300 font-bold py-3.5 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2"><i class="fa-solid fa-plus"></i> Add Account</button>
-                </div>
-            </div>
-
-            <div id="callOverlay" class="absolute inset-0 bg-[#080a10] z-[90] hidden flex-col items-center justify-between pt-14 pb-16 opacity-0 transition-opacity duration-300">
-                <video id="remoteMedia" autoplay playsinline class="absolute inset-0 w-full h-full object-cover z-0 hidden"></video>
-                <video id="localMedia" autoplay playsinline muted class="absolute top-20 right-5 w-24 h-36 bg-gray-900 rounded-2xl object-cover z-20 shadow-2xl border border-gray-700 hidden"></video>
-                <div id="callBgGlow" class="absolute inset-0 z-0 opacity-40 blur-3xl bg-blue-600/30 rounded-full scale-150 pointer-events-none transition-opacity duration-500"></div>
-                <div class="w-full flex justify-between px-6 items-center text-white z-10">
-                    <button onclick="endCall()" class="w-10 h-10 hover:bg-white/20 bg-black/30 backdrop-blur-md rounded-full transition flex items-center justify-center shadow-lg"><i class="fa-solid fa-chevron-down text-xl"></i></button>
-                    <div class="bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg"><i class="fa-solid fa-lock text-gray-400 text-xs"></i><span class="text-xs font-semibold text-gray-200 tracking-wide">End-to-end encrypted</span></div>
-                </div>
-                <div id="callInfoBox" class="text-center mt-8 z-10 flex-1 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-500">
-                    <div class="relative w-36 h-36 mx-auto mb-6 flex items-center justify-center overflow-hidden rounded-full bg-gray-900 border-[3px] border-blue-500 shadow-2xl z-10 text-6xl" id="callAvatarContainer"></div>
-                    <div class="absolute inset-0 border-2 border-blue-500 rounded-full animate-ripple w-36 h-36 mx-auto mt-28 z-0"></div>
-                    <div class="absolute inset-0 border-2 border-blue-400 rounded-full animate-ripple-delay w-36 h-36 mx-auto mt-28 z-0"></div>
-                    <h2 class="text-white text-3xl font-bold mb-2 drop-shadow-lg z-10 mt-6" id="callTargetName">User</h2>
-                    <p class="text-gray-200 font-medium bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full inline-block shadow-lg border border-white/10 z-10" id="callStatusText">Contacting...</p>
-                </div>
-                <div class="w-full px-8 pb-8 z-10 relative">
-                    <div id="callBottomGradient" class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-[-1] pointer-events-none hidden opacity-0 transition-opacity duration-500"></div>
-                    <div class="flex justify-around items-center bg-gray-900/70 backdrop-blur-2xl px-6 py-4 rounded-[2rem] border border-gray-600/50 shadow-2xl">
-                        <button id="btnSwitchCam" onclick="switchCamera()" class="text-white text-2xl hover:text-blue-400 hover:scale-110 transition-all w-12 h-12 flex items-center justify-center"><i class="fa-solid fa-camera-rotate"></i></button>
-                        <button id="btnToggleVid" onclick="toggleVideo()" class="text-white text-2xl hover:text-blue-400 hover:scale-110 transition-all w-12 h-12 flex items-center justify-center"><i id="iconToggleVid" class="fa-solid fa-video"></i></button>
-                        <button onclick="toggleAudio()" class="text-white text-2xl hover:text-blue-400 hover:scale-110 transition-all w-12 h-12 flex items-center justify-center"><i id="iconToggleMic" class="fa-solid fa-microphone"></i></button>
-                        <button onclick="endCall()" class="w-14 h-14 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg shadow-red-500/30 active:scale-90 transition-all ml-2"><i class="fa-solid fa-phone-slash"></i></button>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
+
+    <audio id="sndPop" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
+    <audio id="sndClick" src="https://actions.google.com/sounds/v1/ui/click.ogg"></audio>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
         const myAlias = localStorage.getItem("healspace_alias") || "DemoUser_" + Math.floor(Math.random()*1000);
         let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker";
         
-        // BUG FIX: Ultra-safe parsing to prevent "App not loading" crash
+        function hapticFeedback() { if (navigator.vibrate) navigator.vibrate(15); }
+        
         function safeParseJSON(str, fallback) { 
             if (!str || str === "undefined" || str === "null" || str === "[object Object]") return fallback;
-            try { 
-                const parsed = JSON.parse(str); 
-                return parsed || fallback;
-            } catch(e) { return fallback; } 
+            try { return JSON.parse(str) || fallback; } catch(e) { return fallback; } 
         }
 
         let savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
         if (!savedAccounts || !savedAccounts[loggedInRole]) savedAccounts[loggedInRole] = { alias: myAlias, emoji: '✨' };
 
-        let activeChatUser = null, selectedMessageId = null, selectedMessageType = null, chatPressTimer, typingTimeout, activeStatusInterval, activeStatusTimeout, globalPeer, allNetworkUsers = [], onlineStatuses = {}, forwardPendingMsg = null, replyingToText = null, isSecretChat = false, currentCall = null, localStream = null, incomingCallObj = null, incomingCallIsVideo = false, isAudioMuted = false, isVideoMuted = false, usingFrontCamera = true, lastHistoryHash = "";
-        const allEmojis = ["😀","😂","😅","😍","🥰","😘","😗","😙","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","😟","🙁","☹️","😮","😯","😲","😳","🥺","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖","💯","💢","💥","💫","💦","💨","💣","💬","💭","💤"];
+        let activeChatUser = null, selectedMessageId = null, selectedMessageType = null, chatPressTimer, typingTimeout, activeStatusInterval, activeStatusTimeout, globalPeer, allNetworkUsers = [], onlineStatuses = {}, forwardPendingMsg = null, replyingToText = null, isSecretChat = false, lastHistoryHash = "";
+        let selectedUserForOptions = null; // For the bottom sheet menu
+        const allEmojis = ["😀","😂","😅","😍","🥰","😘","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","😟","🙁","☹️","😮","😯","😲","😳","🥺","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖","💯","💢","💥","💫","💦","💨","💣","💬","💭","💤"];
 
-        // Data Helpers
         function getChatHistory(alias) { 
             let data = safeParseJSON(localStorage.getItem(`hs_chat_${myAlias}_${alias}`), []);
-            return Array.isArray(data) ? data : []; // Extra safe-guard
+            return Array.isArray(data) ? data : []; 
         }
         function saveChatHistory(alias, history) { localStorage.setItem(`hs_chat_${myAlias}_${alias}`, JSON.stringify(history)); }
         function getInteractedUsers() { 
@@ -327,9 +316,9 @@
         function addToInteractedUsers(alias) { if (isSecretChat) return; let interacted = getInteractedUsers(); if (!interacted.includes(alias) && alias !== myAlias) { interacted.push(alias); localStorage.setItem(`hs_interacted_${myAlias}`, JSON.stringify(interacted)); } }
 
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('inboxUserIdText').innerText = "@" + (savedAccounts[loggedInRole]?.alias.toLowerCase() || 'user');
+            document.getElementById('inboxUserIdText').innerText = savedAccounts[loggedInRole]?.alias || 'User';
             initEmojiPicker();
-            loadChatTheme(); // Load custom Instagram/Telegram theme
+            loadChatTheme(); 
 
             const chatInput = document.getElementById('chatInput');
             let resizeTimeout;
@@ -352,7 +341,6 @@
             chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if(this.value.trim()) processSendText(); } });
 
             initGlobalCore(); syncBackendHistory(); fetchAllNetworkUsers(); checkUrlForDirectChat(); renderVibesTray();
-            document.body.addEventListener('click', () => { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); }, { once: true });
             
             setInterval(async () => {
                 try {
@@ -363,7 +351,7 @@
                             const remoteUser = allNetworkUsers.find(u => u.alias === activeChatUser);
                             if (remoteUser && remoteUser.isOnline) {
                                 const statusEl = document.getElementById('chatTargetStatus');
-                                if (statusEl && statusEl.innerText !== "typing...") { statusEl.innerText = "Active now"; statusEl.className = "text-[12px] text-green-400 font-medium mt-0.5 transition-all"; }
+                                if (statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-gray-300 font-medium transition-all"; }
                             }
                         }
                         renderInbox(false); 
@@ -378,6 +366,7 @@
             document.getElementById('view-chat').className = `absolute inset-0 flex flex-col z-[60] hidden theme-${savedTheme}`;
         }
         function openThemeSelector() {
+            hapticFeedback();
             document.getElementById('themeModal').classList.remove('opacity-0', 'pointer-events-none');
             document.getElementById('themeModal').firstElementChild.classList.remove('translate-y-full');
         }
@@ -386,11 +375,41 @@
             document.getElementById('themeModal').firstElementChild.classList.add('translate-y-full');
         }
         function applyTheme(themeName) {
+            hapticFeedback();
             localStorage.setItem('hs_chat_theme', themeName);
             loadChatTheme();
-            // Remove hidden because view-chat is active if we are pressing this
             document.getElementById('view-chat').classList.remove('hidden'); 
             closeThemeSelector();
+        }
+
+        // USER INBOX OPTIONS (Instagram Style)
+        function showUserOptions(alias) {
+            hapticFeedback();
+            selectedUserForOptions = alias;
+            document.getElementById('optionsUserName').innerText = alias;
+            const overlay = document.getElementById('userOptionsOverlay');
+            const sheet = document.getElementById('userOptionsSheet');
+            overlay.classList.remove('hidden'); overlay.classList.add('flex');
+            setTimeout(() => { overlay.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
+        }
+
+        function hideUserOptions() {
+            const overlay = document.getElementById('userOptionsOverlay');
+            const sheet = document.getElementById('userOptionsSheet');
+            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
+            setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); selectedUserForOptions = null; }, 300);
+        }
+
+        function deleteConversation() {
+            if(!selectedUserForOptions) return;
+            if(confirm(`Are you sure you want to delete the conversation with ${selectedUserForOptions}?`)) {
+                localStorage.removeItem(`hs_chat_${myAlias}_${selectedUserForOptions}`);
+                let interacted = getInteractedUsers();
+                interacted = interacted.filter(u => u !== selectedUserForOptions);
+                localStorage.setItem(`hs_interacted_${myAlias}`, JSON.stringify(interacted));
+                hideUserOptions();
+                renderInbox(true);
+            }
         }
 
         function initGlobalCore() {
@@ -410,15 +429,13 @@
                     conn.on('data', (data) => {
                         onlineStatuses[data.sender] = Date.now();
                         if (data.action === 'chat_sync') processIncomingMessage(data.sender, data.msgData, data.isSecret);
-                        else if (data.action === 'call_declined') { if (currentCall) { document.getElementById('callStatusText').innerText = "Call Declined"; document.getElementById('callStatusText').className = "text-red-400 font-medium bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full inline-block shadow-lg border border-red-500/50 z-10"; setTimeout(() => { endCall(); }, 2000); } }
                         else if (data.action === 'ping') {
-                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && statusEl.innerText !== "typing...") { statusEl.innerText = "Active now"; statusEl.className = "text-[12px] text-green-400 font-medium mt-0.5 transition-all"; } }
+                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-gray-300 font-medium transition-all"; } }
                             try { const pongConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true }); pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); }); } catch(e) {}
                         }
-                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && statusEl.innerText !== "typing...") { statusEl.innerText = "Active now"; statusEl.className = "text-[12px] text-green-400 font-medium mt-0.5 transition-all"; } } }
+                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-gray-300 font-medium transition-all"; } } }
                         else if (data.action === 'reaction') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { history[index].reaction = data.reaction; saveChatHistory(data.sender, history); if (activeChatUser === data.sender) renderChatMessages(); } } 
-                            else { const msgBubble = document.getElementById(`msg-${data.msgId}`); if(msgBubble) { const reactDiv = document.createElement('div'); reactDiv.className = 'reaction-badge pointer-events-none'; reactDiv.innerText = data.reaction; msgBubble.querySelector('.chat-bubble-sent, .chat-bubble-recv').appendChild(reactDiv); } }
                         } 
                         else if (data.action === 'delivered' || data.action === 'read') {
                             if (!isSecretChat) {
@@ -428,25 +445,14 @@
                                 saveChatHistory(data.sender, history); if (activeChatUser === data.sender) renderChatMessages();
                             }
                         } 
-                        else if (data.action === 'typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "typing..."; statusEl.className = "text-[12px] text-blue-400 font-bold mt-0.5 transition-all animate-pulse"; } } 
-                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[12px] text-green-400 font-medium mt-0.5 transition-all"; } } 
+                        else if (data.action === 'typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`; } } 
+                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-gray-300 font-medium transition-all"; } } 
                         else if (data.action === 'unsend') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { history[index].deleted = true; saveChatHistory(data.sender, history); } renderInbox(false); }
                             if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) msgEl.remove(); }
                         }
                         if(!activeChatUser) renderInbox(false);
                     });
-                });
-
-                globalPeer.on('call', (call) => {
-                    incomingCallObj = call; incomingCallIsVideo = call.metadata ? call.metadata.type === 'video' : false;
-                    const caller = call.peer.replace('hs_','');
-                    document.getElementById('incomingCallerName').innerText = caller;
-                    document.getElementById('incomingCallType').innerText = incomingCallIsVideo ? "Incoming Video Call..." : "Incoming Audio Call...";
-                    document.getElementById('incomingCallAvatar').innerHTML = getInnerAvatarHTML(caller);
-                    document.getElementById('incomingCallPopup').classList.remove('-translate-y-[150%]');
-                    try { document.getElementById('sndRingtone').play().catch(()=>{}); } catch(e){}
-                    call.on('close', () => { hideIncomingCallPopup(); endCall(); });
                 });
             } catch(error) { console.log("PeerJS fallback handled"); }
         }
@@ -470,7 +476,7 @@
                         renderInbox(true); if (activeChatUser) renderChatMessages();
                     }
                 }
-            } catch(e) { console.error("History Sync Failed"); }
+            } catch(e) {}
         }
 
         function processIncomingMessage(sender, msgData, isSecret) {
@@ -491,30 +497,25 @@
         }
 
         function showGlobalNotification(sender, text, isCall = false) {
+            hapticFeedback();
             const popup = document.getElementById('customNotification');
-            document.getElementById('notifTitle').innerText = isCall ? "Incoming Call" : "New Message from " + sender;
-            document.getElementById('notifMessage').innerText = isCall ? "Tap to open HealSpace..." : text.substring(0,30) + "...";
-            document.getElementById('notifIcon').className = isCall ? "fa-solid fa-phone-volume text-green-400" : "fa-solid fa-comment-dots text-blue-400";
+            document.getElementById('notifTitle').innerText = sender;
+            document.getElementById('notifMessage').innerText = text.substring(0,30) + "...";
             popup.onclick = () => { popup.classList.add('hidden'); openChat(sender, false); };
-            popup.classList.remove('hidden'); popup.classList.add('animate-pop');
-            if ("Notification" in window && Notification.permission === "granted" && document.visibilityState !== "visible") {
-                const title = isCall ? `Incoming Call from ${sender}` : `HealSpace: ${sender}`;
-                const nativeNotif = new Notification(title, { body: isCall ? "Tap to answer..." : text.substring(0,40) + "...", icon: "https://cdn-icons-png.flaticon.com/512/3114/3114491.png" });
-                nativeNotif.onclick = () => { window.focus(); window.location.href = `chat.html?chatWith=${encodeURIComponent(sender)}`; };
-            }
-            setTimeout(() => { popup.classList.remove('animate-pop'); popup.classList.add('hidden'); }, 5000);
+            popup.classList.remove('hidden'); popup.classList.add('animate-fade');
+            setTimeout(() => { popup.classList.remove('animate-fade'); popup.classList.add('hidden'); }, 4000);
         }
 
         function getInnerAvatarHTML(alias) {
             try {
                 let avatarData = localStorage.getItem(`hs_avatar_${alias}`);
                 if (!avatarData && alias === myAlias && savedAccounts && savedAccounts[loggedInRole]) avatarData = savedAccounts[loggedInRole].avatar || savedAccounts[loggedInRole].emoji;
-                const fallbackIcon = `<i class="fa-solid fa-user text-gray-400 text-[22px]"></i>`;
+                const fallbackIcon = `<i class="fa-solid fa-user text-gray-500 text-[20px]"></i>`;
                 if (!avatarData || avatarData === 'null') return fallbackIcon;
                 if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
                 else if (avatarData.includes('@') || avatarData.includes('.com') || avatarData.length > 6) return fallbackIcon; 
-                else return `<span class="w-full h-full flex items-center justify-center text-3xl">${avatarData}</span>`;
-            } catch(e) { return `<i class="fa-solid fa-user text-gray-400 text-[22px]"></i>`; }
+                else return `<span class="w-full h-full flex items-center justify-center text-xl">${avatarData}</span>`;
+            } catch(e) { return `<i class="fa-solid fa-user text-gray-500 text-[20px]"></i>`; }
         }
 
         function checkUrlForDirectChat() {
@@ -533,62 +534,17 @@
                 if (me && me.vibe && !localStorage.getItem(`hs_vibe_${myAlias}`)) { localStorage.setItem(`hs_vibe_${myAlias}`, me.vibe); }
             } catch(e) {} 
             finally {
-                document.getElementById('mainHeaderAvatarContainer').innerHTML = getInnerAvatarHTML(myAlias);
-                document.getElementById('vibeModalAvatarContainer').innerHTML = getInnerAvatarHTML(myAlias);
                 renderVibesTray(); 
                 if(!document.getElementById('new-message-screen').classList.contains('hidden')) renderNewMessageUsers(allNetworkUsers);
                 renderInbox(true); 
             }
         }
 
-        function shareVibe() {
-            const text = document.getElementById('vibeInput').value.trim();
-            if (text) { localStorage.setItem(`hs_vibe_${myAlias}`, text); renderVibesTray(); closeVibeModal(); fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "set_vibe", user: myAlias, vibe: text }) }).catch(e=>{}); } 
-            else { alert("Note cannot be empty! Tap 'Delete Note' if you want to remove it."); }
-        }
-        function deleteVibe() { localStorage.removeItem(`hs_vibe_${myAlias}`); renderVibesTray(); closeVibeModal(); fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "set_vibe", user: myAlias, vibe: "" }) }).catch(e=>{}); }
-
-        function unsendMessage() {
-            if (!selectedMessageId) return;
-            let history = getChatHistory(activeChatUser); const index = history.findIndex(m => m.id === selectedMessageId);
-            if (index > -1) { history[index].deleted = true; if(!isSecretChat) saveChatHistory(activeChatUser, history); }
-            if (globalPeer && !globalPeer.destroyed) { const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'unsend', sender: myAlias, msgId: selectedMessageId }); }); } catch(e){} }
-            const msgEl = document.getElementById(`msg-${selectedMessageId}`); if (msgEl) msgEl.remove();
-            hideContextMenu(); if(!isSecretChat) renderInbox(false); 
-        }
-
-        function showContextMenu() {
-            const dynamicBtnContainer = document.getElementById('menuDynamicBtnContainer');
-            if (selectedMessageType === 'sent') dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-5 px-6 py-[14px] hover:bg-[#3a3a3c] transition cursor-pointer text-[17px] font-medium text-red-500" onclick="unsendMessage()"><i class="fa-solid fa-trash-can text-xl w-6 text-center"></i> Unsend</div>`;
-            else dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-5 px-6 py-[14px] hover:bg-[#3a3a3c] transition cursor-pointer text-[17px] font-medium text-red-500" onclick="handleMenuAction('report')"><i class="fa-solid fa-triangle-exclamation text-xl w-6 text-center"></i> Report</div>`;
-            document.getElementById('emojiPickerGrid').classList.add('hidden'); document.getElementById('emojiPickerGrid').classList.remove('grid');
-            document.getElementById('menuOptionsList').classList.remove('hidden');
-            const overlay = document.getElementById('contextMenuOverlay'); const sheet = document.getElementById('contextMenuSheet');
-            overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
-        }
-
-        function handleMenuAction(action) {
-            const history = getChatHistory(activeChatUser); const msg = history.find(m => m.id === selectedMessageId); hideContextMenu();
-            if (action === 'copy') { if (msg && msg.text) { navigator.clipboard.writeText(msg.text); alert("Message copied!"); } } 
-            else if (action === 'reply') { if (msg) { replyingToText = msg.text ? msg.text.substring(0, 50) + "..." : "Attachment"; document.getElementById('replyPreviewText').innerText = replyingToText; document.getElementById('replyPreviewContainer').classList.remove('hidden'); document.getElementById('chatInput').focus(); } }
-            else if (action === 'forward') { if (msg) { forwardPendingMsg = msg; openNewMessageScreen(); } }
-            else if (action === 'sticker') saveAndSendMsg({ id: Date.now().toString(), text: "", type: 'sent', file: { name: "sticker.svg", type: 'image/svg+xml', data: `https://api.dicebear.com/7.x/fun-emoji/svg?seed=${Math.random()}` }, deleted: false, status: 'sent' });
-            else if (action === 'report') { if(msg) fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "report", reporter: myAlias, reportedUser: activeChatUser, msgId: msg.id, msgText: msg.text || "Media File" }) }).then(() => alert("Message securely reported.")).catch(e=>{}); }
-        }
-
-        function openNewMessageScreen() {
-            const screen = document.getElementById('new-message-screen'); screen.classList.remove('hidden', 'translate-x-full');
-            document.getElementById('newMessageTitle').innerText = forwardPendingMsg ? "Forward to" : "New message";
-            if(allNetworkUsers.length > 0) renderNewMessageUsers(allNetworkUsers);
-        }
-        function closeNewMessageScreen() { document.getElementById('new-message-screen').classList.add('translate-x-full'); setTimeout(() => { document.getElementById('new-message-screen').classList.add('hidden'); forwardPendingMsg = null; }, 300); }
-
         function renderNewMessageUsers(users) {
             const list = document.getElementById('suggestedUsersList'); list.innerHTML = '';
             if(users.length === 0) { list.innerHTML = `<div class="text-center text-gray-500 mt-10 text-[14px]">No users found.</div>`; return; }
             users.forEach(u => {
-                const userLang = (u.mainLanguage && u.mainLanguage !== 'Not set') ? ` • ${u.mainLanguage}` : '';
-                list.innerHTML += `<div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/5 cursor-pointer border-b border-gray-800/50 transition" onclick="startNewChat('${u.alias}')"><div class="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-700 bg-gray-800 flex items-center justify-center">${getInnerAvatarHTML(u.alias)}</div><div class="flex flex-col"><span class="text-white font-bold text-[16px]" style="font-family: monospace;">${u.alias}</span><span class="text-gray-400 text-[12px] font-medium tracking-wide">${u.role || 'Member'} ${userLang}</span></div></div>`;
+                list.innerHTML += `<div class="flex items-center gap-4 px-5 py-3 hover:bg-white/5 cursor-pointer transition" onclick="startNewChat('${u.alias}')"><div class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-gray-800 flex items-center justify-center">${getInnerAvatarHTML(u.alias)}</div><div class="flex flex-col"><span class="text-white font-semibold text-[15px]">${u.alias}</span></div></div>`;
             });
         }
         function filterNewMessageUsers() { renderNewMessageUsers(allNetworkUsers.filter(u => u.alias.toLowerCase().includes(document.getElementById('newMsgSearch').value.toLowerCase()))); }
@@ -600,52 +556,83 @@
             let filtered = interactedList.filter(u => u.toLowerCase().includes(searchQ));
             filtered.sort((a, b) => { let histA = getChatHistory(a); let histB = getChatHistory(b); return (histB.length > 0 ? parseInt(histB[histB.length-1].id) : 0) - (histA.length > 0 ? parseInt(histA[histA.length-1].id) : 0); });
 
-            if(filtered.length === 0) { container.innerHTML = `<div class="flex flex-col items-center justify-center mt-12 opacity-60"><i class="fa-regular fa-comments text-5xl text-gray-500 mb-3"></i><p class="text-center text-gray-400 text-[14px]">No conversations yet.<br>Click the top right icon to start.</p></div>`; return; }
+            if(filtered.length === 0) { container.innerHTML = `<div class="flex flex-col items-center justify-center mt-12 opacity-60"><i class="fa-regular fa-comments text-5xl text-gray-600 mb-3"></i><p class="text-center text-gray-500 text-[13px]">No conversations yet.</p></div>`; return; }
 
             filtered.forEach((userAlias, index) => {
                 const validHistory = getChatHistory(userAlias).filter(m => !m.deleted);
                 const lastMsg = validHistory.length > 0 ? validHistory[validHistory.length-1] : null;
-                let previewText = "Start chatting...", timeText = "", tickIcon = "";
+                let previewText = "Sent a message", timeText = "", tickIcon = "";
                 const isUnread = lastMsg && lastMsg.type === 'recv' && lastMsg.read === false;
 
                 if (lastMsg) {
-                    if (lastMsg.file) previewText = "📁 Attachment"; else previewText = lastMsg.text ? lastMsg.text.substring(0, 35) + (lastMsg.text.length > 35 ? "..." : "") : "Media";
-                    if (lastMsg.id) { timeText = new Date(parseInt(lastMsg.id)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-                    if (lastMsg.type === 'sent') { if (lastMsg.status === 'read') tickIcon = `<i class="fa-solid fa-check-double text-blue-500 text-[11px] mr-1"></i>`; else if (lastMsg.status === 'delivered') tickIcon = `<i class="fa-solid fa-check-double text-gray-400 text-[11px] mr-1"></i>`; else tickIcon = `<i class="fa-solid fa-check text-gray-400 text-[11px] mr-1"></i>`; }
+                    if (lastMsg.file) previewText = "Sent an attachment"; else previewText = lastMsg.text ? lastMsg.text.substring(0, 30) + (lastMsg.text.length > 30 ? "..." : "") : "Media";
+                    if (lastMsg.id) { 
+                        const d = new Date(parseInt(lastMsg.id));
+                        const now = new Date();
+                        if (d.toDateString() === now.toDateString()) {
+                            timeText = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        } else {
+                            timeText = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                        }
+                    }
+                    if (lastMsg.type === 'sent') { if (lastMsg.status === 'read') tickIcon = `<i class="fa-solid fa-check-double text-blue-500 text-[10px] mr-1"></i>`; else if (lastMsg.status === 'delivered') tickIcon = `<i class="fa-solid fa-check-double text-gray-500 text-[10px] mr-1"></i>`; else tickIcon = `<i class="fa-solid fa-check text-gray-500 text-[10px] mr-1"></i>`; }
                 }
 
                 let isOnline = false;
                 if (onlineStatuses[userAlias] && (Date.now() - onlineStatuses[userAlias] < 90000)) isOnline = true;
                 else if (allNetworkUsers) { const rUser = allNetworkUsers.find(u => u.alias === userAlias); if (rUser && rUser.isOnline) isOnline = true; }
                 
-                // Add staggered animation delay
                 let delay = index * 0.05;
                 
-                htmlBuffer += `<div class="flex items-center gap-4 px-3 py-3 hover:bg-[#1f2937] transition cursor-pointer rounded-2xl group inbox-item-anim" style="animation-delay: ${delay}s" onclick="openChat('${userAlias}')"><div class="w-[58px] h-[58px] rounded-full relative p-[2px] ${isOnline ? 'insta-ring' : 'border border-gray-600'} transition-colors flex items-center justify-center shrink-0"><div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(userAlias)}</div>${isOnline ? `<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-[#080a10] rounded-full shadow-sm"></div>` : ''}</div><div class="flex-1 overflow-hidden border-b border-gray-800/60 pb-3 mt-1 group-hover:border-transparent transition-colors pr-1"><div class="flex justify-between items-center mb-0.5"><h3 class="text-[16px] ${isUnread ? 'text-white font-extrabold' : 'text-gray-100 font-bold'} truncate" style="font-family: monospace;">${userAlias}</h3><span class="text-[11px] ${isUnread ? 'text-blue-400 font-bold' : 'text-gray-500 font-medium'}">${timeText}</span></div><div class="flex justify-between items-center"><p class="${isUnread ? 'text-white font-bold' : 'text-gray-400 font-medium'} text-[13px] truncate flex items-center">${tickIcon}${previewText}</p>${isUnread ? '<div class="w-2.5 h-2.5 bg-blue-500 rounded-full shrink-0 shadow-lg shadow-blue-500/50"></div>' : ''}</div></div></div>`;
+                // LONG PRESS EVENT HANDLER ADDED HERE
+                htmlBuffer += `
+                <div class="flex items-center gap-3 px-3 py-3 cursor-pointer group inbox-item-anim active:bg-white/5 transition" style="animation-delay: ${delay}s" onclick="openChat('${userAlias}')" oncontextmenu="event.preventDefault(); showUserOptions('${userAlias}')">
+                    <div class="w-[52px] h-[52px] rounded-full relative p-[2px] ${isOnline ? 'insta-ring' : ''} transition-colors flex items-center justify-center shrink-0">
+                        <div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(userAlias)}</div>
+                    </div>
+                    <div class="flex-1 overflow-hidden pr-1">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <h3 class="text-[15px] ${isUnread ? 'text-white font-bold' : 'text-gray-200 font-medium'} truncate">${userAlias}</h3>
+                            <span class="text-[11px] text-gray-500">${timeText}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="${isUnread ? 'text-white font-medium' : 'text-gray-400 font-light'} text-[13px] truncate flex items-center">${tickIcon}${previewText}</p>
+                            ${isUnread ? '<div class="w-2 h-2 bg-blue-500 rounded-full shrink-0"></div>' : ''}
+                        </div>
+                    </div>
+                </div>`;
             });
             container.innerHTML = htmlBuffer;
+            
+            // Re-bind touch events for mobile long press
+            setTimeout(() => {
+                const items = container.querySelectorAll('.inbox-item-anim');
+                items.forEach(item => {
+                    let pressTimer;
+                    item.addEventListener('touchstart', (e) => {
+                        pressTimer = setTimeout(() => {
+                            e.preventDefault();
+                            item.oncontextmenu();
+                        }, 500);
+                    });
+                    item.addEventListener('touchend', () => clearTimeout(pressTimer));
+                    item.addEventListener('touchmove', () => clearTimeout(pressTimer));
+                });
+            }, 100);
         }
 
         function renderVibesTray() {
             const list = document.getElementById('vibesList'); list.innerHTML = ''; 
             const myVibeText = localStorage.getItem(`hs_vibe_${myAlias}`);
-            list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 mr-2 group" onclick="openVibeModal()">${myVibeText ? `<div class="vibe-note">${myVibeText}</div>` : ''}<div class="w-[70px] h-[70px] rounded-full relative border border-gray-600 mt-2 group-hover:scale-105 transition-transform flex items-center justify-center bg-gray-800 overflow-hidden">${getInnerAvatarHTML(myAlias)}<div class="absolute bottom-0 right-0 bg-blue-600 w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#080a10] text-white text-[10px] shadow-sm"><i class="fa-solid fa-plus"></i></div></div><span class="text-gray-400 text-[11px] font-medium mt-1.5" style="font-family: monospace;">Your note</span></div>`;
+            list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 mr-2 group" onclick="openVibeModal()">${myVibeText ? `<div class="vibe-note">${myVibeText}</div>` : ''}<div class="w-[65px] h-[65px] rounded-full relative mt-2 flex items-center justify-center bg-gray-800 overflow-hidden">${getInnerAvatarHTML(myAlias)}<div class="absolute bottom-0 right-0 bg-blue-500 w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0a0a0c] text-white text-[10px]"><i class="fa-solid fa-plus"></i></div></div><span class="text-gray-400 text-[11px] mt-1.5 font-medium">Your note</span></div>`;
             getInteractedUsers().forEach(user => {
                 const userVibe = localStorage.getItem(`hs_remote_vibe_${user}`); 
-                list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 group" onclick="openChat('${user}')">${userVibe ? `<div class="vibe-note">${userVibe}</div>` : ''}<div class="w-[70px] h-[70px] rounded-full relative insta-ring mt-2 group-hover:scale-105 transition-transform flex items-center justify-center"><div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user)}</div></div><span class="text-gray-300 text-[11px] font-medium mt-1.5 truncate max-w-[70px]" style="font-family: monospace;">${user}</span></div>`;
+                list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 group" onclick="openChat('${user}')">${userVibe ? `<div class="vibe-note">${userVibe}</div>` : ''}<div class="w-[65px] h-[65px] rounded-full relative insta-ring mt-2 flex items-center justify-center"><div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user)}</div></div><span class="text-gray-300 text-[11px] mt-1.5 truncate max-w-[65px]">${user}</span></div>`;
             });
         }
 
         function openVibeModal() { document.getElementById('vibeModal').classList.remove('hidden'); setTimeout(() => document.getElementById('vibeModal').classList.remove('opacity-0'), 10); const currentVibe = localStorage.getItem(`hs_vibe_${myAlias}`); document.getElementById('vibeInput').value = currentVibe || ''; if(currentVibe) document.getElementById('deleteVibeContainer').classList.remove('hidden'); else document.getElementById('deleteVibeContainer').classList.add('hidden'); }
         function closeVibeModal() { document.getElementById('vibeModal').classList.add('opacity-0'); setTimeout(() => document.getElementById('vibeModal').classList.add('hidden'), 300); }
-
-        function openSwitchAccountModal() {
-            const list = document.getElementById('accountList'); list.innerHTML = '';
-            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-4 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-2xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.alias)}</div><div><h4 class="text-white font-bold text-[15px]" style="font-family: monospace;">${acc.alias}</h4></div></div>${isActive ? '<div class="w-5 h-5 rounded-full border-4 border-blue-500 bg-transparent"></div>' : '<div class="w-5 h-5 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
-            document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
-        }
-        function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
-        function executeAccountSwitch(targetRole) { localStorage.setItem("healspace_logged_role", targetRole); window.location.reload(); }
 
         function checkActiveStatus() {
             if (activeChatUser && globalPeer && !globalPeer.destroyed) {
@@ -654,20 +641,18 @@
                 clearTimeout(activeStatusTimeout);
                 activeStatusTimeout = setTimeout(() => {
                     const remoteUser = allNetworkUsers.find(u => u.alias === activeChatUser); if (remoteUser && remoteUser.isOnline) return; 
-                    const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && statusEl.innerText !== "typing...") { statusEl.innerText = "Offline"; statusEl.className = "text-[12px] text-gray-500 font-medium mt-0.5 transition-all"; }
+                    const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Offline"; statusEl.className = "text-[11px] text-gray-500 font-medium mt-0.5 transition-all"; }
                 }, 8000); 
             }
         }
 
         function openChat(name, secret = false) {
+            hapticFeedback();
             activeChatUser = name; isSecretChat = secret; document.getElementById('chatTargetName').innerText = name + (secret ? ' 👻' : ''); cancelReply(); 
             document.getElementById('chatTargetAvatarContainer').innerHTML = getInnerAvatarHTML(name);
-            const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Connecting..."; statusEl.className = "text-[12px] text-gray-400 font-medium mt-0.5 transition-all";
-            if (allNetworkUsers) { const remoteUser = allNetworkUsers.find(u => u.alias === name); if (remoteUser && remoteUser.isOnline) { statusEl.innerText = "Active now"; statusEl.className = "text-[12px] text-green-400 font-medium mt-0.5 transition-all"; } }
+            const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Connecting..."; statusEl.className = "text-[11px] text-gray-500 font-medium transition-all";
+            if (allNetworkUsers) { const remoteUser = allNetworkUsers.find(u => u.alias === name); if (remoteUser && remoteUser.isOnline) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-gray-300 font-medium transition-all"; } }
             
-            // Load correct theme
-            loadChatTheme();
-
             if (!isSecretChat) { let history = getChatHistory(activeChatUser); let changed = false; history.forEach(m => { if(m.type === 'recv' && !m.read) { m.read = true; changed = true; } }); if (changed) saveChatHistory(activeChatUser, history); renderChatMessages(); } else { document.getElementById('chatMessageArea').innerHTML = `<div class="date-badge">Secret Chat Started</div>`; }
             const viewChat = document.getElementById('view-chat'); viewChat.classList.remove('hidden', 'screen-exit'); viewChat.classList.add('screen-enter');
             if (globalPeer && !globalPeer.destroyed) {
@@ -682,8 +667,38 @@
 
         function renderChatMessages() {
             if (isSecretChat) return; 
-            const msgArea = document.getElementById('chatMessageArea'); msgArea.innerHTML = `<div class="date-badge">Today</div>`; 
-            getChatHistory(activeChatUser).forEach(msg => appendMessageToDOM(msg));
+            const msgArea = document.getElementById('chatMessageArea'); 
+            msgArea.innerHTML = ''; 
+            
+            const history = getChatHistory(activeChatUser);
+            let lastDateStr = null;
+
+            history.forEach(msg => {
+                if(msg.deleted) return;
+                
+                // Date grouping
+                const msgDate = new Date(parseInt(msg.id));
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                let dateStr = msgDate.toLocaleDateString();
+                let displayDate = msgDate.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                if (dateStr === today.toLocaleDateString()) displayDate = "Today";
+                else if (dateStr === yesterday.toLocaleDateString()) displayDate = "Yesterday";
+
+                if (dateStr !== lastDateStr) {
+                    const badge = document.createElement('div');
+                    badge.className = "date-badge";
+                    badge.innerText = displayDate;
+                    msgArea.appendChild(badge);
+                    lastDateStr = dateStr;
+                }
+
+                appendMessageToDOM(msg);
+            });
+
             requestAnimationFrame(() => { msgArea.scrollTop = msgArea.scrollHeight; });
         }
 
@@ -722,35 +737,29 @@
                 }
                 if (!isSecretChat) { fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'send_chat', sender: myAlias, receiver: activeChatUser, msgData: JSON.stringify(msgObj) }) }).catch(e => console.log("Background backup pending...")); }
                 try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
-            } catch (err) { console.error("Error saving message", err); }
-        }
-
-        function showFlyingHeart(x, y) {
-            const heart = document.createElement('div'); heart.innerHTML = '❤️'; heart.className = 'floating-heart'; heart.style.left = (x - 20) + 'px'; heart.style.top = (y - 20) + 'px';
-            document.body.appendChild(heart); setTimeout(() => heart.remove(), 800);
+            } catch (err) {}
         }
 
         function appendMessageToDOM(msgObj, animate = false) {
             const msgArea = document.getElementById('chatMessageArea'); if (!msgArea || msgObj.deleted) return; 
-            const wrapper = document.createElement('div'); wrapper.id = `msg-${msgObj.id}`; wrapper.className = `flex flex-col relative ${msgObj.type === 'sent' ? 'items-end' : 'items-start'} ${animate ? 'animate-fade' : ''} mb-2`;
+            const wrapper = document.createElement('div'); wrapper.id = `msg-${msgObj.id}`; wrapper.className = `flex flex-col relative ${msgObj.type === 'sent' ? 'items-end' : 'items-start'} ${animate ? 'animate-fade' : ''}`;
             const bubble = document.createElement('div'); bubble.className = msgObj.type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-recv';
             
-            const handleLongPress = () => { chatPressTimer = setTimeout(() => { selectedMessageId = msgObj.id; selectedMessageType = msgObj.type; bubble.classList.add('bubble-active'); showContextMenu(); if(navigator.vibrate) navigator.vibrate(50); }, 500); };
+            const handleLongPress = () => { chatPressTimer = setTimeout(() => { selectedMessageId = msgObj.id; selectedMessageType = msgObj.type; bubble.classList.add('bubble-active'); showContextMenu(); hapticFeedback(); }, 400); };
             bubble.ontouchstart = handleLongPress; bubble.onmousedown = handleLongPress; bubble.ontouchend = () => clearTimeout(chatPressTimer); bubble.onmouseup = () => clearTimeout(chatPressTimer); bubble.onmouseleave = () => clearTimeout(chatPressTimer);
 
-            // Double tap to like with UI pulse
             let tapCount = 0; let tapTimer;
             bubble.addEventListener('click', (e) => {
                 tapCount++;
                 if(tapCount === 1) tapTimer = setTimeout(() => { tapCount = 0; }, 300);
                 else if (tapCount === 2) { 
-                    clearTimeout(tapTimer); tapCount = 0; selectedMessageId = msgObj.id; handleReaction('❤️'); showFlyingHeart(e.clientX, e.clientY); 
+                    clearTimeout(tapTimer); tapCount = 0; selectedMessageId = msgObj.id; handleReaction('❤️'); 
                     bubble.classList.add('pulse-anim'); setTimeout(()=>bubble.classList.remove('pulse-anim'), 300);
-                    if(navigator.vibrate) navigator.vibrate([30, 50, 30]); 
+                    hapticFeedback(); 
                 }
             });
 
-            if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/20 border-l-4 border-blue-400 px-2 py-1 mb-1 rounded-sm text-[12px] opacity-80 italic truncate max-w-[200px] pointer-events-none'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
+            if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/20 border-l-2 border-white/50 px-2 py-1 mb-1 rounded-sm text-[11px] opacity-80 truncate max-w-[200px] pointer-events-none'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
             if (msgObj.file) {
                 if (!msgObj.file.data) bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/20 p-2 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-arrow-down text-2xl text-blue-300"></i> <div class="truncate text-sm max-w-[150px] font-semibold">${msgObj.file.name}<br><span class="text-[10px] text-gray-400">File session ended</span></div></div>`;
                 else if (msgObj.file.type.startsWith('image/')) bubble.innerHTML += `<img src="${msgObj.file.data}" class="rounded-xl max-w-[200px] bg-black/20 pointer-events-none">`;
@@ -762,17 +771,51 @@
             let timeString = "", statusIcon = "";
             if (msgObj.id) timeString = new Date(parseInt(msgObj.id)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             if (msgObj.type === 'sent') {
-                if (msgObj.status === 'read') statusIcon = `<i class="fa-solid fa-check-double text-blue-400 ml-1.5"></i>`;
-                else if (msgObj.status === 'delivered') statusIcon = `<i class="fa-solid fa-check-double text-gray-300 ml-1.5"></i>`;
-                else statusIcon = `<i class="fa-solid fa-check text-gray-300 ml-1.5"></i>`;
+                if (msgObj.status === 'read') statusIcon = `<i class="fa-solid fa-check-double text-blue-400 ml-1 text-[10px]"></i>`;
+                else if (msgObj.status === 'delivered') statusIcon = `<i class="fa-solid fa-check-double text-gray-400 ml-1 text-[10px]"></i>`;
+                else statusIcon = `<i class="fa-solid fa-check text-gray-400 ml-1 text-[10px]"></i>`;
             }
 
             wrapper.appendChild(bubble);
-            const metaEl = document.createElement('div'); metaEl.className = `text-[10px] text-gray-400 mt-1 px-1 flex items-center ${msgObj.type === 'sent' ? 'justify-end' : 'justify-start'}`; metaEl.innerHTML = `<span>${timeString}</span>${statusIcon}`; wrapper.appendChild(metaEl);
+            const metaEl = document.createElement('div'); metaEl.className = `text-[9px] text-gray-500 mt-0.5 px-1 flex items-center ${msgObj.type === 'sent' ? 'justify-end' : 'justify-start'}`; metaEl.innerHTML = `<span>${timeString}</span>${statusIcon}`; wrapper.appendChild(metaEl);
             msgArea.appendChild(wrapper); if(animate) { requestAnimationFrame(() => { msgArea.scrollTop = msgArea.scrollHeight; }); }
         }
 
-        function initEmojiPicker() { const grid = document.getElementById('emojiPickerGrid'); allEmojis.forEach(em => { grid.innerHTML += `<button class="text-[32px] hover:scale-125 transition-transform" onclick="handleReaction('${em}')">${em}</button>`; }); }
+        function showContextMenu() {
+            hapticFeedback();
+            const dynamicBtnContainer = document.getElementById('menuDynamicBtnContainer');
+            if (selectedMessageType === 'sent') dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition cursor-pointer text-[15px] font-medium text-red-500" onclick="unsendMessage()"><i class="fa-regular fa-trash-can text-lg w-6 text-center"></i> Unsend</div>`;
+            else dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition cursor-pointer text-[15px] font-medium text-red-500" onclick="handleMenuAction('report')"><i class="fa-solid fa-triangle-exclamation text-lg w-6 text-center"></i> Report</div>`;
+            document.getElementById('emojiPickerGrid').classList.add('hidden'); document.getElementById('emojiPickerGrid').classList.remove('grid');
+            document.getElementById('menuOptionsList').classList.remove('hidden');
+            const overlay = document.getElementById('contextMenuOverlay'); const sheet = document.getElementById('contextMenuSheet');
+            overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
+        }
+
+        function hideContextMenu(e) {
+            if (e && e.target !== document.getElementById('contextMenuOverlay')) return;
+            document.querySelectorAll('.bubble-active').forEach(el => el.classList.remove('bubble-active'));
+            const overlay = document.getElementById('contextMenuOverlay'), sheet = document.getElementById('contextMenuSheet');
+            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300);
+        }
+
+        function unsendMessage() {
+            if (!selectedMessageId) return;
+            let history = getChatHistory(activeChatUser); const index = history.findIndex(m => m.id === selectedMessageId);
+            if (index > -1) { history[index].deleted = true; if(!isSecretChat) saveChatHistory(activeChatUser, history); }
+            if (globalPeer && !globalPeer.destroyed) { const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'unsend', sender: myAlias, msgId: selectedMessageId }); }); } catch(e){} }
+            const msgEl = document.getElementById(`msg-${selectedMessageId}`); if (msgEl) msgEl.remove();
+            hideContextMenu(); if(!isSecretChat) renderInbox(false); 
+        }
+
+        function handleMenuAction(action) {
+            const history = getChatHistory(activeChatUser); const msg = history.find(m => m.id === selectedMessageId); hideContextMenu();
+            if (action === 'copy') { if (msg && msg.text) { navigator.clipboard.writeText(msg.text); } } 
+            else if (action === 'reply') { if (msg) { replyingToText = msg.text ? msg.text.substring(0, 50) + "..." : "Attachment"; document.getElementById('replyPreviewText').innerText = replyingToText; document.getElementById('replyPreviewContainer').classList.remove('hidden'); document.getElementById('chatInput').focus(); } }
+            else if (action === 'report') { if(msg) fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "report", reporter: myAlias, reportedUser: activeChatUser, msgId: msg.id, msgText: msg.text || "Media File" }) }).then(() => alert("Message reported.")).catch(e=>{}); }
+        }
+
+        function initEmojiPicker() { const grid = document.getElementById('emojiPickerGrid'); allEmojis.forEach(em => { grid.innerHTML += `<button class="text-[28px] hover:scale-125 transition-transform" onclick="handleReaction('${em}')">${em}</button>`; }); }
         function toggleEmojiPicker() {
             const grid = document.getElementById('emojiPickerGrid'), menuList = document.getElementById('menuOptionsList');
             if(grid.classList.contains('hidden')) { grid.classList.remove('hidden'); grid.classList.add('grid'); menuList.classList.add('hidden'); } 
@@ -787,104 +830,11 @@
             if(!isSecretChat) renderChatMessages(); hideContextMenu();
         }
 
-        function hideContextMenu(e) {
-            if (e && e.target !== document.getElementById('contextMenuOverlay')) return;
-            document.querySelectorAll('.bubble-active').forEach(el => el.classList.remove('bubble-active'));
-            const overlay = document.getElementById('contextMenuOverlay'), sheet = document.getElementById('contextMenuSheet');
-            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300);
-        }
+        function openNewMessageScreen() { const screen = document.getElementById('new-message-screen'); screen.classList.remove('hidden', 'translate-x-full'); if(allNetworkUsers.length > 0) renderNewMessageUsers(allNetworkUsers); }
+        function closeNewMessageScreen() { document.getElementById('new-message-screen').classList.add('translate-x-full'); setTimeout(() => { document.getElementById('new-message-screen').classList.add('hidden'); }, 300); }
+        
+        function openSwitchAccountModal() { /* Left as stub for future scale */ }
 
-        function hideIncomingCallPopup() { try { const ringtone = document.getElementById('sndRingtone'); if(ringtone) { ringtone.pause(); ringtone.currentTime = 0; } } catch(e) {} document.getElementById('incomingCallPopup').classList.add('-translate-y-[150%]'); }
-        function declineIncomingCall() { hideIncomingCallPopup(); if(incomingCallObj && globalPeer && !globalPeer.destroyed) { const callerPeerId = incomingCallObj.peer; try { const conn = globalPeer.connect(callerPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'call_declined', sender: myAlias }); }); } catch(e){} incomingCallObj.close(); incomingCallObj = null; } }
-
-        function acceptIncomingCall() {
-            try {
-                hideIncomingCallPopup(); if (!incomingCallObj) return;
-                const callerAlias = incomingCallObj.peer.replace('hs_',''); const viewChat = document.getElementById('view-chat');
-                if (viewChat && (viewChat.classList.contains('hidden') || activeChatUser !== callerAlias)) openChat(callerAlias, false);
-                resetCallUI(incomingCallIsVideo); document.getElementById('callStatusText').innerText = "Connected"; document.getElementById('callTargetName').innerText = callerAlias;
-                const avatarEl = document.getElementById('callAvatarContainer'); if(avatarEl) avatarEl.innerHTML = getInnerAvatarHTML(callerAlias);
-                showCallOverlayUI();
-                if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    navigator.mediaDevices.getUserMedia({ video: incomingCallIsVideo, audio: true }).then((stream) => { handleCallStream(stream); }).catch(err => {
-                        if (incomingCallIsVideo) { incomingCallIsVideo = false; navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((stream) => { handleCallStream(stream); }).catch(e => { declineIncomingCall(); alert("Microphone access is required to answer."); }); } else { declineIncomingCall(); alert("Microphone access is required to answer."); }
-                    });
-                } else { alert("Your browser does not support calls."); declineIncomingCall(); }
-            } catch (e) { declineIncomingCall(); }
-
-            function handleCallStream(stream) {
-                localStream = stream; incomingCallObj.answer(stream);
-                if (incomingCallIsVideo) { const localVid = document.getElementById('localMedia'); localVid.srcObject = stream; localVid.classList.remove('hidden'); localVid.muted = true; localVid.onloadedmetadata = () => { localVid.play().catch(e => {}); }; }
-                incomingCallObj.on('stream', (remoteStream) => {
-                    const mediaEl = document.getElementById('remoteMedia'); mediaEl.srcObject = remoteStream; mediaEl.onloadedmetadata = () => { mediaEl.play().catch(e => {}); };
-                    if (incomingCallIsVideo) { mediaEl.classList.remove('hidden'); document.getElementById('callInfoBox').classList.add('opacity-0'); document.getElementById('callBgGlow').classList.add('opacity-0'); document.getElementById('callBottomGradient').classList.remove('hidden'); setTimeout(() => { document.getElementById('callBottomGradient').classList.remove('opacity-0'); }, 50); }
-                    document.getElementById('callStatusText').innerText = "Connected";
-                });
-                currentCall = incomingCallObj; incomingCallObj = null;
-            }
-        }
-
-        function startCall(type) {
-            if(!activeChatUser) return;
-            if(!globalPeer || globalPeer.destroyed || !globalPeer.open) { alert("Connecting to servers... Please try again."); return; }
-            const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-            document.getElementById('callStatusText').innerText = "Contacting..."; document.getElementById('callTargetName').innerText = activeChatUser;
-            const avatarEl = document.getElementById('callAvatarContainer'); if(avatarEl) avatarEl.innerHTML = getInnerAvatarHTML(activeChatUser);
-            const isVideo = (type === 'video'); resetCallUI(isVideo); showCallOverlayUI();
-
-            if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: isVideo, audio: true }).then((stream) => { handleOutboundStream(stream, isVideo); }).catch(err => {
-                    if (isVideo) { if (confirm("Camera access denied. Switch to Audio call instead?")) { navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((stream) => { handleOutboundStream(stream, false); }).catch(e => { endCall(); alert("Microphone access required."); }); } else { endCall(); } } else { endCall(); alert("Microphone access required."); }
-                });
-            } else { alert("Browser does not support calling."); endCall(); }
-
-            function handleOutboundStream(stream, actuallyIsVideo) {
-                localStream = stream; resetCallUI(actuallyIsVideo);
-                if (actuallyIsVideo) { const localVid = document.getElementById('localMedia'); localVid.srcObject = stream; localVid.classList.remove('hidden'); localVid.muted = true; localVid.onloadedmetadata = () => { localVid.play().catch(e => {}); }; }
-                try {
-                    currentCall = globalPeer.call(targetPeerId, stream, { metadata: { type: actuallyIsVideo ? 'video' : 'audio' } });
-                    if (!currentCall) { endCall(); alert("User is offline or unavailable."); return; }
-                    currentCall.on('stream', (remoteStream) => {
-                        const mediaEl = document.getElementById('remoteMedia'); mediaEl.srcObject = remoteStream; mediaEl.onloadedmetadata = () => { mediaEl.play().catch(e => {}); };
-                        if (actuallyIsVideo) { mediaEl.classList.remove('hidden'); document.getElementById('callInfoBox').classList.add('opacity-0'); document.getElementById('callBgGlow').classList.add('opacity-0'); document.getElementById('callBottomGradient').classList.remove('hidden'); setTimeout(() => { document.getElementById('callBottomGradient').classList.remove('opacity-0'); }, 50); }
-                        document.getElementById('callStatusText').innerText = "Connected";
-                    });
-                    currentCall.on('close', endCall); currentCall.on('error', (err) => { document.getElementById('callStatusText').innerText = "Unavailable"; setTimeout(endCall, 2000); });
-                } catch(e) { endCall(); alert("Network connection error."); }
-            }
-        }
-
-        function toggleAudio() { if (!localStream) return; const audioTrack = localStream.getAudioTracks()[0]; if (audioTrack) { isAudioMuted = !isAudioMuted; audioTrack.enabled = !isAudioMuted; document.getElementById('iconToggleMic').className = isAudioMuted ? "fa-solid fa-microphone-slash text-red-400" : "fa-solid fa-microphone"; } }
-        function toggleVideo() { if (!localStream) return; const videoTrack = localStream.getVideoTracks()[0]; if (videoTrack) { isVideoMuted = !isVideoMuted; videoTrack.enabled = !isVideoMuted; document.getElementById('iconToggleVid').className = isVideoMuted ? "fa-solid fa-video-slash text-red-400" : "fa-solid fa-video"; } }
-        async function switchCamera() {
-            if (!localStream || isVideoMuted) return; const videoTrack = localStream.getVideoTracks()[0]; if (!videoTrack) return; usingFrontCamera = !usingFrontCamera;
-            try {
-                const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: usingFrontCamera ? "user" : "environment" }, audio: false });
-                const newVideoTrack = newStream.getVideoTracks()[0]; document.getElementById('localMedia').srcObject = new MediaStream([newVideoTrack]);
-                if (currentCall && currentCall.peerConnection) { const sender = currentCall.peerConnection.getSenders().find(s => s.track.kind === 'video'); if (sender) sender.replaceTrack(newVideoTrack); }
-                videoTrack.stop(); localStream.removeTrack(videoTrack); localStream.addTrack(newVideoTrack);
-            } catch (err) { usingFrontCamera = !usingFrontCamera; }
-        }
-
-        function endCall() {
-            if (currentCall) { currentCall.close(); currentCall = null; }
-            if (localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
-            const rMedia = document.getElementById('remoteMedia'); if(rMedia) { rMedia.srcObject = null; rMedia.classList.add('hidden'); }
-            const lMedia = document.getElementById('localMedia'); if(lMedia) { lMedia.srcObject = null; lMedia.classList.add('hidden'); }
-            const cBox = document.getElementById('callInfoBox'); if(cBox) cBox.classList.remove('opacity-0');
-            const cGlow = document.getElementById('callBgGlow'); if(cGlow) cGlow.classList.remove('opacity-0');
-            const statusEl = document.getElementById('callStatusText'); if(statusEl) { statusEl.innerText = "Contacting..."; statusEl.className = "text-gray-200 font-medium bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full inline-block shadow-lg border border-white/10 z-10"; }
-            const gradient = document.getElementById('callBottomGradient'); if(gradient) { gradient.classList.add('opacity-0'); setTimeout(() => { gradient.classList.add('hidden'); }, 500); }
-            const overlay = document.getElementById('callOverlay'); if(overlay) { overlay.classList.add('opacity-0'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300); }
-        }
-
-        function resetCallUI(isVideo) {
-            isAudioMuted = false; isVideoMuted = false; usingFrontCamera = true;
-            document.getElementById('iconToggleMic').className = "fa-solid fa-microphone"; document.getElementById('iconToggleVid').className = "fa-solid fa-video";
-            const statusEl = document.getElementById('callStatusText'); statusEl.innerText = "Contacting..."; statusEl.className = "text-gray-200 font-medium bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full inline-block shadow-lg border border-white/10 z-10";
-            if (!isVideo) { document.getElementById('btnSwitchCam').style.display = 'none'; document.getElementById('btnToggleVid').style.display = 'none'; } else { document.getElementById('btnSwitchCam').style.display = 'flex'; document.getElementById('btnToggleVid').style.display = 'flex'; }
-        }
-        function showCallOverlayUI() { const overlay = document.getElementById('callOverlay'); overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10); }
     </script>
 </body>
 </html>
