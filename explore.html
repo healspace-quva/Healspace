@@ -9,46 +9,38 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
     <style>
-        /* Base Reset & Strict Overflow Constraints */
+        /* Base Reset & Strict Constraints */
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030712; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; }
         #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,1); transition: background-color 0.4s ease; }
-
-        /* Hide Scrollbar */
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Staggered Cinematic Entrance */
+        /* Animations */
         @keyframes fadeSlideUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-
-        /* Card Hover & 3D Magnetic Click Effects */
-        .explore-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; transform: translateZ(0); }
-        .explore-card:active { transform: scale(0.94); filter: brightness(1.1); }
-        
-        /* Shimmering Border Glow */
-        @keyframes shimmerBorder { 0% { box-shadow: 0 0 5px currentColor; } 50% { box-shadow: 0 0 20px currentColor; } 100% { box-shadow: 0 0 5px currentColor; } }
-        .badge-shimmer { animation: shimmerBorder 2s infinite ease-in-out; }
-
-        /* Dynamic Theme Pulse */
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 25px var(--glow-color); } }
-        .theme-pulse { animation: pulseGlow 3s infinite ease-in-out; }
-
-        /* Pop In Animation */
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(-10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes shimmerBorder { 0% { box-shadow: 0 0 5px currentColor; } 50% { box-shadow: 0 0 20px currentColor; } 100% { box-shadow: 0 0 5px currentColor; } }
+        .badge-shimmer { animation: shimmerBorder 2s infinite ease-in-out; }
+        
+        /* Magnetic Cards */
+        .explore-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; transform: translateZ(0); }
+        .explore-card:active { transform: scale(0.94); filter: brightness(1.1); }
 
-        /* --- LIVE ROOM STYLES --- */
+        /* Live Room Styles */
         @keyframes slideUpRoom { 0% { transform: translateY(100%); border-radius: 40px 40px 0 0; } 100% { transform: translateY(0); border-radius: 0; } }
         @keyframes slideDownRoom { 0% { transform: translateY(0); border-radius: 0; } 100% { transform: translateY(100%); border-radius: 40px 40px 0 0; } }
         .room-enter { animation: slideUpRoom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .room-exit { animation: slideDownRoom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
         .voice-glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); border: 2px solid #3b82f6; }
+        .voice-muted { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); border: 2px solid #ef4444; }
         @keyframes voicePulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(59,130,246,0.4); } 50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(59,130,246,0.9); border-color: #60a5fa; } }
         .is-speaking { animation: voicePulse 1.2s infinite; }
 
-        /* Live Audio Visualizer Bars */
+        /* Audio Visualizer */
         .audio-bars { display: flex; gap: 2px; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); }
         .audio-bars span { width: 3px; background: white; border-radius: 2px; animation: eqBounce 0.5s infinite alternate ease-in-out; opacity: 0; }
         .is-speaking .audio-bars span { opacity: 1; }
@@ -57,7 +49,7 @@
         .audio-bars span:nth-child(3) { height: 8px; animation-delay: 0.2s; }
         @keyframes eqBounce { 0% { transform: scaleY(0.5); } 100% { transform: scaleY(1.5); } }
 
-        /* Floating Reactions */
+        /* Floating Sine Wave Reactions */
         @keyframes floatSine { 
             0% { opacity: 1; transform: translateY(0) translateX(0) scale(var(--start-scale)); } 
             50% { transform: translateY(-150px) translateX(var(--drift)) scale(1.3); }
@@ -65,24 +57,26 @@
         }
         .floating-emoji { position: absolute; bottom: 0; right: 20px; pointer-events: none; animation: floatSine 2.5s ease-out forwards; z-index: 150; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
 
-        /* Chat Stream Enhancements */
-        .chat-bubble-room { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); border-radius: 4px 14px 14px 14px; padding: 10px 14px; font-size: 0.95rem; color: #f3f4f6; width: fit-content; max-width: 88%; border: 1px solid rgba(255,255,255,0.05); }
-        .chat-bubble-me { background: rgba(59, 130, 246, 0.8); backdrop-filter: blur(12px); border-radius: 14px 4px 14px 14px; padding: 10px 14px; font-size: 0.95rem; color: white; width: fit-content; max-width: 88%; margin-left: auto; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); }
-        .room-owner-tag { background: linear-gradient(90deg, #f43f5e, #ec4899); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 6px; font-weight: 800; margin-left: 6px; text-transform: uppercase; box-shadow: 0 0 10px rgba(244,63,94,0.4); }
-        .jumbo-emoji { font-size: 3rem !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4)); }
-
-        .room-footer-glass { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: max(env(safe-area-inset-bottom), 12px); }
+        /* Chat Physics */
+        .chat-bubble-me { background: rgba(59, 130, 246, 0.8); backdrop-filter: blur(12px); border-radius: 14px 4px 14px 14px; padding: 10px 14px; font-size: 0.95rem; color: white; width: fit-content; max-width: 88%; margin-left: auto; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); transition: transform 0.2s; }
+        .bubble-active { transform: scale(0.95); filter: brightness(1.2); z-index: 50; }
+        .jumbo-emoji { font-size: 3.5rem !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4)); }
         
+        @keyframes poofOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0); opacity: 0; margin-bottom: -40px; } }
+        .msg-unsend { animation: poofOut 0.3s forwards cubic-bezier(0.2, 0.8, 0.2, 1); }
+
         /* Auto Match Radar */
         @keyframes radarScan { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
         .radar-circle { position: absolute; border: 2px solid #4ade80; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: radarScan 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1); }
         .radar-circle:nth-child(2) { animation-delay: 0.5s; }
         .radar-circle:nth-child(3) { animation-delay: 1s; }
 
-        /* Private Room Inputs */
+        /* Guided Breathing Modal */
+        @keyframes breatheInOut { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(2.5); opacity: 0.1; } }
+        .breathe-circle { animation: breatheInOut 8s infinite ease-in-out; }
+
         .input-glass { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; padding: 14px 16px; font-size: 1rem; outline: none; transition: 0.3s; margin-top: 6px; font-weight: 600; text-align: center; letter-spacing: 2px; }
         .input-glass:focus { border-color: #3b82f6; background: rgba(59,130,246,0.1); box-shadow: 0 0 15px rgba(59,130,246,0.3); }
-        .input-glass::placeholder { color: rgba(255,255,255,0.3); font-weight: 400; letter-spacing: normal; }
     </style>
 </head>
 <body>
@@ -90,19 +84,41 @@
     <div id="app-wrapper">
         <div id="mobile-container">
 
-            <div id="customNotification" class="hidden absolute top-4 left-4 right-4 z-[9999] bg-[#1c1c1e] border border-blue-500/50 rounded-2xl p-4 shadow-2xl cursor-pointer hover:bg-gray-800 transition">
-                <div class="flex items-start gap-3 pointer-events-none">
-                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
-                        <i id="notifIcon" class="fa-solid fa-bell text-blue-400"></i>
-                    </div>
-                    <div class="flex-1">
-                        <h4 id="notifTitle" class="text-white font-bold text-sm">Notification</h4>
-                        <p id="notifMessage" class="text-gray-400 text-xs mt-0.5 truncate">Tap to view...</p>
-                    </div>
+            <div id="notifDropdownMenu" class="absolute top-20 right-5 w-80 bg-[#1c1c1e]/95 backdrop-blur-3xl rounded-[24px] border border-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex-col z-[150] transform scale-95 opacity-0 pointer-events-none transition-all duration-300 origin-top-right">
+                <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+                    <h3 class="text-white font-bold text-lg tracking-tight">Notifications</h3>
+                    <button onclick="toggleNotifCenter()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-2" id="notifList">
+                    <div class="text-center text-gray-500 text-xs py-4">No new alerts</div>
                 </div>
             </div>
 
-            <div id="radarOverlay" class="absolute inset-0 z-[9999] bg-[#0B0E14]/95 backdrop-blur-xl flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-500">
+            <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
+                <div class="bg-[#1c1c1e] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center" id="miniProfileSheet" onclick="event.stopPropagation()">
+                    <div class="w-12 h-1.5 bg-gray-600 rounded-full mb-6"></div>
+                    <div class="w-24 h-24 rounded-full bg-gray-800 border-2 border-gray-600 flex items-center justify-center text-4xl overflow-hidden shadow-xl mb-4" id="mpAvatar">👤</div>
+                    <h2 class="text-white text-2xl font-black tracking-tight" id="mpName">Username</h2>
+                    <p class="text-gray-400 text-sm font-medium mt-1 mb-6 bg-black/30 px-4 py-1.5 rounded-full border border-gray-800" id="mpVibe">Chilling right now ✨</p>
+                    <button onclick="sendPrivateRequest()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold py-4 rounded-xl shadow-[0_10px_25px_rgba(59,130,246,0.3)] active:scale-95 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Request Private Chat
+                    </button>
+                </div>
+            </div>
+
+            <div id="breatheModal" class="absolute inset-0 z-[300] bg-[#050508]/95 backdrop-blur-3xl hidden flex-col items-center justify-center opacity-0 transition-opacity duration-700">
+                <button onclick="closeBreathe()" class="absolute top-12 right-6 text-gray-400 hover:text-white text-3xl"><i class="fa-solid fa-xmark"></i></button>
+                <div class="relative w-48 h-48 flex items-center justify-center mb-10">
+                    <div class="absolute inset-0 bg-blue-500 rounded-full breathe-circle blur-xl"></div>
+                    <div class="w-32 h-32 bg-[#0B0E14] rounded-full z-10 flex items-center justify-center border border-white/10 shadow-2xl">
+                        <i class="fa-solid fa-lungs text-blue-400 text-4xl"></i>
+                    </div>
+                </div>
+                <h2 class="text-white text-3xl font-black tracking-widest uppercase mb-2">Breathe</h2>
+                <p class="text-blue-200 font-medium text-center px-10" id="breatheText">Inhale deeply...</p>
+            </div>
+
+            <div id="radarOverlay" class="absolute inset-0 z-[150] bg-[#0B0E14]/95 backdrop-blur-xl flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-500">
                 <div class="relative w-24 h-24 flex items-center justify-center mb-8">
                     <div class="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center z-10 shadow-[0_0_30px_#4ade80]">
                         <i class="fa-solid fa-satellite-dish text-white text-3xl"></i>
@@ -112,14 +128,14 @@
                     <div class="radar-circle w-24 h-24"></div>
                 </div>
                 <h2 class="text-white text-2xl font-black tracking-widest uppercase animate-pulse">Scanning Network</h2>
-                <p class="text-green-400 font-medium text-sm mt-2">Finding the perfect match...</p>
+                <p class="text-green-400 font-medium text-sm mt-2">Finding a safe space...</p>
             </div>
 
-            <div id="privateRoomModal" class="absolute inset-0 z-[90] bg-black/80 backdrop-blur-md flex flex-col justify-end hidden opacity-0 transition-opacity duration-300" onclick="closePrivateModal(event)">
+            <div id="privateRoomModal" class="absolute inset-0 z-[150] bg-black/80 backdrop-blur-md flex flex-col justify-end hidden opacity-0 transition-opacity duration-300" onclick="closePrivateModal(event)">
                 <div class="bg-[#1c1c1e] border-t border-gray-700 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe" id="privateRoomSheet" onclick="event.stopPropagation()">
                     <div class="flex justify-center mb-4"><div class="w-12 h-1.5 bg-gray-600 rounded-full"></div></div>
                     <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-                        <h3 class="text-white text-2xl font-black tracking-tight"><i class="fa-solid fa-lock text-blue-500 mr-2"></i>Secure Room</h3>
+                        <h3 class="text-white text-2xl font-black tracking-tight"><i class="fa-solid fa-lock text-purple-500 mr-2"></i>Secure Space</h3>
                         <button onclick="closePrivateModal(true)" class="text-gray-400 hover:text-white text-2xl active:scale-90 transition"><i class="fa-solid fa-xmark"></i></button>
                     </div>
 
@@ -129,159 +145,165 @@
                     </div>
 
                     <div id="viewJoinRoom" class="space-y-4">
-                        <div>
-                            <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Room ID</label>
-                            <input type="text" id="joinRoomId" placeholder="6-DIGIT CODE" class="input-glass" maxlength="6">
-                        </div>
-                        <div>
-                            <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Password</label>
-                            <input type="password" id="joinRoomPass" placeholder="••••••••" class="input-glass">
-                        </div>
-                        <button onclick="executeJoinPrivate()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl mt-4 active:scale-95 transition shadow-[0_0_20px_rgba(59,130,246,0.4)]">Enter Secure Room</button>
+                        <input type="text" id="joinRoomId" placeholder="6-DIGIT ID" class="input-glass" maxlength="6">
+                        <input type="password" id="joinRoomPass" placeholder="PASSWORD" class="input-glass">
+                        <button onclick="executeJoinPrivate()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-extrabold py-4 rounded-xl mt-4 active:scale-95 transition shadow-[0_0_20px_rgba(168,85,247,0.4)]">Enter Secure Room</button>
                     </div>
 
                     <div id="viewCreateRoom" class="space-y-4 hidden">
-                        <div class="text-center bg-black/30 border border-gray-700 rounded-xl p-4 mb-4">
-                            <p class="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">Generated Room ID</p>
-                            <h2 class="text-3xl font-black text-blue-400 tracking-widest" id="genRoomId">------</h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-black/30 border border-gray-700 rounded-xl p-4 text-center">
+                                <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest mb-1">Room ID</p>
+                                <h2 class="text-2xl font-black text-purple-400" id="genRoomId">------</h2>
+                            </div>
+                            <div class="bg-black/30 border border-gray-700 rounded-xl p-4 text-center">
+                                <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest mb-1">Password</p>
+                                <h2 class="text-lg font-bold text-white mt-1" id="genRoomPass">------</h2>
+                            </div>
                         </div>
-                        <div class="text-center bg-black/30 border border-gray-700 rounded-xl p-4">
-                            <p class="text-gray-400 text-xs uppercase font-bold tracking-widest mb-1">Generated Password</p>
-                            <h2 class="text-xl font-bold text-white tracking-widest" id="genRoomPass">------</h2>
-                        </div>
-                        <button onclick="executeCreatePrivate()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold py-4 rounded-xl mt-4 active:scale-95 transition shadow-[0_0_20px_rgba(59,130,246,0.4)]">Start Secure Room</button>
+                        <button onclick="executeCreatePrivate()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-extrabold py-4 rounded-xl mt-4 active:scale-95 transition shadow-[0_0_20px_rgba(168,85,247,0.4)]">Start Secure Room</button>
                     </div>
                 </div>
             </div>
 
-            <header id="mainHeader" class="flex justify-between items-center px-5 pt-12 pb-4 z-30 bg-[#0B0E14]/90 backdrop-blur-md border-b border-gray-800/60 sticky top-0 shrink-0 transition-colors duration-500">
+            <header class="flex justify-between items-center px-5 pt-12 pb-2 z-30 bg-[#0B0E14]/90 backdrop-blur-md sticky top-0 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div id="userAvatarRing" class="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center theme-pulse transition-all duration-500 p-[2px] cursor-pointer" onclick="hapticFeedback()">
-                        <div class="w-full h-full bg-[#0B0E14] rounded-full flex items-center justify-center text-lg overflow-hidden relative">
-                            <span id="userEmoji">✨</span>
-                        </div>
+                    <div id="userAvatarRing" class="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center p-[2px] cursor-pointer" onclick="hapticFeedback()">
+                        <div class="w-full h-full bg-[#0B0E14] rounded-full flex items-center justify-center text-lg overflow-hidden relative" id="headerAvatarInner">✨</div>
                     </div>
-                    <h1 class="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-md">
-                        Explore
-                    </h1>
+                    <h1 class="text-2xl font-black tracking-tight text-white drop-shadow-md">Explore</h1>
                 </div>
-                <button onclick="hapticFeedback()" class="w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center border border-gray-700 hover:bg-gray-700 transition active:scale-95 relative shadow-lg">
-                    <i class="fa-solid fa-bell text-gray-300 text-sm"></i>
-                    <span id="notifDot" class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full border-2 border-[#0B0E14] bg-pink-500 animate-pulse"></span>
-                </button>
+                <div class="flex items-center gap-3">
+                    <button onclick="openBreathe()" class="w-9 h-9 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/30 hover:bg-blue-500/20 transition active:scale-95 text-blue-400">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </button>
+                    <button onclick="toggleNotifCenter()" class="w-9 h-9 rounded-full bg-gray-800/80 flex items-center justify-center border border-gray-700 hover:bg-gray-700 transition active:scale-95 relative text-gray-300">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="notifDot" class="absolute top-2 right-2 w-2 h-2 rounded-full border-2 border-[#0B0E14] bg-pink-500 animate-pulse hidden"></span>
+                    </button>
+                </div>
             </header>
 
             <main class="flex-1 w-full overflow-y-auto no-scrollbar p-4 pb-28 z-20 relative">
 
-                <div class="grid grid-cols-3 gap-3 mb-6 animate-fade" style="animation-delay: 0.05s;">
-                    <button onclick="joinRoom('Global Voice Hub')" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[12px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
+                <div class="mb-5 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-white/10 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm animate-fade">
+                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl shrink-0 border border-white/20">☀️</div>
+                    <div>
+                        <h4 class="text-white text-xs font-bold uppercase tracking-widest mb-0.5 opacity-80">Daily Affirmation</h4>
+                        <p class="text-blue-100 text-sm font-medium leading-tight">"You are doing your best, and that is more than enough."</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mb-6 animate-fade" style="animation-delay: 0.1s;">
+                    <button onclick="joinRoom('Global Voice Hub')" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[11px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
                         <i class="fa-solid fa-earth-americas text-blue-400 text-xl"></i> Public
                     </button>
-                    <button onclick="openPrivateRoomModal()" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[12px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
+                    <button onclick="openPrivateRoomModal()" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[11px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
                         <i class="fa-solid fa-lock text-purple-400 text-xl"></i> Secure
                     </button>
-                    <button onclick="startAutoMatchRadar()" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[12px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
+                    <button onclick="startAutoMatchRadar()" class="bg-[#1a1e29]/80 border border-gray-700 py-3 rounded-2xl flex flex-col justify-center items-center gap-1.5 transition active:scale-95 text-[11px] font-bold shadow-lg backdrop-blur-sm text-white hover:bg-gray-800">
                         <i class="fa-solid fa-satellite-dish text-green-400 text-xl"></i> Match
                     </button>
                 </div>
 
-                <div class="mb-6 animate-fade" style="animation-delay: 0.1s;">
-                    <h3 class="text-[11px] font-extrabold text-gray-500 mb-3 px-1 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-arrow-trend-up text-green-400"></i> Trending Right Now</h3>
+                <div class="mb-6 animate-fade" style="animation-delay: 0.15s;">
+                    <h3 class="text-[11px] font-extrabold text-gray-500 mb-3 px-1 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-fire text-orange-500"></i> Trending Topics</h3>
                     <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
-                        <div onclick="joinRoom('#LateNightThoughts')" class="flex-shrink-0 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-300 hover:border-purple-500/50 active:scale-95 transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-moon text-purple-400"></i> #LateNightThoughts
+                        <div onclick="joinRoom('#AnxietyRelief')" class="flex-shrink-0 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-300 active:scale-95 transition flex items-center gap-2">
+                            #AnxietyRelief
                         </div>
-                        <div onclick="joinRoom('#AnxietyRelief')" class="flex-shrink-0 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-300 hover:border-orange-500/50 active:scale-95 transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-fire text-orange-500"></i> #AnxietyRelief
-                        </div>
-                        <div onclick="joinRoom('#GamingBuddies')" class="flex-shrink-0 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-300 hover:border-yellow-500/50 active:scale-95 transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-gamepad text-yellow-400"></i> #GamingBuddies
+                        <div onclick="joinRoom('#LateNightThoughts')" class="flex-shrink-0 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-300 active:scale-95 transition flex items-center gap-2">
+                            #LateNightThoughts
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-between items-end mb-4 px-1 animate-fade" style="animation-delay: 0.15s;">
+                <div class="flex justify-between items-end mb-4 px-1 animate-fade" style="animation-delay: 0.2s;">
                     <div>
-                        <h3 class="text-2xl font-black drop-shadow-sm text-white tracking-tight">Safe Spaces</h3>
+                        <h3 class="text-2xl font-black text-white tracking-tight">Safe Spaces</h3>
                         <p class="text-[13px] text-gray-400 mt-0.5 font-medium">Find people experiencing similar emotions</p>
                     </div>
                 </div>
 
-                <div onclick="joinRoom('The Friendship Zone')" id="room-friend" class="w-full h-48 rounded-[28px] bg-gradient-to-br from-yellow-600 via-orange-600 to-red-700 relative overflow-hidden p-5 flex flex-col justify-end explore-card mb-4 shadow-[0_10px_30px_rgba(234,179,8,0.2)] border border-yellow-500/30 animate-fade" style="animation-delay: 0.2s;">
+                <div onclick="joinRoom('The Friendship Zone')" id="room-friend" class="w-full h-48 rounded-[28px] bg-gradient-to-br from-yellow-600 via-orange-600 to-red-700 relative overflow-hidden p-5 flex flex-col justify-end explore-card mb-4 shadow-[0_10px_30px_rgba(234,179,8,0.2)] border border-yellow-500/30 animate-fade" style="animation-delay: 0.25s;">
                     <i class="fa-solid fa-face-smile-beam absolute -right-6 -top-6 text-[120px] text-white/10 transform rotate-12"></i>
-                    <div id="badge-friend" class="hidden absolute top-4 left-4 bg-white text-black px-3 py-1.5 rounded-full text-[10px] font-extrabold shadow-xl items-center gap-1.5 uppercase tracking-wider text-yellow-600 badge-shimmer">
+                    <div class="absolute top-4 left-4 bg-white text-black px-3 py-1.5 rounded-full text-[10px] font-extrabold shadow-xl flex items-center gap-1.5 uppercase tracking-wider text-yellow-600 badge-shimmer">
                         <i class="fa-solid fa-star"></i> Best Match
                     </div>
                     <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/10 shadow-lg">
                         <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]"></div>
-                        <span class="text-[11px] font-bold text-white tracking-wide" id="count-friend">342 Active</span>
+                        <span class="text-[11px] font-bold text-white tracking-wide" id="count-friend">Active</span>
                     </div>
                     <h2 class="text-[1.6rem] font-extrabold relative z-10 text-white drop-shadow-lg tracking-tight leading-none mb-1">The Friendship Zone</h2>
                     <p class="text-sm text-yellow-100 relative z-10 font-medium opacity-95 mb-3">Good vibes for casual, chill chats.</p>
-                    <div class="flex gap-2 relative z-10">
-                        <span class="bg-black/40 text-white text-[10px] font-bold px-2 py-1 rounded-lg backdrop-blur-md border border-white/10"><i class="fa-solid fa-globe text-yellow-400 mr-1"></i> Global</span>
-                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 mb-6 animate-fade" style="animation-delay: 0.25s;">
+                <div class="grid grid-cols-2 gap-3 mb-6 animate-fade" style="animation-delay: 0.3s;">
                     <div onclick="joinRoom('Heartbreak Support')" id="room-lover" class="aspect-[4/5] rounded-[24px] bg-gradient-to-t from-rose-900 via-rose-800 to-gray-900 relative overflow-hidden p-4 flex flex-col justify-end explore-card shadow-lg border border-rose-500/20">
                         <i class="fa-solid fa-heart-crack absolute top-5 right-5 text-4xl text-rose-400/20"></i>
-                        <div id="badge-lover" class="hidden absolute top-3 left-3 bg-rose-500 text-white px-2 py-1 rounded-md text-[9px] font-extrabold shadow-md uppercase tracking-wider badge-shimmer">Best Match</div>
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 border border-white/10 text-white"><div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> <span id="count-lover">158</span></div>
-                        <h3 class="text-lg font-extrabold leading-tight drop-shadow-md text-white mt-auto tracking-tight mb-2">Heartbreak<br>Support</h3>
-                        <div class="flex gap-1.5"><span class="bg-black/50 text-gray-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/10">🇬🇧 EN</span></div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 border border-white/10 text-white"><div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> <span id="count-lover">Live</span></div>
+                        <h3 class="text-lg font-extrabold leading-tight drop-shadow-md text-white mt-auto tracking-tight">Heartbreak<br>Support</h3>
                     </div>
 
                     <div onclick="joinRoom('Deep Venting')" id="room-motivator" class="aspect-[4/5] rounded-[24px] bg-gradient-to-t from-purple-900 via-purple-800 to-gray-900 relative overflow-hidden p-4 flex flex-col justify-end explore-card shadow-lg border border-purple-500/20">
                         <i class="fa-solid fa-mask absolute top-5 right-5 text-4xl text-purple-400/20"></i>
-                        <div id="badge-motivator" class="hidden absolute top-3 left-3 bg-purple-500 text-white px-2 py-1 rounded-md text-[9px] font-extrabold shadow-md uppercase tracking-wider badge-shimmer">Best Match</div>
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 border border-white/10 text-white"><div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> <span id="count-motivator">102</span></div>
-                        <h3 class="text-lg font-extrabold leading-tight drop-shadow-md text-white mt-auto tracking-tight mb-2">Deep<br>Venting</h3>
-                        <div class="flex gap-1.5"><span class="bg-black/50 text-gray-300 text-[9px] font-bold px-1.5 py-0.5 rounded border border-white/10"><i class="fa-solid fa-globe text-purple-400"></i> Global</span></div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 border border-white/10 text-white"><div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div> <span id="count-motivator">Live</span></div>
+                        <h3 class="text-lg font-extrabold leading-tight drop-shadow-md text-white mt-auto tracking-tight">Deep<br>Venting</h3>
                     </div>
                 </div>
 
             </main>
 
-            <nav class="absolute bottom-0 w-full bg-[#0a0a0c]/95 backdrop-blur-2xl border-t border-gray-800/80 h-[65px] z-30 pb-safe shrink-0">
+            <nav class="absolute bottom-0 w-full bg-[#0B0E14]/95 backdrop-blur-2xl border-t border-gray-800/80 h-[65px] z-30 pb-safe shrink-0">
                 <ul class="flex justify-around items-center h-full px-2">
-                    <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1"><i class="fa-solid fa-house text-[22px]"></i></a>
+                    <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-house text-[22px]"></i></a>
                     <a href="explore.html" class="flex flex-col items-center text-white transition-all p-2 relative hover:-translate-y-1">
                         <i class="fa-solid fa-compass text-[22px]"></i>
                         <div class="absolute -bottom-2 w-1 h-1 bg-white rounded-full"></div>
                     </a>
-                    <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1"><i class="fa-solid fa-user-group text-[22px]"></i></a>
-                    <a href="chat.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1"><i class="fa-solid fa-comment text-[22px]"></i></a>
-                    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 hover:-translate-y-1"><i class="fa-solid fa-circle-user text-[22px]"></i></a>
+                    <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-user-group text-[22px]"></i></a>
+                    <a href="chat.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-comment text-[22px]"></i></a>
+                    <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2"><i class="fa-solid fa-circle-user text-[22px]"></i></a>
                 </ul>
             </nav>
 
-            <div id="roomOverlay" class="absolute inset-0 z-[100] transform translate-y-full flex flex-col hidden shadow-[0_-10px_40px_rgba(0,0,0,0.8)] bg-[#0B0E14] overflow-hidden">
+            <div id="roomOverlay" class="absolute inset-0 z-[100] transform translate-y-full flex flex-col hidden shadow-[0_-10px_40px_rgba(0,0,0,0.9)] bg-[#0B0E14] overflow-hidden">
                 
-                <div id="roomAmbientGlow" class="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-blue-900/30 to-transparent pointer-events-none transition-colors duration-1000 z-0"></div>
-
+                <div id="roomAmbientGlow" class="absolute top-0 left-0 right-0 h-72 bg-gradient-to-b from-blue-900/30 to-transparent pointer-events-none transition-colors duration-1000 z-0"></div>
                 <div id="reactionContainer" class="absolute bottom-[80px] right-4 w-12 h-[60vh] pointer-events-none z-[150]"></div>
 
                 <header id="roomHeaderDrag" class="pt-8 pb-3 px-5 bg-transparent shrink-0 flex justify-between items-center z-20 cursor-grab active:cursor-grabbing">
                     <div class="absolute top-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-white/20 rounded-full"></div>
                     <div class="flex flex-col mt-2">
                         <div class="flex items-center gap-2">
-                            <span id="roomTypeBadge" class="text-[10px] text-gray-300 font-bold uppercase tracking-widest flex items-center gap-1.5 bg-black/40 w-fit px-2.5 py-0.5 rounded-full backdrop-blur-md border border-white/10"><i class="fa-solid fa-globe text-blue-400"></i> Public Space</span>
-                            <span id="roomPing" class="text-[9px] text-green-400 font-bold bg-black/40 px-2 py-0.5 rounded-full border border-white/5">🟢 24ms</span>
+                            <span id="roomTypeBadge" class="text-[10px] text-white font-bold uppercase tracking-widest flex items-center gap-1.5 bg-black/50 px-2.5 py-0.5 rounded-full backdrop-blur-md border border-white/10"><i class="fa-solid fa-globe text-blue-400"></i> Public Space</span>
+                            <span id="roomPing" class="text-[9px] text-green-400 font-bold bg-black/50 px-2 py-0.5 rounded-full border border-white/5">🟢 24ms</span>
                         </div>
                         <h2 id="liveRoomName" class="text-white text-2xl font-black tracking-tight mt-1.5 drop-shadow-md">Room Name</h2>
                     </div>
-                    <button onclick="leaveRoom()" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center transition active:scale-90 border border-white/10 shadow-lg mt-2">
-                        <i class="fa-solid fa-chevron-down text-lg"></i>
-                    </button>
+                    <div class="flex items-center gap-2 mt-2">
+                        <button onclick="toggleLofi()" id="lofiBtn" class="bg-black/30 hover:bg-black/50 text-gray-300 w-9 h-9 rounded-full flex items-center justify-center transition active:scale-90 border border-white/10 backdrop-blur-md shadow-lg"><i class="fa-solid fa-music text-sm"></i></button>
+                        <button onclick="leaveRoom()" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white w-9 h-9 rounded-full flex items-center justify-center transition active:scale-90 border border-white/10 shadow-lg"><i class="fa-solid fa-chevron-down text-sm"></i></button>
+                    </div>
                 </header>
+
+                <audio id="sndLofi" src="https://actions.google.com/sounds/v1/water/rain_on_roof.ogg" loop></audio>
 
                 <div class="bg-white/5 backdrop-blur-3xl border-y border-white/10 p-5 shrink-0 z-20 shadow-xl relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xs text-gray-300 font-bold tracking-widest uppercase">Stage <span class="text-green-400 font-bold ml-1 bg-green-500/20 px-1.5 py-0.5 rounded" id="listenerCount">Scanning...</span></h3>
-                        <button id="micBtn" onclick="toggleRoomMic()" class="bg-white/10 hover:bg-blue-600 text-white text-xs font-extrabold px-4 py-2 rounded-full border border-white/10 transition flex items-center gap-2 active:scale-95 shadow-md">
-                            <i id="micIcon" class="fa-solid fa-microphone-slash"></i> Join Stage
-                        </button>
+                        <h3 class="text-xs text-gray-300 font-bold tracking-widest uppercase">Stage <span class="text-green-400 font-bold ml-1 bg-green-500/20 px-1.5 py-0.5 rounded" id="listenerCount">...</span></h3>
+                        
+                        <div class="flex gap-2">
+                            <button id="micBtn" onclick="toggleRoomMic()" class="bg-white/10 hover:bg-gray-700 text-white text-xs font-extrabold px-4 py-2 rounded-full border border-white/10 transition flex items-center gap-2 active:scale-95 shadow-md">
+                                <i id="micIcon" class="fa-solid fa-microphone"></i> <span id="micText">Join Stage</span>
+                            </button>
+                            <button id="leaveStageBtn" onclick="leaveStage()" class="hidden bg-red-500/20 hover:bg-red-500/40 text-red-400 text-xs font-extrabold w-9 h-9 rounded-full border border-red-500/30 transition flex items-center justify-center active:scale-95">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                            <button id="shareRoomBtn" onclick="shareSecureRoom()" class="hidden bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 text-xs font-extrabold w-9 h-9 rounded-full border border-purple-500/30 transition flex items-center justify-center active:scale-95">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="voiceStageAvatars" class="flex gap-5 overflow-x-auto no-scrollbar pb-2 pt-1 items-center min-h-[80px]">
@@ -289,25 +311,34 @@
                 </div>
 
                 <main id="roomChatStream" class="flex-1 overflow-y-auto p-4 no-scrollbar flex flex-col gap-1.5 relative z-10 scroll-smooth pb-6">
-                    <div class="text-center text-xs text-gray-500 font-medium mb-6 mt-4 uppercase tracking-widest bg-white/5 w-fit mx-auto px-4 py-1.5 rounded-full border border-white/5 shadow-inner">Connected securely</div>
+                    <div class="text-center text-[10px] text-gray-400 font-bold mb-6 mt-4 uppercase tracking-widest bg-white/5 w-fit mx-auto px-4 py-1.5 rounded-full border border-white/5 shadow-inner backdrop-blur-md">Secure Connection</div>
                 </main>
                 
-                <button id="scrollToBottomBtn" onclick="scrollToBottom()" class="absolute bottom-20 right-4 w-10 h-10 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,0,0,0.5)] transform translate-y-20 opacity-0 z-[60] active:scale-90">
+                <button id="scrollToBottomBtn" onclick="scrollToBottomRoom()" class="absolute bottom-20 right-4 w-10 h-10 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,0,0,0.5)] transform translate-y-20 opacity-0 z-[60] active:scale-90">
                     <i class="fa-solid fa-chevron-down text-sm"></i>
                 </button>
 
                 <footer class="room-footer-glass p-3 flex items-center gap-2 relative z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
                     <div class="flex-1 bg-black/50 rounded-full flex items-center px-4 py-2 border border-white/10 focus-within:border-blue-500/50 transition-colors shadow-inner min-h-[44px]">
                         <input type="text" id="roomInput" placeholder="Say something..." class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-500 font-medium" autocomplete="off">
-                        <button id="btnSendRoom" onclick="sendRoomMessage()" class="text-blue-500 text-lg ml-2 active:scale-75 transition-transform scale-0 opacity-0"><i class="fa-solid fa-paper-plane"></i></button>
+                        <button id="btnSendRoom" onclick="sendRoomMessage()" class="text-blue-500 text-lg ml-2 active:scale-75 transition-transform scale-0 opacity-0"><i class="fa-solid fa-circle-arrow-up"></i></button>
                     </div>
 
                     <div class="flex bg-black/50 rounded-full px-1.5 py-1 border border-white/10 shadow-inner">
-                        <button onclick="spawnFloatingReaction('❤️', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform hover:drop-shadow-[0_0_15px_rgba(255,0,0,0.6)]">❤️</button>
-                        <button onclick="spawnFloatingReaction('😂', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform hover:drop-shadow-[0_0_15px_rgba(255,200,0,0.6)]">😂</button>
-                        <button onclick="spawnFloatingReaction('🔥', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform hover:drop-shadow-[0_0_15px_rgba(255,100,0,0.6)]">🔥</button>
+                        <button onclick="spawnFloatingReaction('❤️', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform">❤️</button>
+                        <button onclick="spawnFloatingReaction('😂', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform">😂</button>
+                        <button onclick="spawnFloatingReaction('🔥', this)" class="w-10 h-10 flex items-center justify-center text-2xl active:scale-125 transition-transform">🔥</button>
                     </div>
                 </footer>
+            </div>
+
+            <div id="roomContextMenuOverlay" class="absolute inset-0 z-[150] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideRoomContextMenu(event)">
+                <div class="bg-[#1c1c1e] w-full rounded-t-[28px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col" id="roomContextMenuSheet" onclick="event.stopPropagation()">
+                    <div class="flex justify-center pt-3 pb-2"><div class="w-10 h-1.5 bg-gray-600 rounded-full"></div></div>
+                    <div id="roomMenuOptionsList" class="flex flex-col text-white pb-6 pt-2">
+                        <div id="roomDynamicMenuBtn"></div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -328,63 +359,27 @@
         let activeRoomId = '';
         let activeRoomPass = '';
         let allNetworkUsers = [];
+        
+        let selectedRoomMsgId = null;
+        let selectedRoomMsgIsMe = false;
+        let roomMessageCounter = 0;
+        let isLofiPlaying = false;
 
-        // Dynamic Viewport Engine (Keyboard Fix)
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', () => {
-                document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
-                if (roomOpen && document.activeElement.tagName === 'INPUT') {
-                    setTimeout(scrollToBottom, 50);
-                }
-            });
-        }
-
-        // Haptic Engine
+        // --- Hardware & OS Level Fixes ---
         function hapticFeedback(pattern = 15) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
-        // Hardware Back Button Integration
         window.addEventListener('popstate', function(event) {
             if (roomOpen) { leaveRoomUIOnly(); }
         });
 
-        // Cross-Platform Notifications
-        document.body.addEventListener('click', () => {
-            if ("Notification" in window && Notification.permission === "default") { Notification.requestPermission(); }
-        }, { once: true });
-
-        function showNotification(title, body) {
-            hapticFeedback(20);
-            // In-app
-            const popup = document.getElementById('customNotification');
-            document.getElementById('notifTitle').innerText = title;
-            document.getElementById('notifMessage').innerText = body;
-            popup.classList.remove('hidden'); popup.classList.add('animate-pop');
-            setTimeout(() => { popup.classList.remove('animate-pop'); popup.classList.add('hidden'); }, 4000);
-            
-            // Native Browser
-            if ("Notification" in window && Notification.permission === "granted" && document.visibilityState !== "visible") {
-                new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/3114/3114491.png" });
-            }
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
+                if (roomOpen && document.activeElement.tagName === 'INPUT') setTimeout(scrollToBottomRoom, 50);
+            });
         }
-        function closeNotification(e) { e.stopPropagation(); document.getElementById('customNotification').classList.add('hidden'); }
 
         if (!currentUserId || !loggedInRole) { window.location.replace("login.html"); }
-
-        const themes = {
-            'seeker': { color: 'blue', hex: '#3b82f6', roomMatch: 'seeker' },
-            'motivator': { color: 'emerald', hex: '#10b981', roomMatch: 'motivator' },
-            'lover': { color: 'rose', hex: '#f43f5e', roomMatch: 'lover' },
-            'friend': { color: 'yellow', hex: '#eab308', roomMatch: 'friend' },
-            'all': { color: 'purple', hex: '#a855f7', roomMatch: 'none' }
-        };
-
-        const roomGradients = {
-            'The Friendship Zone': 'from-yellow-600/30',
-            'Heartbreak Support': 'from-rose-600/30',
-            'Deep Venting': 'from-purple-600/30',
-            'Career Stress': 'from-blue-600/30',
-            'Motivation': 'from-emerald-600/30'
-        };
 
         function safeParseJSON(str, fallback) {
             try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; }
@@ -392,7 +387,6 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             loadUserData();
-            applyThemeAnimations(loggedInRole);
             fetchRealUsers();
 
             const rInput = document.getElementById('roomInput');
@@ -404,23 +398,16 @@
                 else { rSendBtn.classList.add('scale-0', 'opacity-0'); rSendBtn.classList.remove('scale-100', 'opacity-100'); }
             });
 
-            const stream = document.getElementById('roomChatStream');
-            stream.addEventListener('scroll', () => {
-                const fab = document.getElementById('scrollToBottomBtn');
-                if (stream.scrollHeight - stream.scrollTop > stream.clientHeight + 150) fab.classList.remove('translate-y-20', 'opacity-0');
-                else fab.classList.add('translate-y-20', 'opacity-0');
-            });
-
             // Swipe to close room logic
             let roomStartY = 0;
             const roomHeader = document.getElementById('roomHeaderDrag');
             roomHeader.addEventListener('touchstart', e => roomStartY = e.touches[0].clientY, {passive:true});
             roomHeader.addEventListener('touchmove', e => {
                 let dy = e.touches[0].clientY - roomStartY;
-                if (dy > 80 && roomOpen) { leaveRoom(); roomStartY = 9999; } // high value to prevent multi-trigger
+                if (dy > 80 && roomOpen) { leaveRoom(); roomStartY = 9999; } 
             }, {passive:true});
             
-            // Live Ping Simulator
+            // Ping Simulator
             setInterval(() => {
                 if(roomOpen) {
                     const ping = Math.floor(Math.random() * 30) + 12;
@@ -438,7 +425,6 @@
                 const data = await response.json();
                 if (Array.isArray(data)) {
                     allNetworkUsers = data.filter(u => u.alias && u.alias !== myAlias && u.isOnline);
-                    // Update counts purely based on real online users for realism
                     if(document.getElementById('count-friend')) document.getElementById('count-friend').innerText = `${allNetworkUsers.length + 1} Active`;
                 }
             } catch(e) {}
@@ -460,17 +446,47 @@
         }
 
         function loadUserData() {
-            document.getElementById('userAvatarRing').querySelector('div').innerHTML = getInnerAvatarHTML(myAlias);
+            document.getElementById('headerAvatarInner').innerHTML = getInnerAvatarHTML(myAlias);
         }
 
-        function applyThemeAnimations(role) {
-            const t = themes[role] || themes['seeker'];
-            document.documentElement.style.setProperty('--glow-color', `rgba(${hexToRgb(t.color)}, 0.4)`);
+        // ==========================================
+        // HEALING & WELLNESS TOOLS
+        // ==========================================
+        function openBreathe() {
+            hapticFeedback();
+            const modal = document.getElementById('breatheModal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+            const textEl = document.getElementById('breatheText');
+            let phase = 0;
+            const phases = ["Inhale deeply...", "Hold...", "Exhale slowly...", "Hold..."];
+            
+            window.breatheInterval = setInterval(() => {
+                phase = (phase + 1) % 4;
+                textEl.innerText = phases[phase];
+                hapticFeedback(10);
+            }, 4000);
+        }
+        function closeBreathe() {
+            hapticFeedback();
+            clearInterval(window.breatheInterval);
+            const modal = document.getElementById('breatheModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 700);
         }
 
-        function hexToRgb(hex) {
-            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
+        function toggleLofi() {
+            hapticFeedback();
+            const audio = document.getElementById('sndLofi');
+            const btn = document.getElementById('lofiBtn');
+            if(isLofiPlaying) {
+                audio.pause(); isLofiPlaying = false;
+                btn.classList.remove('bg-blue-600/50', 'text-blue-200'); btn.classList.add('bg-black/30', 'text-gray-300');
+            } else {
+                audio.play(); isLofiPlaying = true;
+                btn.classList.add('bg-blue-600/50', 'text-blue-200'); btn.classList.remove('bg-black/30', 'text-gray-300');
+            }
         }
 
         // ==========================================
@@ -505,8 +521,6 @@
                 btnCreate.className = "flex-1 py-2 text-sm font-bold text-white bg-gray-700 rounded-lg shadow-md transition";
                 btnJoin.className = "flex-1 py-2 text-sm font-bold text-gray-400 hover:text-white transition";
                 viewCreate.classList.remove('hidden'); viewJoin.classList.add('hidden');
-                
-                // Generate credentials
                 document.getElementById('genRoomId').innerText = Math.floor(100000 + Math.random() * 900000).toString();
                 document.getElementById('genRoomPass').innerText = Math.random().toString(36).slice(-8);
             }
@@ -528,6 +542,13 @@
             setTimeout(() => { joinRoom(`Room ${id}`, 'private'); }, 300);
         }
 
+        function shareSecureRoom() {
+            hapticFeedback();
+            const text = `Join my secure space on HealSpace!\nRoom ID: ${activeRoomId}\nPassword: ${activeRoomPass}`;
+            navigator.clipboard.writeText(text);
+            alert("Room details copied to clipboard!");
+        }
+
         // ==========================================
         // AUTO-MATCH RADAR ENGINE
         // ==========================================
@@ -537,22 +558,17 @@
             radar.classList.remove('hidden');
             setTimeout(()=> radar.classList.remove('opacity-0'), 10);
             
-            // Fake scan time
             setTimeout(() => {
                 radar.classList.add('opacity-0');
                 setTimeout(() => radar.classList.add('hidden'), 500);
-                
-                // Drop into random room or private 1v1
                 joinRoom('Deep Venting', 'public');
             }, 3000);
         }
 
         // ==========================================
-        // NEXT-GEN LIVE ROOM LOGIC
+        // NEXT-GEN LIVE ROOM LOGIC (3-STATE MIC)
         // ==========================================
-        let localMicStream = null;
-        let isMicActive = false;
-        let lastRoomSender = null;
+        let stageState = 'off'; // 'off', 'unmuted', 'muted'
 
         function joinRoom(roomName, type = 'public') {
             hapticFeedback([15, 25]);
@@ -561,19 +577,23 @@
             roomOpen = true; activeRoomType = type;
             history.pushState({roomOpen: true}, "Live Room", `?room=${encodeURIComponent(roomName)}`);
 
-            // Cinematic Title Typewriter
             const titleEl = document.getElementById('liveRoomName');
             titleEl.innerText = "";
             let i = 0;
             function typeWriter() { if (i < roomName.length) { titleEl.innerHTML += roomName.charAt(i); i++; setTimeout(typeWriter, 40); } }
             setTimeout(typeWriter, 200);
             
-            // Badge Update
             const badgeEl = document.getElementById('roomTypeBadge');
-            if(type === 'private') badgeEl.innerHTML = `<i class="fa-solid fa-lock text-purple-400"></i> Secure Space`;
-            else badgeEl.innerHTML = `<i class="fa-solid fa-globe text-blue-400"></i> Public Space`;
+            const shareBtn = document.getElementById('shareRoomBtn');
+            if(type === 'private') {
+                badgeEl.innerHTML = `<i class="fa-solid fa-lock text-purple-400"></i> Secure Space`;
+                shareBtn.classList.remove('hidden');
+            } else { 
+                badgeEl.innerHTML = `<i class="fa-solid fa-globe text-blue-400"></i> Public Space`;
+                shareBtn.classList.add('hidden');
+            }
 
-            // Dynamic Background
+            const roomGradients = { 'The Friendship Zone': 'from-yellow-600/30', 'Heartbreak Support': 'from-rose-600/30', 'Deep Venting': 'from-purple-600/30' };
             const ambient = document.getElementById('roomAmbientGlow');
             ambient.className = `absolute top-0 left-0 right-0 h-64 bg-gradient-to-b ${roomGradients[roomName] || (type==='private' ? 'from-purple-600/30' : 'from-gray-600/30')} to-transparent pointer-events-none transition-colors duration-1000 z-0`;
 
@@ -585,10 +605,9 @@
             populateStageWithRealUsers();
 
             const chatStream = document.getElementById('roomChatStream');
-            chatStream.innerHTML = `<div class="text-center text-[11px] text-gray-400 font-medium mb-6 mt-4 uppercase tracking-widest bg-white/5 w-fit mx-auto px-4 py-1.5 rounded-full border border-white/5 shadow-inner">Welcome to ${roomName}</div>`;
+            chatStream.innerHTML = `<div class="text-center text-[11px] text-gray-400 font-bold mb-6 mt-4 uppercase tracking-widest bg-white/5 w-fit mx-auto px-4 py-1.5 rounded-full border border-white/5 shadow-inner backdrop-blur-md">Connection Secured</div>`;
             lastRoomSender = null;
             
-            // Sparkle Physics
             const btnSend = document.getElementById('btnSendRoom');
             btnSend.classList.add('scale-0', 'opacity-0'); document.getElementById('roomInput').value = '';
         }
@@ -596,50 +615,45 @@
         function populateStageWithRealUsers() {
             const stage = document.getElementById('voiceStageAvatars');
             stage.innerHTML = '';
-            
-            // Pick up to 3 random real users
             let usersToShow = allNetworkUsers.sort(() => 0.5 - Math.random()).slice(0, 3);
             
-            if(usersToShow.length === 0) {
-                document.getElementById('listenerCount').innerText = `1 active`;
-            } else {
+            if(usersToShow.length === 0) { document.getElementById('listenerCount').innerText = `1 active`; } 
+            else {
                 document.getElementById('listenerCount').innerText = `${usersToShow.length + 1} active`;
                 usersToShow.forEach((u, idx) => {
                     let hostBadge = idx === 0 ? `<span class="text-[10px] text-gray-200 font-bold mt-1.5 flex items-center gap-1"><i class="fa-solid fa-crown text-yellow-400 text-[9px]"></i> Host</span>` : `<span class="text-[10px] text-gray-400 font-medium mt-1.5 truncate max-w-[60px]">${u.alias}</span>`;
-                    
                     stage.innerHTML += `
-                        <div class="flex flex-col items-center flex-shrink-0 relative">
-                            <div class="w-14 h-14 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-xl overflow-hidden relative z-10">
+                        <div class="flex flex-col items-center flex-shrink-0 relative cursor-pointer" onclick="openMiniProfile('${u.alias}')">
+                            <div class="w-14 h-14 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-xl overflow-hidden relative z-10 hover:border-blue-500 transition">
                                 ${getInnerAvatarHTML(u.alias)}
                             </div>
                             ${hostBadge}
-                        </div>
-                    `;
+                        </div>`;
                 });
             }
 
-            // My Slot (Hidden initially)
             stage.innerHTML += `
-                <div id="myVoiceSlot" class="flex flex-col items-center flex-shrink-0 hidden relative animate-fade">
+                <div id="myVoiceSlot" class="flex flex-col items-center flex-shrink-0 hidden relative animate-fade cursor-pointer" onclick="openMiniProfile('${myAlias}')">
                     <div id="myVoiceAvatar" class="w-14 h-14 rounded-full bg-gray-800 border-2 border-transparent flex items-center justify-center text-xl overflow-hidden relative z-10">
                         ${getInnerAvatarHTML(myAlias)}
-                        <div class="audio-bars"><span class="bg-blue-400"></span><span class="bg-blue-400"></span><span class="bg-blue-400"></span></div>
+                        <div id="myAudioBars" class="audio-bars"><span class="bg-blue-400"></span><span class="bg-blue-400"></span><span class="bg-blue-400"></span></div>
+                        <div id="myMuteBadge" class="absolute inset-0 bg-red-500/20 backdrop-blur-[2px] hidden items-center justify-center"><i class="fa-solid fa-microphone-slash text-white text-lg drop-shadow-md"></i></div>
                     </div>
                     <span class="text-[11px] text-blue-400 font-bold mt-1.5">You</span>
-                </div>
-            `;
+                </div>`;
         }
 
         function leaveRoom() {
-            if(history.state && history.state.roomOpen) {
-                history.back(); // triggers popstate -> leaveRoomUIOnly
-            } else { leaveRoomUIOnly(); }
+            if(history.state && history.state.roomOpen) { history.back(); } 
+            else { leaveRoomUIOnly(); }
         }
 
         function leaveRoomUIOnly() {
             hapticFeedback(15);
             try{ document.getElementById('sndLeave').play().catch(()=>{}); }catch(e){}
             roomOpen = false;
+            if(isLofiPlaying) toggleLofi();
+            
             const overlay = document.getElementById('roomOverlay');
             overlay.classList.remove('room-enter');
             overlay.classList.add('room-exit');
@@ -647,61 +661,98 @@
             setTimeout(() => { 
                 overlay.classList.add('hidden'); 
                 document.getElementById('roomChatStream').innerHTML = ''; 
-                if(isMicActive) toggleRoomMic(); 
+                if(stageState !== 'off') leaveStage(); 
             }, 400);
         }
 
-        // --- Voice Stage Logic ---
+        // --- 3-State Voice Stage Logic ---
         function toggleRoomMic() {
-            hapticFeedback([10, 20]);
             const micBtn = document.getElementById('micBtn');
             const micIcon = document.getElementById('micIcon');
+            const micText = document.getElementById('micText');
             const mySlot = document.getElementById('myVoiceSlot');
             const myAvatar = document.getElementById('myVoiceAvatar');
+            const muteBadge = document.getElementById('myMuteBadge');
+            const leaveBtn = document.getElementById('leaveStageBtn');
 
-            if (!isMicActive) {
-                if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                        localMicStream = stream; isMicActive = true;
-                        myAvatar.classList.add('is-speaking', 'voice-glow');
-                        micBtn.classList.replace('bg-white/10', 'bg-blue-600');
-                        micIcon.className = "fa-solid fa-microphone";
-                        micBtn.innerHTML = `<i class="fa-solid fa-microphone"></i> On Stage`;
-                        mySlot.classList.remove('hidden');
-                        try{ document.getElementById('sndPop').play().catch(()=>{}); }catch(e){}
-                    }).catch(err => { alert("Microphone access is required to join stage."); });
-                } else { alert("Browser does not support Voice."); }
-            } else {
-                if(localMicStream) { localMicStream.getTracks().forEach(track => track.stop()); localMicStream = null; }
-                isMicActive = false;
+            if (stageState === 'off') {
+                hapticFeedback([10, 20]);
+                stageState = 'unmuted';
+                mySlot.classList.remove('hidden');
+                myAvatar.classList.add('is-speaking', 'voice-glow');
+                myAvatar.classList.remove('voice-muted');
+                muteBadge.classList.replace('flex', 'hidden');
+
+                micBtn.classList.replace('bg-white/10', 'bg-blue-600');
+                micIcon.className = "fa-solid fa-microphone text-white";
+                micText.innerText = "Mute"; micText.className = "text-white";
+                leaveBtn.classList.remove('hidden');
+                try{ document.getElementById('sndPop').play().catch(()=>{}); }catch(e){}
+                
+            } else if (stageState === 'unmuted') {
+                hapticFeedback(20);
+                stageState = 'muted';
                 myAvatar.classList.remove('is-speaking', 'voice-glow');
-                micBtn.classList.replace('bg-blue-600', 'bg-white/10');
-                micIcon.className = "fa-solid fa-microphone-slash";
-                micBtn.innerHTML = `<i class="fa-solid fa-microphone-slash"></i> Join Stage`;
-                mySlot.classList.add('hidden');
-                try{ document.getElementById('sndLeave').play().catch(()=>{}); }catch(e){}
+                myAvatar.classList.add('voice-muted');
+                muteBadge.classList.replace('hidden', 'flex');
+
+                micBtn.classList.replace('bg-blue-600', 'bg-gray-700');
+                micIcon.className = "fa-solid fa-microphone-slash text-red-400";
+                micText.innerText = "Unmute"; micText.className = "text-gray-300";
+
+            } else if (stageState === 'muted') {
+                hapticFeedback(10);
+                stageState = 'unmuted';
+                myAvatar.classList.add('is-speaking', 'voice-glow');
+                myAvatar.classList.remove('voice-muted');
+                muteBadge.classList.replace('flex', 'hidden');
+
+                micBtn.classList.replace('bg-gray-700', 'bg-blue-600');
+                micIcon.className = "fa-solid fa-microphone text-white";
+                micText.innerText = "Mute"; micText.className = "text-white";
+                try{ document.getElementById('sndPop').play().catch(()=>{}); }catch(e){}
             }
         }
 
-        // --- Text Chat Logic (Smart Grouping, Jumbo Emojis & Mentions) ---
+        function leaveStage() {
+            hapticFeedback(30);
+            stageState = 'off';
+            const micBtn = document.getElementById('micBtn');
+            const micIcon = document.getElementById('micIcon');
+            const micText = document.getElementById('micText');
+            const mySlot = document.getElementById('myVoiceSlot');
+            const myAvatar = document.getElementById('myVoiceAvatar');
+            const leaveBtn = document.getElementById('leaveStageBtn');
+
+            myAvatar.classList.remove('is-speaking', 'voice-glow', 'voice-muted');
+            mySlot.classList.add('hidden');
+            leaveBtn.classList.add('hidden');
+
+            micBtn.className = "bg-white/10 hover:bg-gray-700 text-white text-xs font-extrabold px-4 py-2 rounded-full border border-white/10 transition flex items-center gap-2 active:scale-95 shadow-md";
+            micIcon.className = "fa-solid fa-microphone";
+            micText.innerText = "Join Stage"; micText.className = "";
+            try{ document.getElementById('sndLeave').play().catch(()=>{}); }catch(e){}
+        }
+
+        // --- Room Chat Engine (Optimistic UI & Unsend) ---
         function sendRoomMessage() {
             const input = document.getElementById('roomInput');
             let text = input.value.trim();
             if(!text) return;
             
             hapticFeedback(10);
+            roomMessageCounter++;
+            const msgId = `rm-${Date.now()}-${roomMessageCounter}`;
             
-            // Jumbo Emoji Check (Only emojis, max 3)
             const isEmojiOnly = /^[\p{Emoji}\s]+$/u.test(text);
             const isJumbo = isEmojiOnly && Array.from(text.replace(/\s/g, '')).length <= 3;
-            
-            // Mention Check
             text = text.replace(/(@\w+)/g, '<span class="mention-tag">$1</span>');
 
             const chatStream = document.getElementById('roomChatStream');
             const isGrouped = lastRoomSender === myAlias;
 
             const msgDiv = document.createElement('div');
+            msgDiv.id = msgId;
             msgDiv.className = `flex flex-col mb-[2px] animate-fade items-end`; 
             
             let headerHTML = '';
@@ -717,27 +768,94 @@
 
             msgDiv.innerHTML = `
                 ${headerHTML}
-                <div class="${bubbleClass}">${text}</div>
+                <div class="${bubbleClass}" oncontextmenu="event.preventDefault(); showRoomContextMenu('${msgId}', true)">${text}</div>
             `;
 
+            let pressTimer;
+            const bubbleEl = msgDiv.querySelector('div:last-child');
+            bubbleEl.addEventListener('touchstart', e => { pressTimer = setTimeout(()=>{ showRoomContextMenu(msgId, true); }, 500); }, {passive:true});
+            bubbleEl.addEventListener('touchend', ()=>clearTimeout(pressTimer));
+            bubbleEl.addEventListener('touchmove', ()=>clearTimeout(pressTimer));
+
+            // Swipe to reply logic
+            let startX = 0;
+            bubbleEl.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
+            bubbleEl.addEventListener('touchmove', e => { 
+                let diff = e.touches[0].clientX - startX;
+                if(diff > 40) { bubbleEl.style.transform = 'translateX(20px)'; }
+            }, {passive: true});
+            bubbleEl.addEventListener('touchend', e => {
+                if(bubbleEl.style.transform !== '') {
+                    bubbleEl.style.transform = '';
+                    hapticFeedback(20);
+                    // trigger reply visually
+                    document.getElementById('roomInput').focus();
+                }
+            });
+
             chatStream.appendChild(msgDiv);
-            scrollToBottom();
+            scrollToBottomRoom();
             
-            input.value = '';
-            input.style.height = 'auto';
+            input.value = ''; input.style.height = 'auto';
             document.getElementById('btnSendRoom').classList.add('scale-0', 'opacity-0');
             lastRoomSender = myAlias;
         }
         
-        function scrollToBottom() {
+        function scrollToBottomRoom() {
             const stream = document.getElementById('roomChatStream');
             stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
             document.getElementById('scrollToBottomBtn').classList.add('translate-y-20', 'opacity-0');
         }
 
-        // --- Physics Floating Reactions (Sine Wave) ---
+        // --- Room Message Context Menu (Unsend) ---
+        function showRoomContextMenu(id, isMe) {
+            hapticFeedback(25);
+            selectedRoomMsgId = id; selectedRoomMsgIsMe = isMe;
+            
+            const dynamicBtn = document.getElementById('roomDynamicMenuBtn');
+            if(isMe) {
+                dynamicBtn.innerHTML = `<button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition text-[16px] text-left active:bg-[#3a3a3c] w-full text-red-500" onclick="unsendRoomMessage()"><i class="fa-regular fa-trash-can text-xl w-6 text-center"></i> Unsend Message</button>`;
+            } else {
+                dynamicBtn.innerHTML = `
+                <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition text-[16px] text-left active:bg-[#3a3a3c] w-full" onclick="handleRoomMenuAction('profile')"><i class="fa-regular fa-user text-xl w-6 text-center text-gray-300"></i> View Profile</button>
+                <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#3a3a3c] transition text-[16px] text-left active:bg-[#3a3a3c] w-full text-red-500" onclick="handleRoomMenuAction('report')"><i class="fa-solid fa-triangle-exclamation text-xl w-6 text-center"></i> Report Message</button>`;
+            }
+
+            const overlay = document.getElementById('roomContextMenuOverlay');
+            const sheet = document.getElementById('roomContextMenuSheet');
+            overlay.classList.remove('hidden'); overlay.classList.add('flex');
+            setTimeout(() => { overlay.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
+        }
+
+        function hideRoomContextMenu(e) {
+            if(e && e.target !== document.getElementById('roomContextMenuOverlay')) return;
+            const overlay = document.getElementById('roomContextMenuOverlay');
+            const sheet = document.getElementById('roomContextMenuSheet');
+            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
+            setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300);
+        }
+
+        function unsendRoomMessage() {
+            hapticFeedback(30);
+            const msgEl = document.getElementById(selectedRoomMsgId);
+            if(msgEl) {
+                msgEl.classList.add('msg-unsend');
+                setTimeout(() => msgEl.remove(), 300);
+            }
+            hideRoomContextMenu();
+        }
+
+        function handleRoomMenuAction(action) {
+            hapticFeedback(); hideRoomContextMenu();
+            if(action === 'reply') { document.getElementById('roomInput').focus(); }
+            if(action === 'copy') { alert("Text copied"); }
+            if(action === 'profile') { openMiniProfile("UnknownUser"); } 
+            if(action === 'report') { alert("Message reported to moderators."); }
+        }
+
+        // --- Physics Floating Reactions ---
         function spawnFloatingReaction(emoji, btnEl) {
-            hapticFeedback(20);
+            hapticFeedback(15);
             try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
             
             btnEl.style.transform = 'scale(1.4)';
@@ -748,18 +866,32 @@
             reactEl.className = 'floating-emoji';
             reactEl.innerText = emoji;
 
-            const startScale = 0.8 + Math.random() * 0.7; // 0.8 to 1.5
-            const drift = (Math.random() * 100 - 50) + 'px'; // -50px to +50px
-            const duration = 2 + Math.random() * 1.5; // 2s to 3.5s
+            const startScale = 0.8 + Math.random() * 0.7; 
+            const drift = (Math.random() * 100 - 50) + 'px'; 
+            const duration = 2 + Math.random() * 1.5; 
             
             reactEl.style.setProperty('--start-scale', startScale);
             reactEl.style.setProperty('--drift', drift);
             reactEl.style.animationDuration = duration + 's';
-            
             reactEl.style.right = (Math.random() * 40) + 'px';
 
             container.appendChild(reactEl);
             setTimeout(() => { reactEl.remove(); }, duration * 1000);
+        }
+
+        // --- Notification Hub Mini Actions ---
+        function toggleNotifCenter() {
+            hapticFeedback();
+            const hub = document.getElementById('notifDropdownMenu');
+            if(hub.classList.contains('notif-closed')) {
+                hub.classList.remove('notif-closed', 'hidden');
+                hub.classList.add('notif-open', 'flex');
+                document.getElementById('notifDot').classList.add('hidden'); 
+            } else {
+                hub.classList.add('notif-closed');
+                hub.classList.remove('notif-open');
+                setTimeout(()=> hub.classList.replace('flex','hidden'), 300);
+            }
         }
     </script>
 </body>
