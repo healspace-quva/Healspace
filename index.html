@@ -24,12 +24,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 
-        /* Minimal Reset & Strict Mobile Lock */
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030408; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; background: #030408; }
         #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #080a10; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,1); transition: background-color 0.5s ease, filter 0.5s ease; }
 
-        /* Smooth Cinematic Animations */
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
@@ -39,46 +37,50 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Dynamic Category Animations */
         @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px rgba(0,0,0,0.4); } 50% { box-shadow: 0 0 25px var(--glow-color); } }
         .theme-pulse { animation: pulseGlow 4s infinite ease-in-out; }
 
-        /* Stealth Incognito Mode */
         .incognito-active { background-color: #020202 !important; }
         .incognito-active::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 20%, rgba(88, 28, 135, 0.12) 100%); pointer-events: none; z-index: 1; }
         .incognito-active header, .incognito-active .search-bar-container { background-color: rgba(2,2,2,0.85) !important; border-bottom-color: rgba(255,255,255,0.03) !important; }
         .incognito-active nav { background-color: rgba(17, 19, 26, 0.95) !important; border-color: rgba(255,255,255,0.05) !important; }
         .incognito-active .feed-card { background-color: #050505 !important; border-color: rgba(147, 51, 234, 0.2) !important; box-shadow: 0 4px 20px rgba(147, 51, 234, 0.05) !important; }
         
-        /* Premium Minimal Feed Cards */
         .feed-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translateZ(0); }
         .feed-card:active { transform: scale(0.97); filter: brightness(1.1); }
         
-        /* Online Status Ring */
-        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; }
+        /* Swipe Action */
+        .swipe-action-bg { position: absolute; top: 0; bottom: 0; left: 0; background: linear-gradient(90deg, #10b981 0%, transparent 100%); width: 100px; display: flex; align-items: center; padding-left: 20px; opacity: 0; z-index: -1; border-radius: 20px 0 0 20px; transition: opacity 0.2s; }
+        .swipe-active { transform: translateX(60px); }
+        .swipe-active + .swipe-action-bg { opacity: 1; z-index: 0; }
 
-        /* Notification Dropdown */
+        @keyframes ringPulse { 0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); } 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); } }
+        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; animation: ringPulse 2s infinite; }
+
         .notif-dropdown { transform-origin: top right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .notif-open { transform: scale(1); opacity: 1; pointer-events: auto; }
         .notif-closed { transform: scale(0.95); opacity: 0; pointer-events: none; }
 
-        /* Elegant Skeleton Loading Shimmer */
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
+        .skeleton-bg { background: linear-gradient(110deg, #111827 8%, #1f2937 18%, #111827 33%); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; }
         
-        /* Physics Pull to Refresh */
         #ptr-indicator { transition: height 0.2s ease, opacity 0.2s ease; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
         .spin-slow { animation: spinSlow 1s linear infinite; }
         
-        /* Filter Chips */
-        .filter-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(31, 41, 55, 0.6); color: #9ca3af; border: 1px solid rgba(75, 85, 99, 0.4); cursor: pointer; transition: all 0.2s; white-space: nowrap; backdrop-filter: blur(5px); }
-        .filter-chip:active { transform: scale(0.95); }
-        .filter-chip.active { background: rgba(59, 130, 246, 0.15); color: white; border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        .filter-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(31, 41, 55, 0.6); color: #9ca3af; border: 1px solid rgba(75, 85, 99, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space: nowrap; backdrop-filter: blur(5px); }
+        .filter-chip:active { transform: scale(0.90); }
+        .filter-chip.active { background: rgba(59, 130, 246, 0.15); color: white; border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); transform: scale(1.05); }
 
-        /* Secret Form Inputs */
         .input-glass { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; padding: 14px 16px; font-size: 1rem; outline: none; transition: 0.3s; font-weight: 600; text-align: center; letter-spacing: 2px; }
         .input-glass:focus { border-color: #e11d48; background: rgba(225, 29, 72, 0.1); box-shadow: 0 0 15px rgba(225, 29, 72, 0.3); }
+
+        /* Multi-Particle Wave */
+        @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px) translateX(var(--drift)); opacity: 0; } }
+        .floating-wave { position: absolute; font-size: 20px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
+
+        /* Dynamic Header Scroll */
+        .header-scrolled { background: rgba(8, 10, 16, 0.95) !important; border-bottom-color: rgba(255,255,255,0.08) !important; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -108,6 +110,11 @@
                 </div>
             </div>
 
+            <div id="profilePeek" class="fixed z-[300] bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-3 shadow-2xl transition-opacity duration-200 opacity-0 pointer-events-none transform -translate-x-1/2 -translate-y-full">
+                <h4 class="text-white font-bold text-[13px] mb-1" id="peekName">Name</h4>
+                <p class="text-gray-400 text-[10px] italic" id="peekBio">"Bio goes here"</p>
+            </div>
+
             <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
                 <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
                     <div class="w-10 h-1 bg-gray-700 rounded-full mb-6"></div>
@@ -120,10 +127,10 @@
                 </div>
             </div>
 
-            <header id="mainHeader" class="flex justify-between items-center px-4 pt-12 pb-3 z-30 bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 sticky top-0 shrink-0 transition-all duration-500">
+            <header id="mainHeader" class="flex justify-between items-center px-4 pt-12 pb-3 z-30 bg-[#080a10]/80 backdrop-blur-xl border-b border-transparent sticky top-0 shrink-0 transition-all duration-300">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center theme-pulse transition-all duration-500 shadow-lg" id="logoIconContainer">
-                        <div class="w-full h-full bg-[#080a10] rounded-full flex items-center justify-center text-xs overflow-hidden relative" id="headerAvatarInner"><i class="fa-solid fa-leaf text-pink-500 text-[14px] transition-colors" id="logoIcon"></i></div>
+                        <div class="w-full h-full bg-[#080a10] rounded-full flex items-center justify-center text-xs overflow-hidden relative" id="headerAvatarInner">✨</div>
                     </div>
                     <h1 class="text-[18px] font-bold tracking-tight text-white drop-shadow-md">HealSpace.</h1>
                 </div>
@@ -156,6 +163,14 @@
                     <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Connect with people who match your energy.</p>
                 </div>
 
+                <div id="affirmationBox" class="mb-5 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-white/5 rounded-2xl p-3 flex items-center gap-3 shadow-md backdrop-blur-sm animate-enter px-1 mx-1 shrink-0" style="animation-delay: 0.08s;">
+                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm shrink-0 border border-white/10" id="affirmationIcon">☀️</div>
+                    <div>
+                        <h4 class="text-white text-[9px] font-bold uppercase tracking-widest mb-0.5 opacity-80" id="affirmationTitle">Daily Affirmation</h4>
+                        <p class="text-blue-100 text-[11px] font-medium leading-tight" id="affirmationText">"You are doing your best, and that is more than enough."</p>
+                    </div>
+                </div>
+
                 <div id="loverTabs" class="flex gap-2 mb-4 hidden animate-enter px-1 shrink-0" style="animation-delay: 0.1s;">
                     <button id="tabCouple" onclick="switchLoverTab('couple')" class="flex-1 py-2 bg-rose-500/10 text-rose-400 rounded-xl font-bold text-[11px] border border-rose-500/30 shadow-sm transition active:scale-95">In Love ❤️</button>
                     <button id="tabHeartbreak" onclick="switchLoverTab('heartbreak')" class="flex-1 py-2 bg-gray-800/40 text-gray-400 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95">Heartbreak 💔</button>
@@ -168,28 +183,28 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer transform scale-90">
                       <input type="checkbox" id="incognitoCheckbox" class="sr-only peer" onchange="toggleIncognito()">
-                      <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500 shadow-inner"></div>
+                      <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"></div>
                     </label>
                 </div>
 
                 <div id="homeFilterChips" class="flex gap-2 overflow-x-auto no-scrollbar mb-4 px-1 shrink-0 animate-enter" style="animation-delay: 0.2s;">
                     <button class="filter-chip active flex-shrink-0" onclick="setHomeFilter('all', this)"><i class="fa-solid fa-layer-group mr-1.5"></i> All Vibes</button>
                     <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('motivator', this)"><i class="fa-solid fa-leaf text-emerald-400 mr-1.5"></i> Listeners</button>
-                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('seeker', this)"><i class="fa-solid fa-hand-holding-heart text-blue-400 mr-1.5"></i> Need Support</button>
+                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('seeker', this)"><i class="fa-solid fa-hand-holding-heart text-blue-400 mr-1.5"></i> Seekers</button>
                     <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('friend', this)"><i class="fa-solid fa-face-smile-beam text-yellow-400 mr-1.5"></i> Friends</button>
                 </div>
 
                 <div id="onlineTrayContainer" class="mb-5 animate-enter shrink-0 px-1 hidden" style="animation-delay: 0.25s;">
                     <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2.5 flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Online Now</h3>
-                    <div id="onlineUsersTray" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
+                    <div id="onlineUsersTray" class="flex gap-3 overflow-x-auto no-scrollbar pb-2"></div>
                 </div>
 
                 <div id="feedContainer" class="relative z-10 w-full shrink-0"></div>
 
                 <div id="secretChatContainer" class="hidden flex-1 flex-col bg-[#050508]/80 backdrop-blur-2xl rounded-[24px] border border-rose-900/30 shadow-[0_0_40px_rgba(244,63,94,0.05)] relative overflow-hidden animate-enter mx-1 mb-4" style="animation-delay: 0.1s;">
                     <div class="flex items-center justify-center p-6 border-b border-rose-900/20 bg-[#0a0a0c]/50">
-                        <div class="w-12 h-12 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.4)]">
-                            <i class="fa-solid fa-lock text-rose-500 text-[20px]"></i>
+                        <div class="w-12 h-12 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.4)] relative">
+                            <i class="fa-solid fa-lock text-rose-500 text-[20px]" id="vaultLockIcon"></i>
                         </div>
                     </div>
                     
@@ -214,18 +229,23 @@
 
                         <div id="vaultCreateView" class="space-y-4 hidden">
                             <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center">
+                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-copy hover:bg-black/50 transition" onclick="copyVaultData()">
                                     <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Vault ID</p>
                                     <h2 class="text-xl font-black text-rose-400 tracking-wider" id="genVaultId">------</h2>
                                 </div>
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center">
+                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-copy hover:bg-black/50 transition" onclick="copyVaultData()">
                                     <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Password</p>
                                     <h2 class="text-md font-bold text-white mt-1 tracking-wider" id="genVaultPass">------</h2>
                                 </div>
                             </div>
-                            <button onclick="executeVaultCreate()" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold py-3.5 rounded-xl mt-2 active:scale-95 transition shadow-[0_0_20px_rgba(225,29,72,0.4)] flex items-center justify-center gap-2">
-                                Start Secure Vault <i class="fa-solid fa-key text-sm"></i>
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="shareVaultLink()" class="w-12 bg-white/10 hover:bg-white/20 text-white rounded-xl active:scale-95 transition flex items-center justify-center">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
+                                <button onclick="executeVaultCreate()" class="flex-1 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold py-3.5 rounded-xl active:scale-95 transition shadow-[0_0_20px_rgba(225,29,72,0.4)] flex items-center justify-center gap-2">
+                                    Start Secure Vault <i class="fa-solid fa-key text-sm"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,8 +308,9 @@
         let isIncognito = false;
         let allRealUsers = []; 
         let currentFilter = 'all';
+        let scrollPos = 0;
 
-        // --- FALLBACK MOCK DATA (Prevents Blank Screen if Network Fails/Empty) ---
+        // --- FALLBACK MOCK DATA (Prevents Blank Screen) ---
         const fallbackUsers = [
             { alias: 'Dr. Evelyn', role: 'motivator', isOnline: true, mainLanguage: 'English 🇬🇧', emoji: '🧠', vibe: "Ready to listen." },
             { alias: 'Marcus', role: 'motivator', isOnline: false, mainLanguage: 'Spanish 🇪🇸', emoji: '⚡', vibe: "Mental health matters." },
@@ -301,12 +322,18 @@
         // --- HAPTIC ENGINE ---
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
-        // --- TIME-AWARE CONTEXTUAL GREETING ---
+        // --- TIME-AWARE CONTEXTUAL GREETING & AFFIRMATION ---
         function setDynamicGreeting(role) {
             const hour = new Date().getHours();
             let timeGreet = "Good evening";
-            if(hour < 12) timeGreet = "Good morning";
-            else if(hour < 18) timeGreet = "Good afternoon";
+            let affIcon = "🌙";
+            let affText = `"Rest easy, you survived today."`;
+
+            if(hour < 12) {
+                timeGreet = "Good morning"; affIcon = "☀️"; affText = `"You are doing your best, and that is more than enough."`;
+            } else if(hour < 18) {
+                timeGreet = "Good afternoon"; affIcon = "☕"; affText = `"Take a deep breath and keep going."`;
+            }
 
             const roleTexts = {
                 seeker: { title: `${timeGreet},<br>we're here.`, subtitle: "Connect with verified listeners." },
@@ -320,6 +347,14 @@
             const data = roleTexts[role] || roleTexts['seeker'];
             document.getElementById('pageTitle').innerHTML = data.title;
             document.getElementById('pageSubtitle').innerText = data.subtitle;
+
+            const affBox = document.getElementById('affirmationBox');
+            if (role === 'lover_couple') { affBox.classList.add('hidden'); }
+            else { 
+                affBox.classList.remove('hidden'); 
+                document.getElementById('affirmationIcon').innerText = affIcon;
+                document.getElementById('affirmationText').innerText = affText;
+            }
         }
 
         // --- UNIFIED AVATAR FETCHER ---
@@ -350,17 +385,28 @@
 
             document.getElementById('headerAvatarInner').innerHTML = getInnerAvatarHTML(myAlias);
 
-            // INSTANT BOOT SKELETON
+            // Dynamic Header Scroll 
+            const scrollArea = document.getElementById('mainScrollArea');
+            const header = document.getElementById('mainHeader');
+            scrollArea.addEventListener('scroll', () => {
+                if (scrollArea.scrollTop > 20) header.classList.add('header-scrolled');
+                else header.classList.remove('header-scrolled');
+                scrollPos = scrollArea.scrollTop;
+            });
+
+            // Restore scroll if coming back from chat
+            const savedScroll = sessionStorage.getItem('hs_home_scroll');
+            if (savedScroll) {
+                setTimeout(() => scrollArea.scrollTop = parseInt(savedScroll), 100);
+                sessionStorage.removeItem('hs_home_scroll');
+            }
+
             applyThemeAnimations(currentRole || 'seeker');
             
             if (currentRole === 'lover') {
                 document.getElementById('loverTabs').classList.remove('hidden');
                 document.getElementById('loverTabs').classList.add('flex');
-                
-                // Hide chips for lover view
                 document.getElementById('homeFilterChips').classList.add('hidden');
-                document.getElementById('homeFilterChips').classList.remove('flex');
-                
                 switchLoverTab('couple'); 
             } else {
                 fetchRealFeed(currentRole || 'seeker');
@@ -375,15 +421,13 @@
             hapticFeedback(10);
             currentFilter = filterType;
             
-            // UI Update
             document.querySelectorAll('#homeFilterChips .filter-chip').forEach(c => {
-                c.classList.remove('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_0_15px_rgba(59,130,246,0.2)]');
+                c.classList.remove('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_4px_15px_rgba(59,130,246,0.2)]', 'scale-105');
                 c.classList.add('bg-gray-800/60', 'text-gray-400');
             });
             btnEl.classList.remove('bg-gray-800/60', 'text-gray-400');
-            btnEl.classList.add('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_0_15px_rgba(59,130,246,0.2)]');
+            btnEl.classList.add('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_4px_15px_rgba(59,130,246,0.2)]', 'scale-105');
 
-            // Re-render feed
             filterAndRenderFeed(currentRole);
         }
 
@@ -608,6 +652,12 @@
                 btnCreate.className = "flex-1 py-2.5 text-sm font-bold text-white bg-rose-600/80 rounded-lg shadow-md transition";
                 btnJoin.className = "flex-1 py-2.5 text-sm font-bold text-gray-400 hover:text-white transition";
                 viewCreate.classList.remove('hidden'); viewJoin.classList.add('hidden');
+                
+                // Vault Animation
+                const icon = document.getElementById('vaultLockIcon');
+                icon.className = "fa-solid fa-lock-open text-rose-500 text-[20px] transform scale-110 transition-transform";
+                setTimeout(() => icon.className = "fa-solid fa-lock text-rose-500 text-[20px] transition-transform", 500);
+
                 document.getElementById('genVaultId').innerText = Math.floor(100000 + Math.random() * 900000).toString();
                 document.getElementById('genVaultPass').innerText = Math.random().toString(36).slice(-8);
             }
@@ -619,6 +669,7 @@
             const id = document.getElementById('genVaultId').innerText;
             const pass = document.getElementById('genVaultPass').innerText;
             
+            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => {
                 window.location.href = `chat.html?chatWith=SecureVault_${id}&secret=true&pass=${pass}`;
             }, 300);
@@ -631,15 +682,42 @@
             if(id.length !== 6 || !pass) { alert("Please enter a valid 6-digit Vault ID and Password."); return; }
             
             try{ document.getElementById('sndSwoosh').play().catch(()=>{}); }catch(e){}
+            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => {
                 window.location.href = `chat.html?chatWith=SecureVault_${id}&secret=true&pass=${pass}`;
             }, 300);
         }
 
+        function copyVaultData() {
+            hapticFeedback(10);
+            const id = document.getElementById('genVaultId').innerText;
+            const pass = document.getElementById('genVaultPass').innerText;
+            navigator.clipboard.writeText(`HealSpace Vault\nID: ${id}\nPass: ${pass}`);
+            
+            // Show toast visually
+            const p = document.getElementById('customNotification');
+            document.getElementById('notifTitle').innerText = "Copied!";
+            document.getElementById('notifMessage').innerText = "Vault details copied to clipboard.";
+            p.classList.remove('hidden'); p.classList.add('animate-pop');
+            setTimeout(() => { p.classList.remove('animate-pop'); p.classList.add('hidden'); }, 2000);
+        }
+
+        function shareVaultLink() {
+            hapticFeedback(10);
+            const id = document.getElementById('genVaultId').innerText;
+            const pass = document.getElementById('genVaultPass').innerText;
+            const text = `Join my secure space on HealSpace!\nRoom ID: ${id}\nPassword: ${pass}`;
+            
+            if (navigator.share) {
+                navigator.share({ title: 'HealSpace Vault', text: text });
+            } else {
+                copyVaultData();
+            }
+        }
+
         function panicEscape() {
             hapticFeedback([30, 50]);
             
-            // Dramatic exit animation
             const vault = document.getElementById('secretChatContainer');
             vault.style.transition = "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
             vault.style.transform = "scale(0.9) translateY(20px)";
@@ -683,15 +761,13 @@
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
                 
-                // Safety check to prevent blank screen if backend errors out
-                if (Array.isArray(data)) {
+                if (Array.isArray(data) && data.length > 0) {
                     processUsersData(data, roleKey);
                 } else {
                     processUsersData(fallbackUsers, roleKey);
                 }
             } catch(err) {
-                // If completely offline, load realistic mock fallback users so it never looks broken
-                processUsersData(fallbackUsers, roleKey);
+                processUsersData(fallbackUsers, roleKey); // Fallback so UI doesn't break
             }
         }
 
@@ -734,7 +810,6 @@
         function filterAndRenderFeed(roleKey) {
             let primary = [], secondary = [];
             
-            // Pool is either all users, or filtered by the horizontal Chips
             let pool = allRealUsers;
             if (currentFilter !== 'all') {
                 pool = allRealUsers.filter(u => u.role === currentFilter);
@@ -787,17 +862,26 @@
 
             return `
                 <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative shadow-sm" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
-                    <div class="flex items-start gap-3">
+                    
+                    <div class="swipe-action-bg">
+                        <i class="fa-solid fa-paper-plane text-white text-2xl"></i>
+                    </div>
+
+                    <div class="flex items-start gap-3 bg-transparent relative z-10" id="card-inner-${user.alias}">
                         <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
                             <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user.alias)}</div>
                             ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
                         </div>
-                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" 
+                             onmousedown="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
+                             onmouseup="stopProfilePeek()" 
+                             ontouchstart="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
+                             ontouchend="stopProfilePeek()">
                             <h3 class="feed-card-title text-white font-bold text-[15px] flex items-center gap-1.5 truncate transition-colors">
                                 ${user.alias} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${d.age}</span>
                             </h3>
                             <p class="text-${d.color}-400 text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-90">${d.displayRole}</p>
-                            <div class="mt-1 flex flex-col gap-0.5">
+                            <div class="mt-1 flex flex-col gap-0.5 pointer-events-none">
                                 ${currentVibe ? `<p class="text-gray-400 text-[10px] font-medium italic truncate mb-0.5 leading-tight">"${currentVibe}"</p>` : ''}
                                 <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
                             </div>
@@ -812,11 +896,58 @@
                             </button>
                         </div>
                     </div>
-                    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-800/40">
+                    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-800/40 relative z-10">
                         ${tagsHTML}
                     </div>
                 </div>
             `;
+        }
+
+        // --- GESTURE & PEEK CONTROLS ---
+        let peekTimer;
+        function startProfilePeek(name, bio, e) {
+            peekTimer = setTimeout(() => {
+                hapticFeedback(20);
+                const peek = document.getElementById('profilePeek');
+                document.getElementById('peekName').innerText = name;
+                document.getElementById('peekBio').innerText = bio ? `"${bio}"` : "No bio provided.";
+                
+                let x = e.touches ? e.touches[0].clientX : e.clientX;
+                let y = e.touches ? e.touches[0].clientY : e.clientY;
+                
+                peek.style.left = `${x}px`;
+                peek.style.top = `${y - 20}px`;
+                peek.classList.remove('opacity-0', 'pointer-events-none');
+            }, 400); // 400ms long press
+        }
+        function stopProfilePeek() {
+            clearTimeout(peekTimer);
+            document.getElementById('profilePeek').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function setupSwipeToChat() {
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.feed-card');
+                cards.forEach(card => {
+                    let startX = 0;
+                    let inner = card.querySelector('.flex.items-start'); // the inner wrapper
+                    
+                    card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
+                    card.addEventListener('touchmove', e => { 
+                        let diff = e.touches[0].clientX - startX;
+                        if(diff > 50 && inner) { inner.classList.add('swipe-active'); }
+                    }, {passive: true});
+                    card.addEventListener('touchend', e => {
+                        if(inner && inner.classList.contains('swipe-active')) {
+                            inner.classList.remove('swipe-active');
+                            hapticFeedback(20);
+                            const alias = inner.querySelector('.feed-card-title').innerText.split(' ')[0];
+                            sessionStorage.setItem('hs_home_scroll', scrollPos);
+                            window.location.href = `chat.html?chatWith=${encodeURIComponent(alias)}`;
+                        }
+                    });
+                });
+            }, 500);
         }
 
         function renderFeedCards(primaryUsers, secondaryUsers, roleKey) {
@@ -868,6 +999,8 @@
                 `;
                 secondaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
+
+            setupSwipeToChat(); // Activate gesture on newly rendered cards
         }
 
         // --- INTERACTIONS ---
@@ -878,6 +1011,7 @@
             btnElement.classList.add('bg-green-500', 'text-white', 'border-green-500');
             btnElement.disabled = true;
 
+            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => {
                 window.location.href = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
             }, 300);
@@ -887,6 +1021,11 @@
             hapticFeedback(15);
             btnElement.innerHTML = '<i class="fa-solid fa-check text-green-400"></i>';
             btnElement.disabled = true;
+            
+            // Spray small stars
+            const rect = btnElement.getBoundingClientRect();
+            sendDoubleTapWave(targetName, {clientX: rect.left, clientY: rect.top});
+
             if (globalPeer && !globalPeer.destroyed) {
                 const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
                 try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: {id: Date.now().toString(), text: "👋 Waved at you!"}, isSecret: false }); }); } catch(e){}
@@ -896,11 +1035,18 @@
 
         function sendDoubleTapWave(targetName, event) {
             hapticFeedback([10, 20]);
-            const wave = document.createElement('div');
-            wave.innerHTML = '👋'; wave.className = 'floating-wave';
-            wave.style.left = (event.clientX - 15) + 'px'; wave.style.top = (event.clientY - 15) + 'px';
-            document.body.appendChild(wave);
-            setTimeout(() => wave.remove(), 800);
+            
+            // Multiple mini particles instead of one wave
+            for(let i=0; i<3; i++) {
+                const wave = document.createElement('div');
+                wave.innerHTML = '✨'; wave.className = 'floating-wave';
+                wave.style.left = (event.clientX - 15 + (Math.random()*30-15)) + 'px'; 
+                wave.style.top = (event.clientY - 15) + 'px';
+                wave.style.animationDelay = (Math.random() * 0.2) + 's';
+                wave.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+                document.body.appendChild(wave);
+                setTimeout(() => wave.remove(), 800);
+            }
 
             if (globalPeer && !globalPeer.destroyed) {
                 const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -912,8 +1058,8 @@
         function openMiniProfile(alias, avatarContent, color) {
             hapticFeedback();
             document.getElementById('mpName').innerText = alias;
-            document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(alias); // use unified
-            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3`;
+            document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(alias); 
+            document.getElementById('mpAvatar').className = `w-24 h-24 rounded-full bg-gradient-to-tr from-${color || 'blue'}-500 to-gray-600 p-[3px] flex items-center justify-center text-4xl overflow-hidden shadow-lg mb-4`;
             
             let vibe = localStorage.getItem(`hs_remote_vibe_${alias}`) || "Chilling right now ✨";
             document.getElementById('mpVibe').innerText = vibe;
@@ -936,6 +1082,7 @@
             hapticFeedback([10, 20]);
             const targetUser = document.getElementById('mpName').innerText;
             closeMiniProfile(true);
+            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => { window.location.href = `chat.html?chatWith=${encodeURIComponent(targetUser)}`; }, 300);
         }
 
