@@ -2,27 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Base Reset & Strict Overflow Constraints */
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030712; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        
+        /* Base Reset & Strict Overflow Constraints (Matching Profile.html) */
+        html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background-color: #030712; font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
         /* App Container */
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; background-color: #030712; z-index: 9999; }
-        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        #mobile-container { width: 100%; max-width: 448px; height: 100dvh; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
 
         /* Ambient Floating Background Orbs */
-        .ambient-glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; filter: blur(90px); z-index: 1; pointer-events: none; animation: floatGlow 12s infinite alternate ease-in-out; opacity: 0.5; }
-        .glow-1 { top: -50px; left: -50px; background-color: rgba(236, 72, 153, 0.3); } /* Pink */
-        .glow-2 { bottom: -100px; right: -50px; background-color: rgba(168, 85, 247, 0.3); animation-delay: -6s; } /* Purple */
+        .ambient-glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; filter: blur(90px); z-index: 1; pointer-events: none; animation: floatGlow 12s infinite alternate ease-in-out; opacity: 0.4; }
+        .glow-1 { top: -50px; left: -50px; background-color: rgba(236, 72, 153, 0.3); } 
+        .glow-2 { bottom: -100px; right: -50px; background-color: rgba(168, 85, 247, 0.3); animation-delay: -6s; } 
         @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.2); } }
 
-        /* Screen Transitions */
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 20px 24px; overflow: hidden; }
+        /* Screen Transitions & Overflow Handling */
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 20px; padding-bottom: max(env(safe-area-inset-bottom), 16px); overflow: hidden; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
         .screen-active { transform: translateX(0); opacity: 1; z-index: 20; }
@@ -34,49 +36,57 @@
         .screen-active .btn-bottom { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
 
         @keyframes popSlideUp {
-            0% { opacity: 0; transform: translateY(25px); }
+            0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        /* BRIGHT TICK ANIMATIONS */
         @keyframes bounceScale {
             0% { transform: scale(0.5); opacity: 0; }
             50% { transform: scale(1.2); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
         .anim-check { animation: bounceScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .white-glow { box-shadow: 0 0 14px rgba(255, 255, 255, 0.9); }
+        .gold-glow { box-shadow: 0 0 18px rgba(245, 158, 11, 1); }
+
+        /* ALL ACCESS HIGHLIGHT ANIMATION */
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.6); border-color: rgba(245, 158, 11, 0.8); }
+        }
+        .anim-pulse-gold { animation: pulseGold 2.5s infinite ease-in-out; }
 
         /* Inner Scrollable Area */
-        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; z-index: 10; position: relative; }
+        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 16px; z-index: 10; position: relative; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Progress Bar */
-        #progressBarContainer { position: absolute; top: 0; left: 0; right: 0; height: 4px; background-color: #1f2937; z-index: 50; display: none; }
+        #progressBarContainer { position: absolute; top: 0; left: 0; right: 0; height: 3px; background-color: #1f2937; z-index: 50; display: none; }
         #progressBarFill { height: 100%; background: linear-gradient(90deg, #ec4899, #a855f7); width: 0%; transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 0 2px 2px 0; box-shadow: 0 0 10px rgba(236,72,153,0.5); }
 
-        /* UI Components */
-        .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 1.1rem; padding: 16px; border-radius: 9999px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-top: auto; border: none; outline: none; box-shadow: 0 4px 14px rgba(255,255,255,0.1); z-index: 10; position: relative; }
-        .btn-bottom:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        /* UI Components - SCALED DOWN SIZES */
+        .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 14px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-top: auto; border: none; outline: none; box-shadow: 0 4px 12px rgba(255,255,255,0.1); z-index: 10; position: relative; flex-shrink: 0; }
+        .btn-bottom:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 0 16px rgba(255,255,255,0.3); }
         .btn-bottom:disabled { opacity: 0.4; cursor: not-allowed; transform: scale(1); box-shadow: none; }
 
-        /* PREMIUM INPUT FIX: Wider, enclosed, and properly padded */
-        .input-premium { width: 100%; background-color: #131720; border: 2px solid rgba(55, 65, 81, 0.6); border-radius: 14px; color: white; padding: 14px 16px; font-size: 1.1rem; outline: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); margin-top: 6px; }
+        .input-premium { width: 100%; background-color: #131720; border: 2px solid rgba(55, 65, 81, 0.6); border-radius: 14px; color: white; padding: 12px 16px; font-size: 14px; outline: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); margin-top: 6px; }
         .input-premium:focus { border-color: #ec4899; background-color: #1a1e29; transform: scale(1.02); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15); }
         .input-premium::placeholder { color: #6b7280; font-weight: 500; }
 
-        /* Custom Calendar Icon Color */
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; transition: 0.2s; }
         input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
-        .option-card { width: 100%; border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: white; padding: 16px 20px; border-radius: 16px; text-align: left; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 700; cursor: pointer; font-size: 1.05rem; }
+        .option-card { width: 100%; border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: white; padding: 14px 16px; border-radius: 14px; text-align: left; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
         .option-card:active { transform: scale(0.97); }
         .option-card.selected { border-color: #ec4899; background-color: rgba(236, 72, 153, 0.15); transform: scale(1.02); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
 
-        .grid-card { border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; height: 120px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .grid-card { border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; height: 90px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .grid-card:active { transform: scale(0.95); }
         .grid-card.selected { border-color: #ec4899; background-color: rgba(236, 72, 153, 0.15); transform: scale(1.05); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
 
-        .chip { border: 1px solid #374151; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: #9ca3af; padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 0 8px 8px 0; }
+        .chip { border: 1px solid #374151; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: #9ca3af; padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 11px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 0 6px 6px 0; }
         .chip:active { transform: scale(0.93); }
         .chip.selected { border-color: #ec4899; color: white; background-color: rgba(236, 72, 153, 0.2); transform: scale(1.05); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2); }
     </style>
@@ -91,43 +101,43 @@
 
             <div id="progressBarContainer"><div id="progressBarFill"></div></div>
 
-            <div id="screen-landing" class="screen screen-active justify-between pb-6 pt-12 z-20 relative">
-                <div class="flex-1 flex flex-col items-center justify-center">
-                    <div class="w-24 h-24 bg-gray-900 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_35px_rgba(236,72,153,0.4)] border border-gray-800 relative overflow-hidden transform hover:scale-105 transition-transform duration-500">
-                        <i class="fa-solid fa-leaf text-pink-500 text-5xl drop-shadow-md z-10"></i>
+            <div id="screen-landing" class="screen screen-active justify-between pt-10 pb-6 z-20 relative">
+                <div class="flex-1 flex flex-col items-center justify-center pb-8">
+                    <div class="w-20 h-20 bg-gray-900 rounded-[20px] flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(236,72,153,0.3)] border border-gray-800 relative overflow-hidden transform hover:scale-105 transition-transform duration-500">
+                        <i class="fa-solid fa-leaf text-pink-500 text-[36px] drop-shadow-md z-10"></i>
                         <div class="absolute inset-0 bg-gradient-to-tr from-pink-500/20 to-purple-600/20"></div>
                     </div>
-                    <h1 class="text-white text-5xl font-extrabold tracking-tight text-center leading-tight">HealSpace.</h1>
-                    <p class="text-gray-400 mt-4 text-center text-sm px-6 font-medium tracking-wide">A safe space to connect, heal, and grow together without judgment.</p>
+                    <h1 class="text-white text-[32px] font-extrabold tracking-tight text-center leading-tight">HealSpace.</h1>
+                    <p class="text-gray-400 mt-3 text-center text-[12px] px-6 font-medium tracking-wide">A safe space to connect, heal, and grow together without judgment.</p>
                 </div>
 
-                <div class="w-full space-y-3 mt-auto relative z-20">
-                    <button onclick="startSignup()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-extrabold text-[1.1rem] py-4 rounded-full shadow-[0_0_20px_rgba(236,72,153,0.3)] active:scale-95 transition">Create Account</button>
-                    <button onclick="showScreen('screen-login')" class="w-full border-2 border-gray-700 bg-gray-900/50 backdrop-blur-md text-white font-extrabold text-[1.1rem] py-4 rounded-full hover:bg-gray-800 active:scale-95 transition">Sign In</button>
+                <div class="w-full space-y-3 mt-auto relative z-20 pb-4">
+                    <button onclick="startSignup()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-extrabold text-[14px] py-3.5 rounded-[14px] shadow-[0_0_20px_rgba(236,72,153,0.3)] active:scale-95 transition">Create Account</button>
+                    <button onclick="showScreen('screen-login')" class="w-full border border-gray-700 bg-gray-900/50 backdrop-blur-md text-white font-extrabold text-[14px] py-3.5 rounded-[14px] hover:bg-gray-800 active:scale-95 transition">Sign In</button>
                 </div>
 
-                <div class="mt-8 text-center relative z-20">
-                    <div class="flex items-center justify-center gap-2 mb-1">
-                        <i class="fa-solid fa-leaf text-pink-500 text-xs"></i>
-                        <span class="text-sm font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">HealSpace</span>
+                <div class="mt-2 text-center relative z-20">
+                    <div class="flex items-center justify-center gap-1.5 mb-1">
+                        <i class="fa-solid fa-leaf text-pink-500 text-[10px]"></i>
+                        <span class="text-[12px] font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">HealSpace</span>
                     </div>
-                    <p class="text-[11px] text-gray-500 font-medium">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
+                    <p class="text-[10px] text-gray-500 font-medium">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
                 </div>
             </div>
 
-            <div id="screen-login" class="screen screen-hidden-right pt-12">
-                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-login" class="screen screen-hidden-right pt-8">
+                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-4xl font-extrabold mb-2 tracking-tight">Welcome back</h2>
-                <p class="text-gray-400 mb-10 text-sm font-medium">Enter your details to continue to HealSpace.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Welcome back</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">Enter your details to continue to HealSpace.</p>
 
-                <div class="scroll-area space-y-5">
+                <div class="scroll-area space-y-4">
                     <div>
-                        <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Email</label>
+                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
                         <input type="email" id="loginEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkLoginInputs()">
                     </div>
                     <div>
-                        <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Password</label>
+                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
                         <input type="password" id="loginPass" placeholder="••••••••" class="input-premium font-semibold" oninput="checkLoginInputs()">
                     </div>
                 </div>
@@ -135,23 +145,23 @@
                 <button id="btnLogin" onclick="processLogin()" class="btn-bottom" disabled>Log In</button>
             </div>
 
-            <div id="screen-reg-creds" class="screen screen-hidden-right pt-12">
-                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-reg-creds" class="screen screen-hidden-right pt-8">
+                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-4xl font-extrabold mb-2 tracking-tight">Create Account</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">Let's secure your space.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Create Account</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">Let's secure your space.</p>
 
-                <div class="scroll-area space-y-5">
+                <div class="scroll-area space-y-4">
                     <div>
-                        <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Email</label>
+                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
                         <input type="email" id="regEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkRegCreds()">
                     </div>
                     <div>
-                        <label class="text-gray-400 text-xs font-bold uppercase tracking-widest pl-1">Password</label>
+                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
                         <input type="password" id="regPass" placeholder="Min. 6 characters" class="input-premium font-semibold" oninput="checkRegCreds()">
                     </div>
-                    <div class="pt-2">
-                        <label class="text-pink-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2 pl-1"><i class="fa-solid fa-ticket"></i> Referral Code (Optional)</label>
+                    <div class="pt-1">
+                        <label class="text-pink-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1.5 pl-1"><i class="fa-solid fa-ticket"></i> Referral Code (Optional)</label>
                         <input type="text" id="regRef" placeholder="Got a code?" class="input-premium text-pink-300 uppercase font-bold tracking-wider focus:border-pink-400">
                     </div>
                 </div>
@@ -159,135 +169,135 @@
                 <button id="btnRegCreds" onclick="nextScreen('screen-reg-role')" class="btn-bottom" disabled>Next</button>
             </div>
 
-            <div id="screen-reg-role" class="screen screen-hidden-right pt-12">
-                <button onclick="prevScreen('screen-reg-creds')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-reg-role" class="screen screen-hidden-right pt-8">
+                <button onclick="prevScreen('screen-reg-creds')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-3xl font-extrabold mb-2 tracking-tight">Who are you here as?</h2>
-                <p class="text-gray-400 mb-6 text-sm font-medium">This shapes your entire experience. Select "All" to unlock everything.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Who are you here as?</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">This shapes your experience. Select "All" to unlock everything.</p>
 
                 <div class="scroll-area no-scrollbar">
                     <button class="option-card role-select" data-role="seeker">
                         <span>Need Motivation</span> 
-                        <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="motivator">
                         <span>Motivator</span> 
-                        <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="lover">
                         <span>Lovers / Heartbreak</span> 
-                        <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="friend">
                         <span>Looking for Friends</span> 
-                        <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
 
-                    <div class="my-5 border-t border-gray-800"></div>
+                    <div class="my-4 border-t border-gray-800"></div>
 
-                    <button class="option-card role-select border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.15)] hover:border-amber-400 transition" data-role="all" style="border-width: 2px;">
+                    <button class="option-card role-select anim-pulse-gold border-amber-500/50 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 hover:border-amber-400 transition" data-role="all" style="border-width: 2px;">
                         <span class="font-extrabold tracking-wide">Access All Spaces ✨</span> 
-                        <div class="check-indicator hidden w-6 h-6 rounded-full bg-amber-400 items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.5)]"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-amber-400 items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                 </div>
 
                 <button id="btnRegRole" onclick="nextScreen('screen-q-name')" class="btn-bottom" disabled>Next</button>
             </div>
 
-            <div id="screen-q-name" class="screen screen-hidden-right pt-12">
-                <button onclick="prevScreen('screen-reg-role')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-name" class="screen screen-hidden-right pt-8">
+                <button onclick="prevScreen('screen-reg-role')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-4xl font-extrabold mb-8 tracking-tight">What's your alias?</h2>
+                <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">What's your alias?</h2>
 
                 <div class="scroll-area">
-                    <input type="text" id="regName" placeholder="Type here..." class="input-premium text-3xl font-extrabold py-5 text-center" oninput="checkInput('regName', 'btnQName')">
-                    <p class="text-gray-500 mt-5 text-center text-sm font-medium">This is how you'll appear. <br><span class="text-gray-400">HealSpace encourages anonymity.</span></p>
+                    <input type="text" id="regName" placeholder="Type here..." class="input-premium text-[20px] font-extrabold py-4 text-center" oninput="checkInput('regName', 'btnQName')">
+                    <p class="text-gray-500 mt-4 text-center text-[11px] font-medium">This is how you'll appear. <br><span class="text-gray-400">HealSpace encourages anonymity.</span></p>
                 </div>
 
                 <button id="btnQName" onclick="nextScreen('screen-q-bday')" class="btn-bottom" disabled>Next</button>
             </div>
 
-            <div id="screen-q-bday" class="screen screen-hidden-right pt-12">
-                <button onclick="prevScreen('screen-q-name')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-bday" class="screen screen-hidden-right pt-8">
+                <button onclick="prevScreen('screen-q-name')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-4xl font-extrabold mb-8 tracking-tight">Your b-day?</h2>
+                <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">Your b-day?</h2>
 
                 <div class="scroll-area">
-                    <input type="date" id="regBday" class="input-premium text-2xl font-bold py-5 uppercase tracking-widest text-center" onchange="checkInput('regBday', 'btnQBday')">
-                    <p class="text-gray-400 mt-5 text-center text-sm font-medium">Your profile shows your age, not your exact date of birth.</p>
+                    <input type="date" id="regBday" class="input-premium text-[18px] font-bold py-4 uppercase tracking-widest text-center" onchange="checkInput('regBday', 'btnQBday')">
+                    <p class="text-gray-400 mt-4 text-center text-[11px] font-medium">Your profile shows your age, not your exact date of birth.</p>
                 </div>
 
                 <button id="btnQBday" onclick="nextScreen('screen-q-gender')" class="btn-bottom" disabled>Next</button>
             </div>
 
-            <div id="screen-q-gender" class="screen screen-hidden-right pt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="prevScreen('screen-q-bday')" class="text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-looking')" class="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-white transition">Skip</button>
+            <div id="screen-q-gender" class="screen screen-hidden-right pt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="prevScreen('screen-q-bday')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button onclick="nextScreen('screen-q-looking')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                 </div>
 
-                <h2 class="text-white text-4xl font-extrabold mb-3 tracking-tight">What's your gender?</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">Select one to help us show your profile to the right people.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What's your gender?</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">Select one to help us show your profile to the right people.</p>
 
-                <div class="scroll-area no-scrollbar space-y-3">
+                <div class="scroll-area no-scrollbar space-y-2.5">
                     <button class="option-card gender-select" data-gender="Guy">
-                        <span>Guy</span> <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <span>Guy</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Girl">
-                        <span>Girl</span> <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <span>Girl</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Non-binary">
-                        <span>Non-binary</span> <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <span>Non-binary</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Genderfluid">
-                        <span>Genderfluid</span> <div class="check-indicator hidden w-6 h-6 rounded-full bg-white items-center justify-center shadow-lg"><i class="fa-solid fa-check text-black font-black text-sm"></i></div>
+                        <span>Genderfluid</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                 </div>
 
                 <button id="btnQGender" onclick="nextScreen('screen-q-looking')" class="btn-bottom" disabled>Next</button>
             </div>
 
-            <div id="screen-q-looking" class="screen screen-hidden-right pt-12">
-                <button onclick="prevScreen('screen-q-gender')" class="text-gray-400 hover:text-white text-2xl mb-6 w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-looking" class="screen screen-hidden-right pt-8">
+                <button onclick="prevScreen('screen-q-gender')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-4xl font-extrabold mb-3 tracking-tight leading-tight">What are you<br>looking for?</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">All good if it changes. HealSpace is about the journey.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">What are you<br>looking for?</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">All good if it changes. HealSpace is about the journey.</p>
 
                 <div class="scroll-area no-scrollbar">
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2.5">
                         <div class="grid-card looking-select" data-looking="Relationship">
-                            <span class="text-3xl drop-shadow-md">💘</span><span class="text-white font-bold text-sm">Relationship</span>
+                            <span class="text-[24px] drop-shadow-md">💘</span><span class="text-white font-bold text-[11px]">Relationship</span>
                         </div>
                         <div class="grid-card looking-select" data-looking="New friends">
-                            <span class="text-3xl drop-shadow-md">👋</span><span class="text-white font-bold text-sm">New friends</span>
+                            <span class="text-[24px] drop-shadow-md">👋</span><span class="text-white font-bold text-[11px]">New friends</span>
                         </div>
                         <div class="grid-card looking-select" data-looking="Support & Venting">
-                            <span class="text-3xl drop-shadow-md">🗣️</span><span class="text-white font-bold text-sm">Support &<br>Venting</span>
+                            <span class="text-[24px] drop-shadow-md">🗣️</span><span class="text-white font-bold text-[11px]">Support &<br>Venting</span>
                         </div>
                         <div class="grid-card looking-select" data-looking="Casual vibes">
-                            <span class="text-3xl drop-shadow-md">✨</span><span class="text-white font-bold text-sm">Casual vibes</span>
+                            <span class="text-[24px] drop-shadow-md">✨</span><span class="text-white font-bold text-[11px]">Casual vibes</span>
                         </div>
                         <div class="grid-card looking-select" data-looking="Not sure yet">
-                            <span class="text-3xl drop-shadow-md">🤔</span><span class="text-white font-bold text-sm">Not sure yet</span>
+                            <span class="text-[24px] drop-shadow-md">🤔</span><span class="text-white font-bold text-[11px]">Not sure yet</span>
                         </div>
                     </div>
                 </div>
 
-                <button id="btnQLooking" onclick="nextScreen('screen-q-vibes')" class="btn-bottom mt-4" disabled>Next</button>
+                <button id="btnQLooking" onclick="nextScreen('screen-q-vibes')" class="btn-bottom mt-3" disabled>Next</button>
             </div>
 
-            <div id="screen-q-vibes" class="screen screen-hidden-right pt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="prevScreen('screen-q-looking')" class="text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-languages')" class="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-white transition">Skip</button>
+            <div id="screen-q-vibes" class="screen screen-hidden-right pt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="prevScreen('screen-q-looking')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button onclick="nextScreen('screen-q-languages')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                 </div>
 
-                <h2 class="text-white text-4xl font-extrabold mb-3 tracking-tight leading-tight">Vibe Check ⚡</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">How do you match their energy?</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Vibe Check ⚡</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">How do you match their energy?</p>
 
                 <div class="scroll-area no-scrollbar">
-                    <div class="mb-8">
-                        <h3 class="text-gray-300 font-bold mb-4 flex items-center gap-2 uppercase tracking-wider text-xs"><i class="fa-solid fa-comments text-emerald-400"></i> Communication Style</h3>
+                    <div class="mb-6">
+                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-comments text-emerald-400"></i> Communication Style</h3>
                         <div class="flex flex-wrap">
                             <div class="chip vibe-comm">Big time texter</div>
                             <div class="chip vibe-comm">Voice notes 🎙️</div>
@@ -297,8 +307,8 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h3 class="text-gray-300 font-bold mb-4 flex items-center gap-2 uppercase tracking-wider text-xs"><i class="fa-solid fa-battery-half text-yellow-400"></i> Social Battery</h3>
+                    <div class="mb-2">
+                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-battery-half text-yellow-400"></i> Social Battery</h3>
                         <div class="flex flex-wrap">
                             <div class="chip vibe-social">Introvert</div>
                             <div class="chip vibe-social">Extrovert</div>
@@ -312,18 +322,18 @@
                 <button onclick="nextScreen('screen-q-languages')" class="btn-bottom">Next</button>
             </div>
 
-            <div id="screen-q-languages" class="screen screen-hidden-right pt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="prevScreen('screen-q-vibes')" class="text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-interests')" class="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-white transition">Skip</button>
+            <div id="screen-q-languages" class="screen screen-hidden-right pt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="prevScreen('screen-q-vibes')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button onclick="nextScreen('screen-q-interests')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                 </div>
 
-                <h2 class="text-white text-4xl font-extrabold mb-3 tracking-tight leading-tight">Speak your mind 🌍</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">What languages do you communicate in?</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Speak your mind 🌍</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">What languages do you communicate in?</p>
 
                 <div class="scroll-area no-scrollbar">
-                    <div class="mb-8">
-                        <h3 class="text-gray-300 font-bold mb-4 flex items-center gap-2 uppercase tracking-wider text-xs"><i class="fa-solid fa-globe text-blue-400"></i> Main Language</h3>
+                    <div class="mb-6">
+                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-globe text-blue-400"></i> Main Language</h3>
                         <div class="flex flex-wrap">
                             <div class="chip lang-main">English 🇬🇧</div>
                             <div class="chip lang-main">Hindi 🇮🇳</div>
@@ -335,8 +345,8 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h3 class="text-gray-300 font-bold mb-4 flex items-center gap-2 uppercase tracking-wider text-xs"><i class="fa-solid fa-language text-purple-400"></i> Also Speaks (Max 3)</h3>
+                    <div class="mb-2">
+                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-language text-purple-400"></i> Also Speaks (Max 3)</h3>
                         <div class="flex flex-wrap">
                             <div class="chip lang-multi">English</div>
                             <div class="chip lang-multi">Hindi</div>
@@ -352,17 +362,17 @@
                     </div>
                 </div>
 
-                <button onclick="nextScreen('screen-q-interests')" class="btn-bottom mt-4">Next</button>
+                <button onclick="nextScreen('screen-q-interests')" class="btn-bottom mt-3">Next</button>
             </div>
 
-            <div id="screen-q-interests" class="screen screen-hidden-right pt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <button onclick="prevScreen('screen-q-languages')" class="text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="submitFinalRegistration()" class="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-white transition">Skip</button>
+            <div id="screen-q-interests" class="screen screen-hidden-right pt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="prevScreen('screen-q-languages')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button onclick="submitFinalRegistration()" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                 </div>
 
-                <h2 class="text-white text-4xl font-extrabold mb-3 tracking-tight">What are you into?</h2>
-                <p class="text-gray-400 mb-8 text-sm font-medium">Add up to 5 interests to find your people.</p>
+                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What are you into?</h2>
+                <p class="text-gray-400 mb-6 text-[11px] font-medium">Add up to 5 interests to find your people.</p>
 
                 <div class="scroll-area no-scrollbar">
                     <div class="flex flex-wrap">
@@ -382,12 +392,12 @@
                     </div>
                 </div>
 
-                <button id="btnFinal" onclick="submitFinalRegistration()" class="btn-bottom bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border-none mt-4">Complete Profile</button>
+                <button id="btnFinal" onclick="submitFinalRegistration()" class="btn-bottom bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border-none mt-3">Complete Profile</button>
             </div>
 
             <div id="loadingOverlay" class="absolute inset-0 bg-[#0B0E14]/90 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
-                 <i class="fa-solid fa-circle-notch fa-spin text-pink-500 text-6xl mb-6 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]"></i>
-                 <h2 class="text-white font-extrabold text-2xl tracking-tight" id="loadingText">Preparing your space...</h2>
+                 <i class="fa-solid fa-circle-notch fa-spin text-pink-500 text-[40px] mb-4 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]"></i>
+                 <h2 class="text-white font-extrabold text-[20px] tracking-tight" id="loadingText">Preparing your space...</h2>
             </div>
 
         </div>
@@ -475,8 +485,6 @@
             }
         }
 
-        // --- VALIDATION & INTERACTION LOGIC ---
-
         function checkLoginInputs() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
@@ -494,7 +502,6 @@
             document.getElementById(btnId).disabled = (val.length === 0);
         }
 
-        // Fix for Role Selection (Adding proper bold black checkmark logic)
         document.querySelectorAll('.role-select').forEach(card => {
             card.addEventListener('click', function() {
                 playPopSound();
@@ -502,19 +509,24 @@
                     c.classList.remove('selected');
                     const ind = c.querySelector('.check-indicator');
                     ind.classList.add('hidden');
-                    ind.classList.remove('flex', 'anim-check');
+                    ind.classList.remove('flex', 'anim-check', 'white-glow', 'gold-glow');
                 });
                 this.classList.add('selected');
                 const ind = this.querySelector('.check-indicator');
                 ind.classList.remove('hidden');
-                ind.classList.add('flex', 'anim-check');
+                
+                // Add specific glowing class based on option
+                if(this.dataset.role === 'all') {
+                    ind.classList.add('flex', 'anim-check', 'gold-glow');
+                } else {
+                    ind.classList.add('flex', 'anim-check', 'white-glow');
+                }
 
                 registrationData.role = this.dataset.role;
                 document.getElementById('btnRegRole').disabled = false;
             });
         });
 
-        // Gender Selection
         document.querySelectorAll('.gender-select').forEach(card => {
             card.addEventListener('click', function() {
                 playPopSound();
@@ -522,19 +534,18 @@
                     c.classList.remove('selected'); 
                     const ind = c.querySelector('.check-indicator');
                     ind.classList.add('hidden');
-                    ind.classList.remove('flex', 'anim-check');
+                    ind.classList.remove('flex', 'anim-check', 'white-glow');
                 });
                 this.classList.add('selected');
                 const ind = this.querySelector('.check-indicator');
                 ind.classList.remove('hidden');
-                ind.classList.add('flex', 'anim-check');
+                ind.classList.add('flex', 'anim-check', 'white-glow');
 
                 registrationData.gender = this.dataset.gender;
                 document.getElementById('btnQGender').disabled = false;
             });
         });
 
-        // Looking For Selection
         document.querySelectorAll('.looking-select').forEach(card => {
             card.addEventListener('click', function() {
                 playPopSound();
@@ -545,7 +556,6 @@
             });
         });
 
-        // Chips Selection
         document.querySelectorAll('.chip').forEach(chip => {
             chip.addEventListener('click', function() {
                 playPopSound();
@@ -584,8 +594,6 @@
             });
         });
 
-        // --- BACKEND SUBMISSION ---
-
         async function processLogin() {
             playClickSound();
             toggleLoading(true, "Verifying...");
@@ -604,7 +612,7 @@
                     localStorage.setItem("healspace_userId", result.userId);
                     localStorage.setItem("healspace_logged_role", result.role);
                     localStorage.setItem("healspace_alias", result.alias);
-                    window.location.href = "index.html"; // Local replit redirect
+                    window.location.href = "index.html"; 
                 } else {
                     toggleLoading(false);
                     alert("Login failed: " + (result.message || "Invalid email or password."));
@@ -650,7 +658,7 @@
                 const result = await response.json();
                 if (result.status === "success") {
                     if (result.userId) localStorage.setItem("healspace_userId", result.userId);
-                    window.location.href = "index.html"; // Local replit redirect
+                    window.location.href = "index.html"; 
                 } else {
                     toggleLoading(false);
                     alert("Registration failed: " + (result.message || "Please try again."));
