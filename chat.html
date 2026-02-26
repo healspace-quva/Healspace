@@ -764,6 +764,37 @@
             try {
                 globalPeer = new Peer("hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
                 globalPeer.on('disconnected', () => { globalPeer.reconnect(); });
+                
+                // --- INCOMING CALL FIX (Ringing & Popup) ---
+                globalPeer.on('call', (call) => {
+                    incomingCallObj = call;
+                    incomingCallIsVideo = call.metadata && call.metadata.type === 'video';
+                    const callerAlias = call.peer.replace('hs_', '');
+                    
+                    document.getElementById('incomingCallerName').innerText = callerAlias;
+                    document.getElementById('incomingCallAvatar').innerHTML = getInnerAvatarHTML(callerAlias);
+                    document.getElementById('incomingCallType').innerText = incomingCallIsVideo ? "Incoming Video Call..." : "Incoming Audio Call...";
+                    
+                    document.getElementById('incomingCallPopup').classList.remove('-translate-y-[150%]');
+                    
+                    try { 
+                        const ringtone = document.getElementById('sndRingtone'); 
+                        ringtone.play().catch(e => console.log("Audio blocked by browser autoplay rules")); 
+                    } catch(e) {}
+                    
+                    let vibInterval = setInterval(() => hapticFeedback([30, 50, 30, 50]), 1000);
+                    
+                    call.on('close', () => { clearInterval(vibInterval); hideIncomingCallPopup(); });
+                    
+                    setTimeout(() => {
+                        if(incomingCallObj === call) {
+                            clearInterval(vibInterval);
+                            hideIncomingCallPopup();
+                            incomingCallObj = null;
+                        }
+                    }, 30000);
+                });
+
                 globalPeer.on('connection', (conn) => {
                     conn.on('data', (data) => {
                         onlineStatuses[data.sender] = Date.now();
@@ -789,6 +820,9 @@
                         else if (data.action === 'unsend') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { history[index].deleted = true; saveChatHistory(data.sender, history); } renderInbox(false); }
                             if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(), 400); } }
+                        }
+                        else if (data.action === 'call_declined') {
+                            if (currentCall) { endCall(); alert("Call was declined by " + data.sender); }
                         }
                         if(!activeChatUser) renderInbox(false);
                     });
@@ -1094,32 +1128,76 @@
 
         function cancelReply() { hapticFeedback(); replyingToText = null; document.getElementById('replyPreviewContainer').classList.add('hidden'); }
 
+        // --- REAL VOICE RECORDING SYSTEM FIX ---
         let isRecordingVoice = false;
-        let recordTimeout;
-        function toggleVoiceRecord() {
+        let mediaRecorder;
+        let audioChunks = [];
+
+        async function toggleVoiceRecord() {
             hapticFeedback([20, 30]);
             const micBtn = document.getElementById('micBtn');
             const chatInput = document.getElementById('chatInput');
             
             if(!isRecordingVoice) {
-                isRecordingVoice = true;
-                micBtn.classList.add('mic-recording');
-                micBtn.innerHTML = '<i class="fa-solid fa-stop text-white text-[16px]"></i>';
-                chatInput.placeholder = "Recording audio... (Tap to stop)";
-                chatInput.disabled = true;
-                
-                // Auto stop mock after 4 seconds to simulate sending
-                recordTimeout = setTimeout(() => { if(isRecordingVoice) toggleVoiceRecord(); }, 4000);
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = e => {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        const msgObj = { 
+                            id: Date.now().toString(), 
+                            text: "", 
+                            type: 'sent', 
+                            file: { name: 'Voice Message', type: 'audio/webm', data: audioUrl }, 
+                            deleted: false, 
+                            status: 'sent', 
+                            replyContext: replyingToText 
+                        };
+                        
+                        const history = getChatHistory(activeChatUser);
+                        const isGrouped = history.length > 0 && history[history.length-1].type === 'sent';
+
+                        appendMessageToDOM(msgObj, true, isGrouped); cancelReply();
+                        if (!isSecretChat) { addToInteractedUsers(activeChatUser); history.push({ ...msgObj, file: { name: 'Voice Message', type: 'audio/webm', data: null } }); saveChatHistory(activeChatUser, history); renderInbox(true); }
+                        
+                        if (globalPeer && !globalPeer.destroyed && globalPeer.open) {
+                            const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                            try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: { ...msgObj, file: { name: 'Voice Message', type: 'audio/webm', data: audioBlob } }, isSecret: isSecretChat }); }); } catch(e){}
+                        }
+                        
+                        try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
+                        
+                        // Stop tracks securely
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecordingVoice = true;
+                    micBtn.classList.add('mic-recording');
+                    micBtn.innerHTML = '<i class="fa-solid fa-stop text-white text-[16px]"></i>';
+                    chatInput.placeholder = "Recording audio... (Tap to stop)";
+                    chatInput.disabled = true;
+                } catch(err) {
+                    alert("Microphone access denied. Please allow permissions to send voice messages.");
+                }
             } else {
                 isRecordingVoice = false;
-                clearTimeout(recordTimeout);
                 micBtn.classList.remove('mic-recording');
                 micBtn.innerHTML = '<i class="fa-solid fa-microphone text-[16px]"></i>';
                 chatInput.placeholder = "Message...";
                 chatInput.disabled = false;
                 
-                // Mock send audio message
-                saveAndSendMsg({ id: Date.now().toString(), text: "🎤 Voice Message (0:04)", type: 'sent', file: null, deleted: false, status: 'sent' });
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
             }
         }
 
@@ -1223,9 +1301,11 @@
 
             if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/30 border-l-[3px] border-blue-400 px-2.5 py-1.5 mb-1.5 rounded-[6px] text-[11px] opacity-90 truncate max-w-[200px] pointer-events-none font-medium'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
             
+            // --- AUDIO FILE RENDER FIX ---
             if (msgObj.file) {
                 if (!msgObj.file.data) bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/30 p-2.5 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-arrow-down text-3xl text-blue-400 drop-shadow-md"></i> <div class="truncate text-[13px] max-w-[150px] font-bold">${msgObj.file.name}<br><span class="text-[10px] text-gray-400 font-medium">File session ended</span></div></div>`;
                 else if (msgObj.file.type.startsWith('image/')) bubble.innerHTML += `<img src="${msgObj.file.data}" class="rounded-xl max-w-[220px] max-h-[300px] object-cover bg-black/20 cursor-pointer hover:opacity-90 transition shadow-inner" onclick="openLightbox('${msgObj.file.data}')">`;
+                else if (msgObj.file.type.startsWith('audio/')) bubble.innerHTML += `<div class="flex flex-col gap-1"><span class="text-[10px] font-bold text-blue-400 ml-1"><i class="fa-solid fa-microphone text-xs mr-1"></i>Voice Message</span><audio controls src="${msgObj.file.data}" class="max-w-[200px] h-10 mt-1 rounded-[24px] outline-none"></audio></div>`;
                 else bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/30 p-2.5 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-lines text-3xl text-blue-400 drop-shadow-md"></i> <div class="truncate text-[13px] max-w-[150px] font-bold">${msgObj.file.name}</div></div>`;
             } else { const textSpan = document.createElement('span'); textSpan.innerHTML = (msgObj.text || "").replace(/\n/g, '<br>'); textSpan.className = "pointer-events-none font-medium tracking-wide"; bubble.appendChild(textSpan); }
             
