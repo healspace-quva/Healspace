@@ -62,6 +62,12 @@
         /* Interactive Double Tap Wave Physics */
         @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px); opacity: 0; } }
         .floating-wave { position: absolute; font-size: 30px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
+
+        /* Secret Chat Bubbles */
+        .chat-bubble-sent { background: #f43f5e; color: white; border-radius: 14px 14px 4px 14px; align-self: flex-end; max-width: 80%; padding: 8px 12px; font-size: 0.9rem; word-wrap: break-word; box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2); }
+        .chat-bubble-recv { background-color: #1f2937; color: #f3f4f6; border-radius: 14px 14px 14px 4px; align-self: flex-start; max-width: 80%; padding: 8px 12px; font-size: 0.9rem; word-wrap: break-word; }
+        .chat-bubble-sent.grouped { border-top-right-radius: 4px; border-bottom-right-radius: 4px; margin-bottom: 2px !important; }
+        .chat-bubble-recv.grouped { border-top-left-radius: 4px; border-bottom-left-radius: 4px; margin-bottom: 2px !important; }
     </style>
 </head>
 <body>
@@ -128,23 +134,23 @@
                 </div>
             </div>
 
-            <main id="mainScrollArea" class="flex-1 overflow-y-auto no-scrollbar w-full px-2 py-3 z-10 pb-[100px] relative">
+            <main id="mainScrollArea" class="flex-1 overflow-y-auto no-scrollbar w-full px-2 py-3 z-10 pb-[100px] relative flex flex-col">
                 
-                <div id="ptr-indicator" class="w-full h-0 flex items-center justify-center opacity-0 mb-2">
+                <div id="ptr-indicator" class="w-full h-0 flex items-center justify-center opacity-0 mb-2 shrink-0">
                     <i class="fa-solid fa-circle-notch text-gray-500 text-lg spin-slow"></i>
                 </div>
 
-                <div class="mb-4 px-1 animate-enter" style="animation-delay: 0.05s;">
+                <div class="mb-4 px-1 animate-enter shrink-0" style="animation-delay: 0.05s;">
                     <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Good Morning,<br>we're here.</h2>
                     <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Connect with people who match your energy.</p>
                 </div>
 
-                <div id="loverTabs" class="flex gap-2 mb-4 hidden animate-enter px-1" style="animation-delay: 0.1s;">
+                <div id="loverTabs" class="flex gap-2 mb-4 hidden animate-enter px-1 shrink-0" style="animation-delay: 0.1s;">
                     <button id="tabCouple" onclick="switchLoverTab('couple')" class="flex-1 py-2 bg-rose-500/10 text-rose-400 rounded-xl font-bold text-[11px] border border-rose-500/30 shadow-sm transition active:scale-95">In Love ❤️</button>
                     <button id="tabHeartbreak" onclick="switchLoverTab('heartbreak')" class="flex-1 py-2 bg-gray-800/40 text-gray-400 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95">Heartbreak 💔</button>
                 </div>
 
-                <div id="incognitoToggleContainer" class="hidden justify-between items-center bg-gray-900/40 backdrop-blur-md px-3 py-2.5 rounded-xl mb-4 border border-purple-900/20 animate-enter shadow-sm mx-1" style="animation-delay: 0.15s;">
+                <div id="incognitoToggleContainer" class="hidden justify-between items-center bg-gray-900/40 backdrop-blur-md px-3 py-2.5 rounded-xl mb-4 border border-purple-900/20 animate-enter shadow-sm mx-1 shrink-0" style="animation-delay: 0.15s;">
                     <div>
                         <h4 class="text-white font-bold flex items-center gap-1.5 text-[12px]"><i class="fa-solid fa-mask text-purple-400"></i> Incognito</h4>
                         <p class="text-gray-500 text-[9px] mt-0.5 font-medium">Private, stealth browsing.</p>
@@ -155,9 +161,37 @@
                     </label>
                 </div>
 
-                <div id="feedContainer" class="relative z-10 w-full"></div>
+                <div id="feedContainer" class="relative z-10 w-full shrink-0"></div>
 
-                <div class="mt-8 mb-4 text-center animate-enter" style="animation-delay: 0.8s;">
+                <div id="secretChatContainer" class="hidden flex-1 flex-col bg-[#050508]/80 backdrop-blur-2xl rounded-[24px] border border-rose-900/30 shadow-[0_0_40px_rgba(244,63,94,0.05)] relative overflow-hidden animate-enter mx-1 mb-4" style="animation-delay: 0.1s;">
+                    <div class="flex justify-between items-center px-4 py-3 border-b border-rose-900/20 bg-[#0a0a0c]/50">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30"><i class="fa-solid fa-heart text-rose-500 text-[11px]"></i></div>
+                            <div>
+                                <h3 class="text-white font-bold text-[13px] leading-tight">Couple Space</h3>
+                                <p class="text-rose-400 text-[9px] font-bold tracking-widest uppercase mt-0.5">Encrypted</p>
+                            </div>
+                        </div>
+                        <button onclick="panicEscape()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase transition active:scale-90 flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye-slash"></i> Escape
+                        </button>
+                    </div>
+                    
+                    <div id="secretChatStream" class="flex-1 overflow-y-auto no-scrollbar p-3 flex flex-col gap-1">
+                        <div class="text-center text-[9px] text-gray-500 font-bold mb-4 mt-2 uppercase tracking-widest bg-white/5 w-fit mx-auto px-3 py-1 rounded-full border border-white/5">Vault Secured</div>
+                    </div>
+
+                    <div class="p-2 border-t border-rose-900/20 bg-[#0a0a0c]/50 flex items-end gap-2">
+                        <div class="flex-1 bg-black/40 rounded-2xl flex items-end px-3 py-1.5 border border-rose-900/30 focus-within:border-rose-500/50 transition-colors min-h-[40px]">
+                            <textarea id="secretInput" rows="1" placeholder="Secret message..." class="bg-transparent border-none outline-none text-white text-[13px] placeholder-gray-600 w-full py-1 max-h-[80px] leading-snug no-scrollbar"></textarea>
+                        </div>
+                        <button onclick="sendSecretInline()" class="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center text-white hover:bg-rose-500 transition active:scale-90 shrink-0 shadow-lg shadow-rose-600/20">
+                            <i class="fa-solid fa-paper-plane text-[12px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-6 mb-4 text-center shrink-0">
                     <p class="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
                 </div>
 
@@ -192,15 +226,6 @@
     <audio id="sndPop" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
     <audio id="sndSwoosh" src="https://actions.google.com/sounds/v1/ui/click.ogg"></audio>
 
-    <div class="hidden text-rose-200 bg-rose-900/30 border-rose-700/30 hover:border-rose-500/40 from-rose-500 text-rose-400 bg-rose-500/10 hover:bg-rose-500 border-rose-500/20 text-rose-500"></div>
-    <div class="hidden text-emerald-200 bg-emerald-900/30 border-emerald-700/30 hover:border-emerald-500/40 from-emerald-500 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500 border-emerald-500/20 text-emerald-500"></div>
-    <div class="hidden text-teal-200 bg-teal-900/30 border-teal-700/30 hover:border-teal-500/40 from-teal-500 text-teal-400 bg-teal-500/10 hover:bg-teal-500 border-teal-500/20 text-teal-500"></div>
-    <div class="hidden text-blue-200 bg-blue-900/30 border-blue-700/30 hover:border-blue-500/40 from-blue-500 text-blue-400 bg-blue-500/10 hover:bg-blue-500 border-blue-500/20 text-blue-500"></div>
-    <div class="hidden text-cyan-200 bg-cyan-900/30 border-cyan-700/30 hover:border-cyan-500/40 from-cyan-500 text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500 border-cyan-500/20 text-cyan-500"></div>
-    <div class="hidden text-yellow-200 bg-yellow-900/30 border-yellow-700/30 hover:border-yellow-500/40 from-yellow-500 text-yellow-400 bg-yellow-500/10 hover:bg-yellow-500 border-yellow-500/20 text-yellow-500"></div>
-    <div class="hidden text-orange-200 bg-orange-900/30 border-orange-700/30 hover:border-orange-500/40 from-orange-500 text-orange-400 bg-orange-500/10 hover:bg-orange-500 border-orange-500/20 text-orange-500"></div>
-    <div class="hidden text-purple-200 bg-purple-900/30 border-purple-700/30 hover:border-purple-500/40 from-purple-500 text-purple-400 bg-purple-500/10 hover:bg-purple-500 border-purple-500/20 text-purple-500"></div>
-
     <script>
         // --- CORE GUARD ---
         const currentUserId = localStorage.getItem("healspace_userId");
@@ -215,6 +240,8 @@
         let activeLoverTab = 'couple'; 
         let isIncognito = false;
         let allRealUsers = []; 
+        let secretChatCounter = 0;
+        let lastSecretSender = null;
 
         // --- HAPTIC ENGINE ---
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
@@ -229,7 +256,7 @@
             const roleTexts = {
                 seeker: { title: `${timeGreet},<br>we're here.`, subtitle: "Connect with verified listeners." },
                 motivator: { title: `${timeGreet},<br>share your light.`, subtitle: "People looking for motivation today." },
-                lover_couple: { title: "Couple Space.", subtitle: "Connect with other couples." },
+                lover_couple: { title: "Secret Vault.", subtitle: "Your end-to-end encrypted space." },
                 lover_heartbreak: { title: "Heal your heart.", subtitle: "Connect with others who understand." },
                 friend: { title: "Find your vibe.", subtitle: "People who share your exact energy." },
                 all: { title: "Welcome to <br>the Hub.", subtitle: "Explore all spaces across HealSpace." }
@@ -245,6 +272,30 @@
             document.body.addEventListener('click', () => {
                 if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
             }, { once: true });
+
+            // Viewport fix for inline secret chat
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', () => {
+                    document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
+                    if (document.activeElement.id === 'secretInput') {
+                        setTimeout(()=> {
+                            const stream = document.getElementById('secretChatStream');
+                            stream.scrollTop = stream.scrollHeight;
+                        }, 50);
+                    }
+                });
+            }
+
+            // Secret Input Resizer
+            const sInput = document.getElementById('secretInput');
+            let sResizeTimeout;
+            sInput.addEventListener('input', function() {
+                cancelAnimationFrame(sResizeTimeout);
+                sResizeTimeout = requestAnimationFrame(() => {
+                    this.style.height = 'auto'; this.style.height = (this.scrollHeight < 80 ? this.scrollHeight : 80) + 'px';
+                });
+            });
+            sInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if(this.value.trim()) sendSecretInline(); } });
 
             // INSTANT BOOT SKELETON
             applyThemeAnimations(currentRole || 'seeker');
@@ -290,10 +341,17 @@
                     hapticFeedback(15);
                     ptrIndicator.style.height = '35px';
                     ptrIndicator.style.opacity = '1';
-                    fetchRealFeed(currentRole === 'lover' ? activeLoverTab : currentRole || 'seeker');
-                    setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 800);
+                    
+                    if(currentRole === 'lover' && activeLoverTab === 'couple') {
+                        // Just hide spinner for secret tab
+                        setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 500);
+                    } else {
+                        fetchRealFeed(currentRole === 'lover' ? activeLoverTab : currentRole || 'seeker');
+                        setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 800);
+                    }
                 } else {
-                    ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
+                    ptrIndicator.style.height = '0px';
+                    ptrIndicator.style.opacity = '0';
                 }
             });
         }
@@ -433,23 +491,106 @@
             return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : null;
         }
 
+        // --- LOVER MODE: SECRET VAULT & HEARTBREAK ---
         function switchLoverTab(tab) {
             hapticFeedback(); activeLoverTab = tab;
             const bC = document.getElementById('tabCouple'); const bH = document.getElementById('tabHeartbreak');
             const incToggle = document.getElementById('incognitoToggleContainer');
+            const feedCont = document.getElementById('feedContainer');
+            const secretCont = document.getElementById('secretChatContainer');
 
             if (tab === 'couple') {
                 bC.className = "flex-1 py-2 bg-rose-500/10 text-rose-400 rounded-xl font-bold text-[11px] border border-rose-500/30 shadow-sm transition active:scale-95";
                 bH.className = "flex-1 py-2 bg-gray-800/40 text-gray-500 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95";
-                incToggle.classList.remove('hidden'); incToggle.classList.add('flex');
-                setDynamicGreeting('lover_couple'); fetchRealFeed('lover_couple');
+                
+                incToggle.classList.add('hidden'); incToggle.classList.remove('flex');
+                feedCont.classList.add('hidden');
+                
+                secretCont.classList.remove('hidden'); secretCont.classList.add('flex');
+                setDynamicGreeting('lover_couple'); 
+                loadInlineSecretChat();
             } else {
                 bC.className = "flex-1 py-2 bg-gray-800/40 text-gray-500 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95";
                 bH.className = "flex-1 py-2 bg-purple-500/10 text-purple-400 rounded-xl font-bold text-[11px] border border-purple-500/30 shadow-sm transition active:scale-95";
-                incToggle.classList.add('hidden'); incToggle.classList.remove('flex');
-                if(isIncognito) document.getElementById('incognitoCheckbox').click(); 
-                setDynamicGreeting('lover_heartbreak'); fetchRealFeed('lover_heartbreak');
+                
+                incToggle.classList.remove('hidden'); incToggle.classList.add('flex');
+                secretCont.classList.add('hidden'); secretCont.classList.remove('flex');
+                feedCont.classList.remove('hidden');
+
+                if(!isIncognito) document.getElementById('incognitoCheckbox').click(); 
+                setDynamicGreeting('lover_heartbreak'); 
+                fetchRealFeed('lover_heartbreak');
             }
+        }
+
+        // --- INLINE SECRET CHAT LOGIC ---
+        function loadInlineSecretChat() {
+            const stream = document.getElementById('secretChatStream');
+            stream.innerHTML = `<div class="text-center text-[9px] text-gray-500 font-bold mb-4 mt-2 uppercase tracking-widest bg-white/5 w-fit mx-auto px-3 py-1 rounded-full border border-white/5">Vault Secured</div>`;
+            
+            // Load dummy or actual local history
+            let history = safeParseJSON(localStorage.getItem(`hs_secret_vault_${myAlias}`), []);
+            history.forEach(msg => appendSecretMessage(msg, false));
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function sendSecretInline() {
+            const input = document.getElementById('secretInput');
+            let text = input.value.trim();
+            if(!text) return;
+
+            hapticFeedback(15);
+            secretChatCounter++;
+            const msgObj = { id: Date.now().toString(), text: text, type: 'sent' };
+            
+            let history = safeParseJSON(localStorage.getItem(`hs_secret_vault_${myAlias}`), []);
+            history.push(msgObj);
+            localStorage.setItem(`hs_secret_vault_${myAlias}`, JSON.stringify(history));
+
+            appendSecretMessage(msgObj, true);
+            
+            input.value = ''; input.style.height = 'auto';
+            lastSecretSender = myAlias;
+        }
+
+        function appendSecretMessage(msg, animate) {
+            const stream = document.getElementById('secretChatStream');
+            const isGrouped = lastSecretSender === myAlias;
+
+            const div = document.createElement('div');
+            div.className = `flex flex-col mb-[1px] items-end ${animate ? 'animate-fade' : ''}`;
+            
+            const isEmojiOnly = /^[\p{Emoji}\s]+$/u.test(msg.text);
+            const isJumbo = isEmojiOnly && Array.from(msg.text.replace(/\s/g, '')).length <= 3;
+            
+            // Standard Text ONLY (No Jumbos as per request for regular chat, but we can keep it for secret if we want. Removing here per strict instruction "remove jumbo emoji")
+            
+            const bubbleClass = 'chat-bubble-sent' + (isGrouped ? ' grouped' : '');
+            
+            let headerHTML = '';
+            if(!isGrouped) {
+                headerHTML = `<div class="flex items-center justify-end gap-1 mb-0.5 pr-1 w-full mt-1.5"><span class="text-[8px] text-gray-500">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`;
+            }
+
+            div.innerHTML = `${headerHTML}<div class="${bubbleClass}">${msg.text.replace(/\n/g, '<br>')}</div>`;
+            
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function panicEscape() {
+            hapticFeedback([30, 50]);
+            
+            // Dramatic exit animation
+            const vault = document.getElementById('secretChatContainer');
+            vault.style.transition = "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
+            vault.style.transform = "scale(0.9) translateY(20px)";
+            vault.style.opacity = "0";
+
+            setTimeout(() => {
+                vault.style.transform = ""; vault.style.opacity = "";
+                switchLoverTab('heartbreak');
+            }, 300);
         }
 
         function toggleIncognito() {
@@ -464,8 +605,7 @@
         // --- SKELETON & FETCH API ---
         async function fetchRealFeed(roleKey) {
             const feedContainer = document.getElementById('feedContainer');
-            setDynamicGreeting(roleKey);
-
+            
             let skeletonHTML = '';
             for(let i=0; i<4; i++) {
                 skeletonHTML += `
@@ -529,13 +669,20 @@
 
         function filterAndRenderFeed(roleKey) {
             let primary = [], secondary = [];
-            allRealUsers.forEach(u => {
-                if (roleKey === 'all') primary.push(u); 
-                else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
-                else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
-                else if (roleKey === 'motivator') { if (u.role === 'seeker') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
-                else if (roleKey === 'friend') { if (u.role === 'friend') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
-            });
+            
+            if (roleKey === 'lover_heartbreak') {
+                // Heartbreak Logic: Show Motivators (Healers) first, then Friends/Seekers
+                primary = allRealUsers.filter(u => u.role === 'motivator');
+                secondary = allRealUsers.filter(u => u.role === 'friend' || u.role === 'seeker');
+            } else {
+                allRealUsers.forEach(u => {
+                    if (roleKey === 'all') primary.push(u); 
+                    else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
+                    else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                    else if (roleKey === 'motivator') { if (u.role === 'seeker') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                    else if (roleKey === 'friend') { if (u.role === 'friend') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                });
+            }
 
             const searchQ = document.getElementById('searchInput').value.toLowerCase();
             if(searchQ) {
@@ -604,8 +751,9 @@
 
             if (primaryUsers.length > 0) {
                 let headerText = "Recommended";
-                if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
-                if (roleKey === 'all') headerText = "All Users";
+                if (roleKey === 'lover_heartbreak') headerText = "Recommended Healers";
+                else if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
+                else if (roleKey === 'all') headerText = "All Users";
 
                 feedContainer.innerHTML += `
                     <div class="flex justify-between items-end mb-2.5 px-1 animate-enter">
@@ -616,10 +764,13 @@
                 primaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
-            if (secondaryUsers.length > 0 && !roleKey.startsWith('lover') && roleKey !== 'all') {
+            if (secondaryUsers.length > 0 && !roleKey.startsWith('lover_couple') && roleKey !== 'all') {
+                let secHeader = "Other spaces";
+                if(roleKey === 'lover_heartbreak') secHeader = "Find new friends & Distractions";
+
                 feedContainer.innerHTML += `
                     <div class="flex justify-between items-end mb-2.5 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
-                        <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">Other spaces</h3>
+                        <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">${secHeader}</h3>
                         <span class="text-gray-600 text-[9px] font-bold">${secondaryUsers.length} users</span>
                     </div>
                 `;
@@ -636,13 +787,7 @@
             btnElement.disabled = true;
 
             setTimeout(() => {
-                let chatUrl = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
-                if (currentRole === 'lover' && targetRole === 'lover') {
-                    const uniqueSecretId = Math.random().toString(36).substring(2, 10);
-                    chatUrl += `&secret=true&id=${uniqueSecretId}`;
-                    if (!isIncognito) document.getElementById('incognitoCheckbox').click();
-                }
-                window.location.href = chatUrl;
+                window.location.href = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
             }, 300);
         }
 
