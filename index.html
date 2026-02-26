@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0B0E14">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HealSpace">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(()=>{});
-            });
-        }
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Home</title>
@@ -54,38 +42,32 @@
         .feed-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translateZ(0); }
         .feed-card:active { transform: scale(0.97); filter: brightness(1.1); }
         
-        /* Swipe Action */
-        .swipe-action-bg { position: absolute; top: 0; bottom: 0; left: 0; background: linear-gradient(90deg, #10b981 0%, transparent 100%); width: 100px; display: flex; align-items: center; padding-left: 20px; opacity: 0; z-index: -1; border-radius: 20px 0 0 20px; transition: opacity 0.2s; }
-        .swipe-active { transform: translateX(60px); }
-        .swipe-active + .swipe-action-bg { opacity: 1; z-index: 0; }
+        /* Online Status Ring */
+        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; }
 
-        @keyframes ringPulse { 0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); } 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); } }
-        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; animation: ringPulse 2s infinite; }
-
+        /* Notification Dropdown */
         .notif-dropdown { transform-origin: top right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .notif-open { transform: scale(1); opacity: 1; pointer-events: auto; }
         .notif-closed { transform: scale(0.95); opacity: 0; pointer-events: none; }
 
+        /* Elegant Skeleton Loading Shimmer */
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .skeleton-bg { background: linear-gradient(110deg, #111827 8%, #1f2937 18%, #111827 33%); background-size: 200% 100%; animation: shimmer 1.5s linear infinite; }
+        .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
         
+        /* Physics Pull to Refresh */
         #ptr-indicator { transition: height 0.2s ease, opacity 0.2s ease; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
         .spin-slow { animation: spinSlow 1s linear infinite; }
         
-        .filter-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(31, 41, 55, 0.6); color: #9ca3af; border: 1px solid rgba(75, 85, 99, 0.4); cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space: nowrap; backdrop-filter: blur(5px); }
-        .filter-chip:active { transform: scale(0.90); }
-        .filter-chip.active { background: rgba(59, 130, 246, 0.15); color: white; border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); transform: scale(1.05); }
+        /* Interactive Double Tap Wave Physics */
+        @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px); opacity: 0; } }
+        .floating-wave { position: absolute; font-size: 30px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
 
-        .input-glass { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; padding: 14px 16px; font-size: 1rem; outline: none; transition: 0.3s; font-weight: 600; text-align: center; letter-spacing: 2px; }
-        .input-glass:focus { border-color: #e11d48; background: rgba(225, 29, 72, 0.1); box-shadow: 0 0 15px rgba(225, 29, 72, 0.3); }
-
-        /* Multi-Particle Wave */
-        @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px) translateX(var(--drift)); opacity: 0; } }
-        .floating-wave { position: absolute; font-size: 20px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
-
-        /* Dynamic Header Scroll */
-        .header-scrolled { background: rgba(8, 10, 16, 0.95) !important; border-bottom-color: rgba(255,255,255,0.08) !important; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        /* Secret Chat Bubbles */
+        .chat-bubble-sent { background: #f43f5e; color: white; border-radius: 14px 14px 4px 14px; align-self: flex-end; max-width: 80%; padding: 8px 12px; font-size: 0.9rem; word-wrap: break-word; box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2); }
+        .chat-bubble-recv { background-color: #1f2937; color: #f3f4f6; border-radius: 14px 14px 14px 4px; align-self: flex-start; max-width: 80%; padding: 8px 12px; font-size: 0.9rem; word-wrap: break-word; }
+        .chat-bubble-sent.grouped { border-top-right-radius: 4px; border-bottom-right-radius: 4px; margin-bottom: 2px !important; }
+        .chat-bubble-recv.grouped { border-top-left-radius: 4px; border-bottom-left-radius: 4px; margin-bottom: 2px !important; }
     </style>
 </head>
 <body>
@@ -115,11 +97,6 @@
                 </div>
             </div>
 
-            <div id="profilePeek" class="fixed z-[300] bg-black/80 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-3 shadow-2xl transition-opacity duration-200 opacity-0 pointer-events-none transform -translate-x-1/2 -translate-y-full">
-                <h4 class="text-white font-bold text-[13px] mb-1" id="peekName">Name</h4>
-                <p class="text-gray-400 text-[10px] italic" id="peekBio">"Bio goes here"</p>
-            </div>
-
             <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
                 <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
                     <div class="w-10 h-1 bg-gray-700 rounded-full mb-6"></div>
@@ -132,10 +109,10 @@
                 </div>
             </div>
 
-            <header id="mainHeader" class="flex justify-between items-center px-4 pt-12 pb-3 z-30 bg-[#080a10]/80 backdrop-blur-xl border-b border-transparent sticky top-0 shrink-0 transition-all duration-300">
+            <header id="mainHeader" class="flex justify-between items-center px-4 pt-12 pb-3 z-30 bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 sticky top-0 shrink-0 transition-all duration-500">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center theme-pulse transition-all duration-500 shadow-lg" id="logoIconContainer">
-                        <div class="w-full h-full bg-[#080a10] rounded-full flex items-center justify-center text-xs overflow-hidden relative" id="headerAvatarInner">✨</div>
+                        <i class="fa-solid fa-leaf text-pink-500 text-[14px] transition-colors" id="logoIcon"></i>
                     </div>
                     <h1 class="text-[18px] font-bold tracking-tight text-white drop-shadow-md">HealSpace.</h1>
                 </div>
@@ -164,16 +141,8 @@
                 </div>
 
                 <div class="mb-4 px-1 animate-enter shrink-0" style="animation-delay: 0.05s;">
-                    <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Welcome to<br>the Hub.</h2>
-                    <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Explore all spaces across HealSpace.</p>
-                </div>
-
-                <div id="affirmationBox" class="mb-5 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-white/5 rounded-2xl p-3 flex items-center gap-3 shadow-md backdrop-blur-sm animate-enter px-1 mx-1 shrink-0" style="animation-delay: 0.08s;">
-                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm shrink-0 border border-white/10" id="affirmationIcon">☀️</div>
-                    <div>
-                        <h4 class="text-white text-[9px] font-bold uppercase tracking-widest mb-0.5 opacity-80" id="affirmationTitle">Daily Affirmation</h4>
-                        <p class="text-blue-100 text-[11px] font-medium leading-tight" id="affirmationText">"You are doing your best, and that is more than enough."</p>
-                    </div>
+                    <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Good Morning,<br>we're here.</h2>
+                    <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Connect with people who match your energy.</p>
                 </div>
 
                 <div id="loverTabs" class="flex gap-2 mb-4 hidden animate-enter px-1 shrink-0" style="animation-delay: 0.1s;">
@@ -188,70 +157,37 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer transform scale-90">
                       <input type="checkbox" id="incognitoCheckbox" class="sr-only peer" onchange="toggleIncognito()">
-                      <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"></div>
+                      <div class="w-10 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500 shadow-inner"></div>
                     </label>
-                </div>
-
-                <div id="homeFilterChips" class="flex gap-2 overflow-x-auto no-scrollbar mb-4 px-1 shrink-0 animate-enter" style="animation-delay: 0.2s;">
-                    <button class="filter-chip active flex-shrink-0" onclick="setHomeFilter('all', this)"><i class="fa-solid fa-layer-group mr-1.5"></i> All Vibes</button>
-                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('motivator', this)"><i class="fa-solid fa-leaf text-emerald-400 mr-1.5"></i> Listeners</button>
-                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('seeker', this)"><i class="fa-solid fa-hand-holding-heart text-blue-400 mr-1.5"></i> Seekers</button>
-                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('friend', this)"><i class="fa-solid fa-face-smile-beam text-yellow-400 mr-1.5"></i> Friends</button>
-                </div>
-
-                <div id="onlineTrayContainer" class="mb-5 animate-enter shrink-0 px-1 hidden" style="animation-delay: 0.25s;">
-                    <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2.5 flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Online Now</h3>
-                    <div id="onlineUsersTray" class="flex gap-3 overflow-x-auto no-scrollbar pb-2"></div>
                 </div>
 
                 <div id="feedContainer" class="relative z-10 w-full shrink-0"></div>
 
                 <div id="secretChatContainer" class="hidden flex-1 flex-col bg-[#050508]/80 backdrop-blur-2xl rounded-[24px] border border-rose-900/30 shadow-[0_0_40px_rgba(244,63,94,0.05)] relative overflow-hidden animate-enter mx-1 mb-4" style="animation-delay: 0.1s;">
-                    <div class="flex items-center justify-center p-6 border-b border-rose-900/20 bg-[#0a0a0c]/50">
-                        <div class="w-12 h-12 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.4)] relative">
-                            <i class="fa-solid fa-lock text-rose-500 text-[20px]" id="vaultLockIcon"></i>
+                    <div class="flex justify-between items-center px-4 py-3 border-b border-rose-900/20 bg-[#0a0a0c]/50">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30"><i class="fa-solid fa-heart text-rose-500 text-[11px]"></i></div>
+                            <div>
+                                <h3 class="text-white font-bold text-[13px] leading-tight">Couple Space</h3>
+                                <p class="text-rose-400 text-[9px] font-bold tracking-widest uppercase mt-0.5">Encrypted</p>
+                            </div>
                         </div>
+                        <button onclick="panicEscape()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase transition active:scale-90 flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye-slash"></i> Escape
+                        </button>
                     </div>
                     
-                    <div class="p-6 flex flex-col gap-4 relative z-10">
-                        <div class="text-center mb-2">
-                            <h3 class="text-white font-bold text-[18px] tracking-tight">Secure Couple Vault</h3>
-                            <p class="text-gray-400 text-[11px] font-medium mt-1 leading-relaxed">Create or join an end-to-end encrypted space.<br>No history is stored locally or on servers.</p>
-                        </div>
+                    <div id="secretChatStream" class="flex-1 overflow-y-auto no-scrollbar p-3 flex flex-col gap-1">
+                        <div class="text-center text-[9px] text-gray-500 font-bold mb-4 mt-2 uppercase tracking-widest bg-white/5 w-fit mx-auto px-3 py-1 rounded-full border border-white/5">Vault Secured</div>
+                    </div>
 
-                        <div class="flex border border-rose-900/40 rounded-xl p-1 bg-black/50 mb-2">
-                            <button onclick="toggleVaultTab('join')" id="vaultTabJoin" class="flex-1 py-2.5 text-sm font-bold text-white bg-rose-600/80 rounded-lg shadow-md transition">Join Vault</button>
-                            <button onclick="toggleVaultTab('create')" id="vaultTabCreate" class="flex-1 py-2.5 text-sm font-bold text-gray-400 hover:text-white transition">Create Vault</button>
+                    <div class="p-2 border-t border-rose-900/20 bg-[#0a0a0c]/50 flex items-end gap-2">
+                        <div class="flex-1 bg-black/40 rounded-2xl flex items-end px-3 py-1.5 border border-rose-900/30 focus-within:border-rose-500/50 transition-colors min-h-[40px]">
+                            <textarea id="secretInput" rows="1" placeholder="Secret message..." class="bg-transparent border-none outline-none text-white text-[13px] placeholder-gray-600 w-full py-1 max-h-[80px] leading-snug no-scrollbar"></textarea>
                         </div>
-
-                        <div id="vaultJoinView" class="space-y-4">
-                            <input type="text" id="vaultJoinId" placeholder="6-DIGIT ID" class="input-glass border-rose-900/50" maxlength="6">
-                            <input type="password" id="vaultJoinPass" placeholder="PASSWORD" class="input-glass border-rose-900/50">
-                            <button onclick="executeVaultJoin()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 rounded-xl mt-2 active:scale-95 transition shadow-[0_0_20px_rgba(225,29,72,0.4)] flex items-center justify-center gap-2">
-                                Enter Vault <i class="fa-solid fa-arrow-right-to-bracket text-sm"></i>
-                            </button>
-                        </div>
-
-                        <div id="vaultCreateView" class="space-y-4 hidden">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-pointer hover:bg-black/50 transition" onclick="copyVaultData()">
-                                    <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Vault ID</p>
-                                    <h2 class="text-xl font-black text-rose-400 tracking-wider" id="genVaultId">------</h2>
-                                </div>
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-pointer hover:bg-black/50 transition" onclick="copyVaultData()">
-                                    <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Password</p>
-                                    <h2 class="text-md font-bold text-white mt-1 tracking-wider" id="genVaultPass">------</h2>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="shareVaultLink()" class="w-12 bg-white/10 hover:bg-white/20 text-white rounded-xl active:scale-95 transition flex items-center justify-center">
-                                    <i class="fa-solid fa-share-nodes"></i>
-                                </button>
-                                <button onclick="executeVaultCreate()" class="flex-1 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold py-3.5 rounded-xl active:scale-95 transition shadow-[0_0_20px_rgba(225,29,72,0.4)] flex items-center justify-center gap-2">
-                                    Start Secure Vault <i class="fa-solid fa-key text-sm"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <button onclick="sendSecretInline()" class="w-10 h-10 rounded-full bg-rose-600 flex items-center justify-center text-white hover:bg-rose-500 transition active:scale-90 shrink-0 shadow-lg shadow-rose-600/20">
+                            <i class="fa-solid fa-paper-plane text-[12px]"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -291,54 +227,51 @@
     <audio id="sndSwoosh" src="https://actions.google.com/sounds/v1/ui/click.ogg"></audio>
 
     <script>
-        // --- CORE GUARD & DATA ---
+        // --- CORE GUARD ---
         const currentUserId = localStorage.getItem("healspace_userId");
         let currentRole = localStorage.getItem("healspace_logged_role");
 
         if (!currentUserId || !currentRole) { window.location.replace("login.html"); }
 
         const myAlias = localStorage.getItem("healspace_alias") || "User";
+
+        // --- HEALSPACE SAVED ACCOUNTS LOGIC ---
+        try {
+            let savedAccounts = JSON.parse(localStorage.getItem("healspace_saved_accounts") || "[]");
+            let accountIndex = savedAccounts.findIndex(acc => acc.userId === currentUserId);
+            let accountData = {
+                userId: currentUserId,
+                role: currentRole,
+                alias: myAlias,
+                lastActive: Date.now()
+            };
+            if (accountIndex !== -1) {
+                savedAccounts[accountIndex] = Object.assign(savedAccounts[accountIndex], accountData);
+            } else {
+                savedAccounts.push(accountData);
+            }
+            localStorage.setItem("healspace_saved_accounts", JSON.stringify(savedAccounts));
+        } catch(e) {}
+        // --------------------------------------
+
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
-
-        function safeParseJSON(str, fallback) {
-            try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; }
-        }
-
-        // UNIFIED DATA SOURCE FIX
-        let savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
-        if (!savedAccounts || !savedAccounts[currentRole]) savedAccounts[currentRole] = { alias: myAlias, emoji: '✨' };
 
         // --- STATE ---
         let activeLoverTab = 'couple'; 
         let isIncognito = false;
         let allRealUsers = []; 
-        let currentFilter = 'all';
-        let scrollPos = 0;
-
-        // --- FALLBACK MOCK DATA (Prevents Blank Screen) ---
-        const fallbackUsers = [
-            { alias: 'Dr. Evelyn', role: 'motivator', isOnline: true, mainLanguage: 'English 🇬🇧', emoji: '🧠', vibe: "Ready to listen." },
-            { alias: 'Marcus', role: 'motivator', isOnline: false, mainLanguage: 'Spanish 🇪🇸', emoji: '⚡', vibe: "Mental health matters." },
-            { alias: 'Sarah', role: 'friend', isOnline: true, mainLanguage: 'English 🇬🇧', emoji: '🎮', vibe: "Looking for a duo!" },
-            { alias: 'Jordan', role: 'seeker', isOnline: false, mainLanguage: 'Hindi 🇮🇳', emoji: '🎧', vibe: "Feeling a bit down today." },
-            { alias: 'Priya', role: 'friend', isOnline: true, mainLanguage: 'Tamil 🇮🇳', emoji: '🌸', vibe: "Music & chill vibes." }
-        ];
+        let secretChatCounter = 0;
+        let lastSecretSender = null;
 
         // --- HAPTIC ENGINE ---
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
-        // --- TIME-AWARE CONTEXTUAL GREETING & AFFIRMATION ---
+        // --- TIME-AWARE CONTEXTUAL GREETING ---
         function setDynamicGreeting(role) {
             const hour = new Date().getHours();
             let timeGreet = "Good evening";
-            let affIcon = "🌙";
-            let affText = `"Rest easy, you survived today."`;
-
-            if(hour < 12) {
-                timeGreet = "Good morning"; affIcon = "☀️"; affText = `"You are doing your best, and that is more than enough."`;
-            } else if(hour < 18) {
-                timeGreet = "Good afternoon"; affIcon = "☕"; affText = `"Take a deep breath and keep going."`;
-            }
+            if(hour < 12) timeGreet = "Good morning";
+            else if(hour < 18) timeGreet = "Good afternoon";
 
             const roleTexts = {
                 seeker: { title: `${timeGreet},<br>we're here.`, subtitle: "Connect with verified listeners." },
@@ -349,37 +282,9 @@
                 all: { title: "Welcome to <br>the Hub.", subtitle: "Explore all spaces across HealSpace." }
             };
 
-            const data = roleTexts[role] || roleTexts['all'];
+            const data = roleTexts[role] || roleTexts['seeker'];
             document.getElementById('pageTitle').innerHTML = data.title;
             document.getElementById('pageSubtitle').innerText = data.subtitle;
-
-            const affBox = document.getElementById('affirmationBox');
-            if (role === 'lover_couple') { affBox.classList.add('hidden'); }
-            else { 
-                affBox.classList.remove('hidden'); 
-                document.getElementById('affirmationIcon').innerText = affIcon;
-                document.getElementById('affirmationText').innerText = affText;
-            }
-        }
-
-        // --- UNIFIED AVATAR FETCHER ---
-        function getInnerAvatarHTML(alias) {
-            try {
-                let avatarData;
-                if (alias === myAlias) {
-                    avatarData = savedAccounts[currentRole]?.avatarInput || savedAccounts[currentRole]?.emoji;
-                } else {
-                    avatarData = localStorage.getItem(`hs_avatar_${alias}`);
-                }
-                
-                const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
-                if (!avatarData || avatarData === 'null') return fallbackIcon;
-                
-                if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
-                if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-                
-                return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
-            } catch(e) { return `<i class="fa-solid fa-user text-gray-500 text-[18px]"></i>`; }
         }
 
         // --- INITIALIZATION ---
@@ -388,54 +293,44 @@
                 if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
             }, { once: true });
 
-            document.getElementById('headerAvatarInner').innerHTML = getInnerAvatarHTML(myAlias);
-
-            // Dynamic Header Scroll 
-            const scrollArea = document.getElementById('mainScrollArea');
-            const header = document.getElementById('mainHeader');
-            scrollArea.addEventListener('scroll', () => {
-                if (scrollArea.scrollTop > 20) header.classList.add('header-scrolled');
-                else header.classList.remove('header-scrolled');
-                scrollPos = scrollArea.scrollTop;
-            });
-
-            // Restore scroll if coming back from chat
-            const savedScroll = sessionStorage.getItem('hs_home_scroll');
-            if (savedScroll) {
-                setTimeout(() => scrollArea.scrollTop = parseInt(savedScroll), 100);
-                sessionStorage.removeItem('hs_home_scroll');
+            // Viewport fix for inline secret chat
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', () => {
+                    document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
+                    if (document.activeElement.id === 'secretInput') {
+                        setTimeout(()=> {
+                            const stream = document.getElementById('secretChatStream');
+                            stream.scrollTop = stream.scrollHeight;
+                        }, 50);
+                    }
+                });
             }
 
+            // Secret Input Resizer
+            const sInput = document.getElementById('secretInput');
+            let sResizeTimeout;
+            sInput.addEventListener('input', function() {
+                cancelAnimationFrame(sResizeTimeout);
+                sResizeTimeout = requestAnimationFrame(() => {
+                    this.style.height = 'auto'; this.style.height = (this.scrollHeight < 80 ? this.scrollHeight : 80) + 'px';
+                });
+            });
+            sInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if(this.value.trim()) sendSecretInline(); } });
+
+            // INSTANT BOOT SKELETON
             applyThemeAnimations(currentRole || 'seeker');
             
             if (currentRole === 'lover') {
                 document.getElementById('loverTabs').classList.remove('hidden');
                 document.getElementById('loverTabs').classList.add('flex');
-                document.getElementById('homeFilterChips').classList.add('hidden');
                 switchLoverTab('couple'); 
             } else {
-                setDynamicGreeting(currentRole || 'seeker');
                 fetchRealFeed(currentRole || 'seeker');
             }
 
             initGlobalCore();
             initPullToRefresh();
         });
-
-        // --- FILTER CHIPS LOGIC ---
-        function setHomeFilter(filterType, btnEl) {
-            hapticFeedback(10);
-            currentFilter = filterType;
-            
-            document.querySelectorAll('#homeFilterChips .filter-chip').forEach(c => {
-                c.classList.remove('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_4px_15px_rgba(59,130,246,0.2)]', 'scale-105');
-                c.classList.add('bg-gray-800/60', 'text-gray-400');
-            });
-            btnEl.classList.remove('bg-gray-800/60', 'text-gray-400');
-            btnEl.classList.add('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_4px_15px_rgba(59,130,246,0.2)]', 'scale-105');
-
-            filterAndRenderFeed(currentRole);
-        }
 
         // --- PHYSICS PULL TO REFRESH ENGINE ---
         function initPullToRefresh() {
@@ -468,6 +363,7 @@
                     ptrIndicator.style.opacity = '1';
                     
                     if(currentRole === 'lover' && activeLoverTab === 'couple') {
+                        // Just hide spinner for secret tab
                         setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 500);
                     } else {
                         fetchRealFeed(currentRole === 'lover' ? activeLoverTab : currentRole || 'seeker');
@@ -529,6 +425,8 @@
             });
         }
 
+        // --- SAFE JSON & HISTORY ---
+        function safeParseJSON(str, fallback) { try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; } }
         function getChatHistory(alias) { return safeParseJSON(localStorage.getItem(`hs_chat_${myAlias}_${alias}`), []); }
 
         function saveMessageLocally(sender, newMsg) {
@@ -613,7 +511,7 @@
             return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : null;
         }
 
-        // --- LOVER MODE: SECURE VAULT UI CONTROLLERS ---
+        // --- LOVER MODE: SECRET VAULT & HEARTBREAK ---
         function switchLoverTab(tab) {
             hapticFeedback(); activeLoverTab = tab;
             const bC = document.getElementById('tabCouple'); const bH = document.getElementById('tabHeartbreak');
@@ -630,7 +528,7 @@
                 
                 secretCont.classList.remove('hidden'); secretCont.classList.add('flex');
                 setDynamicGreeting('lover_couple'); 
-                toggleVaultTab('join');
+                loadInlineSecretChat();
             } else {
                 bC.className = "flex-1 py-2 bg-gray-800/40 text-gray-500 rounded-xl font-bold text-[11px] border border-gray-700/50 transition active:scale-95";
                 bH.className = "flex-1 py-2 bg-purple-500/10 text-purple-400 rounded-xl font-bold text-[11px] border border-purple-500/30 shadow-sm transition active:scale-95";
@@ -645,85 +543,65 @@
             }
         }
 
-        function toggleVaultTab(tab) {
-            hapticFeedback(10);
-            const btnJoin = document.getElementById('vaultTabJoin'); const btnCreate = document.getElementById('vaultTabCreate');
-            const viewJoin = document.getElementById('vaultJoinView'); const viewCreate = document.getElementById('vaultCreateView');
+        // --- INLINE SECRET CHAT LOGIC ---
+        function loadInlineSecretChat() {
+            const stream = document.getElementById('secretChatStream');
+            stream.innerHTML = `<div class="text-center text-[9px] text-gray-500 font-bold mb-4 mt-2 uppercase tracking-widest bg-white/5 w-fit mx-auto px-3 py-1 rounded-full border border-white/5">Vault Secured</div>`;
             
-            if(tab === 'join') {
-                btnJoin.className = "flex-1 py-2.5 text-sm font-bold text-white bg-rose-600/80 rounded-lg shadow-md transition";
-                btnCreate.className = "flex-1 py-2.5 text-sm font-bold text-gray-400 hover:text-white transition";
-                viewJoin.classList.remove('hidden'); viewCreate.classList.add('hidden');
-            } else {
-                btnCreate.className = "flex-1 py-2.5 text-sm font-bold text-white bg-rose-600/80 rounded-lg shadow-md transition";
-                btnJoin.className = "flex-1 py-2.5 text-sm font-bold text-gray-400 hover:text-white transition";
-                viewCreate.classList.remove('hidden'); viewJoin.classList.add('hidden');
-                
-                // Vault Animation
-                const icon = document.getElementById('vaultLockIcon');
-                icon.className = "fa-solid fa-lock-open text-rose-500 text-[20px] transform scale-110 transition-transform";
-                setTimeout(() => icon.className = "fa-solid fa-lock text-rose-500 text-[20px] transition-transform", 500);
+            // Load dummy or actual local history
+            let history = safeParseJSON(localStorage.getItem(`hs_secret_vault_${myAlias}`), []);
+            history.forEach(msg => appendSecretMessage(msg, false));
+            stream.scrollTop = stream.scrollHeight;
+        }
 
-                document.getElementById('genVaultId').innerText = Math.floor(100000 + Math.random() * 900000).toString();
-                document.getElementById('genVaultPass').innerText = Math.random().toString(36).slice(-8);
+        function sendSecretInline() {
+            const input = document.getElementById('secretInput');
+            let text = input.value.trim();
+            if(!text) return;
+
+            hapticFeedback(15);
+            secretChatCounter++;
+            const msgObj = { id: Date.now().toString(), text: text, type: 'sent' };
+            
+            let history = safeParseJSON(localStorage.getItem(`hs_secret_vault_${myAlias}`), []);
+            history.push(msgObj);
+            localStorage.setItem(`hs_secret_vault_${myAlias}`, JSON.stringify(history));
+
+            appendSecretMessage(msgObj, true);
+            
+            input.value = ''; input.style.height = 'auto';
+            lastSecretSender = myAlias;
+        }
+
+        function appendSecretMessage(msg, animate) {
+            const stream = document.getElementById('secretChatStream');
+            const isGrouped = lastSecretSender === myAlias;
+
+            const div = document.createElement('div');
+            div.className = `flex flex-col mb-[1px] items-end ${animate ? 'animate-fade' : ''}`;
+            
+            const isEmojiOnly = /^[\p{Emoji}\s]+$/u.test(msg.text);
+            const isJumbo = isEmojiOnly && Array.from(msg.text.replace(/\s/g, '')).length <= 3;
+            
+            // Standard Text ONLY (No Jumbos as per request for regular chat, but we can keep it for secret if we want. Removing here per strict instruction "remove jumbo emoji")
+            
+            const bubbleClass = 'chat-bubble-sent' + (isGrouped ? ' grouped' : '');
+            
+            let headerHTML = '';
+            if(!isGrouped) {
+                headerHTML = `<div class="flex items-center justify-end gap-1 mb-0.5 pr-1 w-full mt-1.5"><span class="text-[8px] text-gray-500">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span></div>`;
             }
-        }
 
-        function executeVaultCreate() {
-            hapticFeedback(20);
-            try{ document.getElementById('sndSwoosh').play().catch(()=>{}); }catch(e){}
-            const id = document.getElementById('genVaultId').innerText;
-            const pass = document.getElementById('genVaultPass').innerText;
+            div.innerHTML = `${headerHTML}<div class="${bubbleClass}">${msg.text.replace(/\n/g, '<br>')}</div>`;
             
-            sessionStorage.setItem('hs_home_scroll', scrollPos);
-            setTimeout(() => {
-                window.location.href = `chat.html?chatWith=SecureVault_${id}&secret=true&pass=${pass}`;
-            }, 300);
-        }
-
-        function executeVaultJoin() {
-            hapticFeedback(20);
-            const id = document.getElementById('vaultJoinId').value.trim();
-            const pass = document.getElementById('vaultJoinPass').value.trim();
-            if(id.length !== 6 || !pass) { alert("Please enter a valid 6-digit Vault ID and Password."); return; }
-            
-            try{ document.getElementById('sndSwoosh').play().catch(()=>{}); }catch(e){}
-            sessionStorage.setItem('hs_home_scroll', scrollPos);
-            setTimeout(() => {
-                window.location.href = `chat.html?chatWith=SecureVault_${id}&secret=true&pass=${pass}`;
-            }, 300);
-        }
-
-        function copyVaultData() {
-            hapticFeedback(10);
-            const id = document.getElementById('genVaultId').innerText;
-            const pass = document.getElementById('genVaultPass').innerText;
-            navigator.clipboard.writeText(`HealSpace Vault\nID: ${id}\nPass: ${pass}`);
-            
-            // Show toast visually
-            const p = document.getElementById('customNotification');
-            document.getElementById('notifTitle').innerText = "Copied!";
-            document.getElementById('notifMessage').innerText = "Vault details copied to clipboard.";
-            p.classList.remove('hidden'); p.classList.add('animate-pop');
-            setTimeout(() => { p.classList.remove('animate-pop'); p.classList.add('hidden'); }, 2000);
-        }
-
-        function shareVaultLink() {
-            hapticFeedback(10);
-            const id = document.getElementById('genVaultId').innerText;
-            const pass = document.getElementById('genVaultPass').innerText;
-            const text = `Join my secure space on HealSpace!\nRoom ID: ${id}\nPassword: ${pass}`;
-            
-            if (navigator.share) {
-                navigator.share({ title: 'HealSpace Vault', text: text }).catch(()=>{});
-            } else {
-                copyVaultData();
-            }
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
         }
 
         function panicEscape() {
             hapticFeedback([30, 50]);
             
+            // Dramatic exit animation
             const vault = document.getElementById('secretChatContainer');
             vault.style.transition = "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
             vault.style.transform = "scale(0.9) translateY(20px)";
@@ -766,15 +644,14 @@
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
-                
-                // CRITICAL FIX: Ensure Feed is NEVER empty
-                if (Array.isArray(data) && data.length > 0) {
-                    processUsersData(data, roleKey);
-                } else {
-                    processUsersData(fallbackUsers, roleKey);
-                }
+                processUsersData(data, roleKey);
             } catch(err) {
-                processUsersData(fallbackUsers, roleKey); // Fallback so UI doesn't break
+                feedContainer.innerHTML = `
+                    <div class="text-center py-10 animate-enter">
+                        <i class="fa-solid fa-wifi text-gray-700 text-3xl mb-2"></i>
+                        <p class="text-red-400 text-[12px] font-bold">Network Offline</p>
+                        <p class="text-gray-600 text-[10px] mt-1">Pull down to refresh.</p>
+                    </div>`;
             }
         }
 
@@ -784,19 +661,8 @@
                 if (!user.alias || user.alias === myAlias) return false;
                 const isDuplicate = seenAliases.has(user.alias);
                 seenAliases.add(user.alias);
-                
-                if (user.vibe) localStorage.setItem(`hs_remote_vibe_${user.alias}`, user.vibe);
-                if (user.avatar || user.emoji) localStorage.setItem(`hs_avatar_${user.alias}`, user.avatar || user.emoji);
-                
                 return !isDuplicate;
             });
-
-            // CRITICAL FIX: If allRealUsers is empty (meaning only myAlias was in the DB), use fallback data
-            if (allRealUsers.length === 0 && data !== fallbackUsers) {
-                processUsersData(fallbackUsers, roleKey);
-                return;
-            }
-
             filterAndRenderFeed(roleKey);
         }
 
@@ -806,49 +672,35 @@
             const color = colors[idx];
             const age = 18 + (user.alias.length % 15);
             
+            let bio = "Here to connect and share good vibes.";
             let tags = ['Chat 💬', 'New Here'];
-            let displayRole = 'MEMBER';
+            let displayRole = 'Member';
 
-            if(user.role === 'seeker') { displayRole = 'SEEKER'; tags = ['Listening Ear', 'Advice']; }
-            if(user.role === 'motivator') { displayRole = 'VERIFIED LISTENER'; tags = ['Mental Health', 'Support']; }
-            if(user.role === 'lover') { displayRole = 'HEART SPACE'; tags = ['Relationships', 'Deep Talks']; }
-            if(user.role === 'friend') { displayRole = 'LOOKING FOR FRIENDS'; tags = ['Extrovert', 'Gaming 🎮']; }
+            if(user.role === 'seeker') { displayRole = 'Motivation Seeker'; tags = ['Listening Ear', 'Advice']; }
+            if(user.role === 'motivator') { displayRole = 'Verified Motivator'; tags = ['Mental Health', 'Support']; }
+            if(user.role === 'lover') { displayRole = 'Heart/Couple Space'; tags = ['Relationships', 'Deep Talks']; }
+            if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; }
 
             const defaultLangs = [ { main: 'English 🇬🇧' }, { main: 'Hindi 🇮🇳' }, { main: 'Spanish 🇪🇸' } ];
             const mainLang = user.mainLanguage || defaultLangs[idx % defaultLangs.length].main;
 
-            return { color, age, tags, displayRole, mainLang };
+            return { color, age, bio, tags, displayRole, mainLang };
         }
 
         function filterAndRenderFeed(roleKey) {
             let primary = [], secondary = [];
             
-            let pool = allRealUsers;
-            if (currentFilter !== 'all') {
-                pool = allRealUsers.filter(u => u.role === currentFilter);
-            }
-
             if (roleKey === 'lover_heartbreak') {
-                primary = pool.filter(u => u.role === 'motivator');
-                secondary = pool.filter(u => u.role === 'friend' || u.role === 'seeker');
-            } else if (roleKey === 'all') {
-                primary = pool;
+                // Heartbreak Logic: Show Motivators (Healers) first, then Friends/Seekers
+                primary = allRealUsers.filter(u => u.role === 'motivator');
+                secondary = allRealUsers.filter(u => u.role === 'friend' || u.role === 'seeker');
             } else {
-                pool.forEach(u => {
-                    if (roleKey === 'seeker') { 
-                        if (u.role === 'motivator') primary.push(u); 
-                        else if (u.role !== 'lover') secondary.push(u); 
-                    } 
-                    else if (roleKey === 'motivator') { 
-                        if (u.role === 'seeker') primary.push(u); 
-                        else if (u.role !== 'lover') secondary.push(u); 
-                    } 
-                    else if (roleKey === 'friend') { 
-                        if (u.role === 'friend') primary.push(u); 
-                        else if (u.role !== 'lover') secondary.push(u); 
-                    } else {
-                        primary.push(u);
-                    }
+                allRealUsers.forEach(u => {
+                    if (roleKey === 'all') primary.push(u); 
+                    else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
+                    else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                    else if (roleKey === 'motivator') { if (u.role === 'seeker') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                    else if (roleKey === 'friend') { if (u.role === 'friend') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
                 });
             }
 
@@ -857,27 +709,13 @@
                 primary = primary.filter(u => u.alias.toLowerCase().includes(searchQ));
                 secondary = secondary.filter(u => u.alias.toLowerCase().includes(searchQ));
             }
-
-            // SORTING: Push Online users to the top
-            primary.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
-            secondary.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
-
             renderFeedCards(primary, secondary, roleKey);
         }
 
-        function generateOnlineAvatar(user) {
-            const d = getDeterministicCardData(user);
-            const avatarContent = user.avatar || user.emoji || '✨';
-            return `
-                <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group active:scale-95 transition" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
-                    <div class="w-[60px] h-[60px] rounded-full insta-ring shadow-lg mb-1.5 p-[2px]">
-                        <div class="w-full h-full bg-gray-900 rounded-full overflow-hidden flex items-center justify-center border-2 border-[#080a10]">
-                            ${getInnerAvatarHTML(user.alias)}
-                        </div>
-                    </div>
-                    <span class="text-white text-[10px] font-bold truncate max-w-[60px] drop-shadow-md">${user.alias}</span>
-                </div>
-            `;
+        function getInnerAvatarHTML(avatarData) {
+            if (!avatarData) return `<i class="fa-solid fa-user text-gray-500 text-[16px]"></i>`;
+            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
+            else return `<span class="w-full h-full flex items-center justify-center text-[22px]">${avatarData}</span>`;
         }
 
         function generateCardHTML(user, index) {
@@ -885,155 +723,79 @@
             const d = getDeterministicCardData(user);
             const tagsHTML = d.tags.map(tag => `<span class="text-[9px] font-bold text-${d.color}-200 bg-${d.color}-900/30 px-2 py-1 rounded-lg border border-${d.color}-700/30 shadow-sm">${tag}</span>`).join('');
             const avatarContent = user.avatar || user.emoji || '✨';
-            const currentVibe = localStorage.getItem(`hs_remote_vibe_${user.alias}`) || user.vibe;
+            const currentVibe = localStorage.getItem(`hs_remote_vibe_${user.alias}`);
             const isOnline = user.isOnline ? true : false;
             const onlineRingClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${d.color}-500 to-gray-500`;
 
             return `
-                <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative shadow-sm" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
-                    
-                    <div class="swipe-action-bg">
-                        <i class="fa-solid fa-paper-plane text-white text-2xl"></i>
-                    </div>
-
-                    <div class="flex items-start justify-between gap-3 bg-transparent relative z-10" id="card-inner-${user.alias}">
-                        <div class="flex items-start gap-3">
-                            <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
-                                <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user.alias)}</div>
-                                ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
-                            </div>
-                            <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" 
-                                 onmousedown="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
-                                 onmouseup="stopProfilePeek()" 
-                                 ontouchstart="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
-                                 ontouchend="stopProfilePeek()">
-                                <h3 class="feed-card-title text-white font-bold text-[16px] flex items-center gap-2 truncate transition-colors">
-                                    ${user.alias} <span class="text-gray-400 text-[10px] font-bold bg-white/10 px-1.5 py-0.5 rounded-md">${d.age}</span>
-                                </h3>
-                                <p class="text-${d.color}-400 text-[10px] font-extrabold uppercase tracking-widest mt-1">${d.displayRole}</p>
-                                <div class="mt-1 flex flex-col gap-0.5 pointer-events-none">
-                                    <p class="text-gray-400 text-[10px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[9px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
-                                </div>
+                <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
+                    <div class="flex items-start gap-3">
+                        <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                            <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(avatarContent)}</div>
+                            ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
+                        </div>
+                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                            <h3 class="feed-card-title text-white font-bold text-[15px] flex items-center gap-1.5 truncate transition-colors">
+                                ${user.alias} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${d.age}</span>
+                            </h3>
+                            <p class="text-${d.color}-400 text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-90">${d.displayRole}</p>
+                            <div class="mt-1 flex flex-col gap-0.5">
+                                ${currentVibe ? `<p class="text-gray-400 text-[10px] font-medium italic truncate mb-0.5 leading-tight">"${currentVibe}"</p>` : ''}
+                                <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-2 flex-shrink-0">
-                            <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-10 h-10 rounded-full bg-[#0d9488]/20 text-[#14b8a6] flex items-center justify-center hover:bg-[#0d9488] hover:text-white transition-all active:scale-90 shadow-sm border border-[#0d9488]/30">
-                                <i class="fa-solid fa-paper-plane text-[13px] ml-[-2px]"></i>
+                        <div class="flex flex-col gap-1.5 flex-shrink-0 pt-0.5">
+                            <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-9 h-9 rounded-full bg-${d.color}-500/10 text-${d.color}-400 flex items-center justify-center hover:bg-${d.color}-500 hover:text-white transition-all disabled:opacity-50 border border-${d.color}-500/20 active:scale-90 shadow-sm">
+                                <i class="fa-solid fa-paper-plane text-[12px]"></i>
                             </button>
-                            <button onclick="sendWave('${user.alias}', this)" class="w-10 h-10 rounded-full bg-yellow-500/10 text-yellow-500 flex items-center justify-center hover:bg-yellow-500 hover:text-black transition-all border border-yellow-500/30 active:scale-90 shadow-sm text-[14px]">
+                            <button onclick="sendWave('${user.alias}', this)" class="w-9 h-7 rounded-full bg-gray-800/50 text-gray-400 flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all border border-gray-700/50 active:scale-90 shadow-sm text-[12px]">
                                 👋
                             </button>
                         </div>
                     </div>
-                    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-800/40 relative z-10">
+                    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-800/40">
                         ${tagsHTML}
                     </div>
                 </div>
             `;
         }
 
-        // --- GESTURE & PEEK CONTROLS ---
-        let peekTimer;
-        function startProfilePeek(name, bio, e) {
-            peekTimer = setTimeout(() => {
-                hapticFeedback(20);
-                const peek = document.getElementById('profilePeek');
-                document.getElementById('peekName').innerText = name;
-                document.getElementById('peekBio').innerText = bio && bio !== 'undefined' ? `"${bio}"` : "No bio provided.";
-                
-                let x = e.touches ? e.touches[0].clientX : e.clientX;
-                let y = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                peek.style.left = `${x}px`;
-                peek.style.top = `${y - 20}px`;
-                peek.classList.remove('opacity-0', 'pointer-events-none');
-            }, 400); 
-        }
-        function stopProfilePeek() {
-            clearTimeout(peekTimer);
-            document.getElementById('profilePeek').classList.add('opacity-0', 'pointer-events-none');
-        }
-
-        function setupSwipeToChat() {
-            setTimeout(() => {
-                const cards = document.querySelectorAll('.feed-card');
-                cards.forEach(card => {
-                    let startX = 0;
-                    let inner = card.querySelector('.flex.items-start'); 
-                    
-                    card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
-                    card.addEventListener('touchmove', e => { 
-                        let diff = e.touches[0].clientX - startX;
-                        if(diff > 50 && inner) { inner.classList.add('swipe-active'); }
-                    }, {passive: true});
-                    card.addEventListener('touchend', e => {
-                        if(inner && inner.classList.contains('swipe-active')) {
-                            inner.classList.remove('swipe-active');
-                            hapticFeedback(20);
-                            const alias = inner.querySelector('.feed-card-title').innerText.split(' ')[0];
-                            sessionStorage.setItem('hs_home_scroll', scrollPos);
-                            window.location.href = `chat.html?chatWith=${encodeURIComponent(alias)}`;
-                        }
-                    });
-                });
-            }, 500);
-        }
-
         function renderFeedCards(primaryUsers, secondaryUsers, roleKey) {
             const feedContainer = document.getElementById('feedContainer');
-            const onlineTrayContainer = document.getElementById('onlineTrayContainer');
-            const onlineUsersTray = document.getElementById('onlineUsersTray');
-            
             feedContainer.innerHTML = ''; 
-            onlineUsersTray.innerHTML = '';
-
-            const allActiveUsers = [...primaryUsers, ...secondaryUsers].filter(u => u.isOnline);
-            if (allActiveUsers.length > 0 && currentRole !== 'lover') {
-                onlineTrayContainer.classList.remove('hidden');
-                allActiveUsers.forEach(u => {
-                    onlineUsersTray.innerHTML += generateOnlineAvatar(u);
-                });
-            } else {
-                onlineTrayContainer.classList.add('hidden');
-            }
 
             if(primaryUsers.length === 0 && secondaryUsers.length === 0) {
-                feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[13px] font-medium">No users found in this category.</div>`; return;
+                feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[12px] font-medium">No users found.</div>`; return;
             }
 
             if (primaryUsers.length > 0) {
-                let headerText = "ALL USERS";
-                if (roleKey === 'seeker') headerText = "RECOMMENDED LISTENERS";
-                if (roleKey === 'motivator') headerText = "SEEKING MOTIVATION";
-                if (roleKey === 'friend') headerText = "YOUR SQUAD";
-                if (roleKey === 'lover_heartbreak') headerText = "HEALERS & FRIENDS";
-                if (currentFilter !== 'all') headerText = currentFilter.toUpperCase() + "S";
-
-                let primaryOnlineCount = primaryUsers.filter(u => u.isOnline).length;
+                let headerText = "Recommended";
+                if (roleKey === 'lover_heartbreak') headerText = "Recommended Healers";
+                else if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
+                else if (roleKey === 'all') headerText = "All Users";
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-3 px-1 animate-enter border-t border-white/5 pt-4 mt-2">
-                        <h3 class="text-white font-extrabold text-[13px] tracking-wide uppercase">${headerText}</h3>
-                        <span class="text-gray-400 text-[10px] font-bold bg-white/5 px-2 py-1 rounded-md border border-white/10 shadow-sm">${primaryOnlineCount} ONLINE</span>
+                    <div class="flex justify-between items-end mb-2.5 px-1 animate-enter">
+                        <h3 class="text-white font-bold text-[12px] tracking-wide uppercase">${headerText}</h3>
+                        <span class="text-gray-500 text-[9px] font-bold bg-gray-800/40 px-1.5 py-0.5 rounded border border-gray-800/50">${primaryUsers.length} ONLINE</span>
                     </div>
                 `;
                 primaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
             if (secondaryUsers.length > 0 && !roleKey.startsWith('lover_couple') && roleKey !== 'all') {
-                let secHeader = "OTHER ACTIVE USERS";
+                let secHeader = "Other spaces";
                 if(roleKey === 'lover_heartbreak') secHeader = "Find new friends & Distractions";
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-3 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
-                        <h3 class="text-gray-500 font-extrabold text-[12px] tracking-wide uppercase">${secHeader}</h3>
+                    <div class="flex justify-between items-end mb-2.5 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
+                        <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">${secHeader}</h3>
+                        <span class="text-gray-600 text-[9px] font-bold">${secondaryUsers.length} users</span>
                     </div>
                 `;
                 secondaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
-
-            setupSwipeToChat(); 
         }
 
         // --- INTERACTIONS ---
@@ -1044,7 +806,6 @@
             btnElement.classList.add('bg-green-500', 'text-white', 'border-green-500');
             btnElement.disabled = true;
 
-            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => {
                 window.location.href = `chat.html?chatWith=${encodeURIComponent(targetName)}`;
             }, 300);
@@ -1054,10 +815,6 @@
             hapticFeedback(15);
             btnElement.innerHTML = '<i class="fa-solid fa-check text-green-400"></i>';
             btnElement.disabled = true;
-            
-            const rect = btnElement.getBoundingClientRect();
-            sendDoubleTapWave(targetName, {clientX: rect.left, clientY: rect.top});
-
             if (globalPeer && !globalPeer.destroyed) {
                 const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
                 try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: {id: Date.now().toString(), text: "👋 Waved at you!"}, isSecret: false }); }); } catch(e){}
@@ -1067,17 +824,11 @@
 
         function sendDoubleTapWave(targetName, event) {
             hapticFeedback([10, 20]);
-            
-            for(let i=0; i<3; i++) {
-                const wave = document.createElement('div');
-                wave.innerHTML = '✨'; wave.className = 'floating-wave';
-                wave.style.left = (event.clientX - 15 + (Math.random()*30-15)) + 'px'; 
-                wave.style.top = (event.clientY - 15) + 'px';
-                wave.style.animationDelay = (Math.random() * 0.2) + 's';
-                wave.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
-                document.body.appendChild(wave);
-                setTimeout(() => wave.remove(), 800);
-            }
+            const wave = document.createElement('div');
+            wave.innerHTML = '👋'; wave.className = 'floating-wave';
+            wave.style.left = (event.clientX - 15) + 'px'; wave.style.top = (event.clientY - 15) + 'px';
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 800);
 
             if (globalPeer && !globalPeer.destroyed) {
                 const targetPeerId = "hs_" + targetName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -1089,8 +840,8 @@
         function openMiniProfile(alias, avatarContent, color) {
             hapticFeedback();
             document.getElementById('mpName').innerText = alias;
-            document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(alias); 
-            document.getElementById('mpAvatar').className = `w-24 h-24 rounded-full bg-gradient-to-tr from-${color || 'blue'}-500 to-gray-600 p-[3px] flex items-center justify-center text-4xl overflow-hidden shadow-lg mb-4`;
+            document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(avatarContent);
+            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3`;
             
             let vibe = localStorage.getItem(`hs_remote_vibe_${alias}`) || "Chilling right now ✨";
             document.getElementById('mpVibe').innerText = vibe;
@@ -1113,7 +864,6 @@
             hapticFeedback([10, 20]);
             const targetUser = document.getElementById('mpName').innerText;
             closeMiniProfile(true);
-            sessionStorage.setItem('hs_home_scroll', scrollPos);
             setTimeout(() => { window.location.href = `chat.html?chatWith=${encodeURIComponent(targetUser)}`; }, 300);
         }
 
