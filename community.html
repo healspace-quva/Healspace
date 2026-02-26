@@ -239,7 +239,7 @@
         const myAlias = localStorage.getItem("healspace_alias") || "User";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
         
-        let globalPeer; // Declared for safe WebRTC connection
+        let globalPeer; 
 
         if (!currentUserId || !loggedInRole) { window.location.replace("login.html"); }
 
@@ -263,7 +263,7 @@
             'all': { color: 'purple', hex: '#a855f7', glow: 'rgba(168,85,247,0.3)', tab1: 'Requests', tab2: 'Discover', sub1: 'Connections across all spaces.', sub2: 'Top users across HealSpace.' }
         };
 
-        // --- FALLBACK MOCK DATA (In case script is slow) ---
+        // --- FALLBACK MOCK DATA ---
         let mockRequests = [
             { id: 'req1', name: 'Jordan', age: 22, emoji: '🎧', intent: 'Needs Motivation', msg: '"Saw your profile, would love to chat!"', tags: ['Voice notes 🎙️'], color: 'blue', role: 'seeker' },
             { id: 'req2', name: 'Casey', age: 20, emoji: '🌙', intent: 'Venting', msg: '"Looking for someone to just listen tonight."', tags: ['Introvert'], color: 'purple', role: 'friend' }
@@ -279,13 +279,10 @@
         document.addEventListener("DOMContentLoaded", function() {
             document.body.addEventListener('click', () => { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); }, { once: true });
             
-            loadUserData();
+            loadUserData(); // Correctly loads from the unified source
             applyRoleTheming(loggedInRole);
             
-            // Render fast with local data
             renderLists(); 
-            
-            // Fetch live data from backend seamlessly
             fetchCommunityData();
             
             initGlobalCore();
@@ -306,7 +303,6 @@
                     if (result.requests && result.requests.length > 0) mockRequests = result.requests;
                     if (result.discover && result.discover.length > 0) mockDiscover = result.discover;
                     
-                    // Re-render UI now that live data is secured
                     renderLists();
                 }
             } catch (error) {
@@ -340,7 +336,6 @@
                     ptrIndicator.style.height = '35px';
                     ptrIndicator.style.opacity = '1';
                     
-                    // Trigger actual live refresh
                     fetchCommunityData().then(() => {
                         ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
                     });
@@ -351,11 +346,15 @@
             });
         }
 
-        // --- THEME & DATA ---
+        // --- THEME & DATA (FIXED FOR UNIFIED SYNC) ---
         function loadUserData() {
+            // This safely pulls exactly what Profile.html saved!
             const savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
             const activeProfile = savedAccounts[loggedInRole] || {};
-            const avatarData = activeProfile.avatar || activeProfile.emoji || '✨';
+            
+            // Check avatarInput first (images/icons), then emoji, fallback to default stars
+            const avatarData = activeProfile.avatarInput || activeProfile.emoji || '✨';
+            
             document.getElementById('headerAvatarContainer').innerHTML = getInnerAvatarHTML(avatarData);
             const t = roleConfigs[loggedInRole] || roleConfigs['seeker'];
             document.getElementById('notifDot').style.backgroundColor = t.hex;
@@ -363,8 +362,13 @@
 
         function getInnerAvatarHTML(avatarData) {
             if (!avatarData) return `<i class="fa-solid fa-user text-gray-500 text-[14px]"></i>`;
+            
+            // If the user typed an fa- icon class in profile.html, render the icon
+            if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[16px]"></i>`;
+            // If it's a URL, show the image
             if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-            else return `<span class="w-full h-full flex items-center justify-center text-[16px]">${avatarData}</span>`;
+            // Otherwise, it's a raw emoji
+            return `<span class="w-full h-full flex items-center justify-center text-[16px]">${avatarData}</span>`;
         }
 
         function applyRoleTheming(role) {
@@ -454,7 +458,7 @@
                         <div class="flex items-center gap-3 mb-2.5">
                             <div class="w-[42px] h-[42px] rounded-full bg-gradient-to-tr from-${req.color}-500 to-gray-500 p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${req.name}', '${req.emoji}', '${req.color}')">
                                 <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center text-[18px]">
-                                    ${req.emoji}
+                                    ${getInnerAvatarHTML(req.emoji)}
                                 </div>
                             </div>
                             <div class="flex-1 overflow-hidden" onclick="openMiniProfile('${req.name}', '${req.emoji}', '${req.color}')">
@@ -536,7 +540,7 @@
                                 <div class="w-[46px] h-[46px] rounded-full ${ringClass} p-[2px] shadow-sm flex-shrink-0 relative cursor-pointer" onclick="openMiniProfile('${user.name}', '${user.emoji}', '${user.color}')">
                                     <div class="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-[8px] font-extrabold px-1 rounded-sm border border-[#080a10] flex items-center gap-0.5 z-10"><i class="fa-solid fa-star text-[7px]"></i>${user.rating}</div>
                                     <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center text-[18px]">
-                                        ${user.emoji}
+                                        ${getInnerAvatarHTML(user.emoji)}
                                     </div>
                                     ${isOnline ? `<div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
                                 </div>
@@ -690,7 +694,7 @@
             hapticFeedback();
             const savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
             const list = document.getElementById('accountList'); list.innerHTML = '';
-            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition border border-transparent ${isActive ? 'border-gray-700/50' : ''}"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.alias || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
+            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition border border-transparent ${isActive ? 'border-gray-700/50' : ''}"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.avatarInput || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
             document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
         }
         function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
