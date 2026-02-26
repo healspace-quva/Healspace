@@ -10,6 +10,7 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
         
         /* Minimal Reset & Strict Mobile Lock */
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030408; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
@@ -76,7 +77,7 @@
         .bubble-active { transform: scale(0.97); filter: brightness(1.2); transition: 0.2s; z-index: 50; position: relative; }
         
         /* Sticky Date Badges */
-        .date-badge { align-self: center; background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(8px); color: #888; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 12px; margin: 16px 0 8px 0; border: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 1px; z-index: 5; position: sticky; top: 10px; }
+        .date-badge { align-self: center; background: rgba(17, 19, 26, 0.7); backdrop-filter: blur(8px); color: #888; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 12px; margin: 16px 0 8px 0; border: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 1px; z-index: 5; position: sticky; top: 10px; }
 
         .vibe-note { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #262626; border-radius: 12px; padding: 5px 10px; font-size: 0.7rem; color: white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; border: 1px solid #3f3f46; max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
         .vibe-note::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: #262626; border-right: 1px solid #3f3f46; border-bottom: 1px solid #3f3f46; }
@@ -160,7 +161,7 @@
 
             <div id="view-inbox" class="absolute inset-0 flex flex-col z-10 bg-[#080a10] overflow-hidden">
                 <header class="pt-12 pb-2 px-4 flex justify-between items-center shrink-0 sticky top-0 bg-[#080a10]/90 backdrop-blur-xl z-20 border-b border-gray-800/40">
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex items-center gap-2.5 cursor-pointer group hover:opacity-80 transition" onclick="openSwitchAccountModal()">
                         <div class="w-10 h-10 rounded-full border-[1.5px] border-gray-600 overflow-hidden flex items-center justify-center bg-gray-800 shadow-sm" id="mainHeaderAvatarContainer"></div>
                         <div class="flex flex-col">
                             <h1 class="text-[20px] font-extrabold tracking-tight text-white flex items-center gap-1.5 leading-none">
@@ -231,13 +232,13 @@
             </div>
 
             <div id="view-chat" class="absolute inset-0 flex flex-col z-[60] bg-[#080a10] hidden">
-                <header class="pt-12 pb-2 px-3 flex justify-between items-center border-b border-white/5 shrink-0 bg-[#080a10]/90 backdrop-blur-xl z-20 shadow-sm">
+                <header class="pt-12 pb-2 px-3 flex justify-between items-center border-b border-white/5 shrink-0 bg-[#080a10]/80 backdrop-blur-xl z-20 shadow-sm">
                     <div class="flex items-center gap-1.5">
                         <button onclick="closeChat()" class="text-white hover:text-gray-300 transition active:scale-90 p-2"><i class="fa-solid fa-arrow-left text-[18px]"></i></button>
                         <div class="flex items-center gap-2.5 cursor-pointer" onclick="openChatMiniProfile()">
                             <div class="w-9 h-9 rounded-full overflow-hidden relative bg-gray-800" id="chatTargetAvatarContainer"></div>
                             <div class="flex flex-col justify-center">
-                                <h3 class="text-white font-bold text-[15px] leading-tight tracking-wide" id="chatTargetName">User</h3>
+                                <h3 class="text-white font-bold text-[14px] leading-tight tracking-wide" id="chatTargetName">User</h3>
                                 <p class="text-[10px] text-gray-500 font-medium transition-all mt-0.5" id="chatTargetStatus">Connecting...</p>
                             </div>
                         </div>
@@ -354,6 +355,17 @@
                         <div id="menuReactionRemoveContainer"></div>
                         <div id="menuDynamicBtnContainer" class="border-t border-gray-800/60"></div>
                     </div>
+                </div>
+            </div>
+
+            <div id="switchAccountModal" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
+                <div class="bg-[#11131a] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe" id="switchAccountContent" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-5 border-b border-gray-800/60 pb-3">
+                        <h3 class="text-white text-[18px] font-bold">Switch Account</h3>
+                        <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                    </div>
+                    <div id="accountList" class="space-y-2 mb-5 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
+                    <button onclick="window.location.href='index.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[14px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
                 </div>
             </div>
 
@@ -683,7 +695,7 @@
         function openSwitchAccountModal() {
             hapticFeedback();
             const list = document.getElementById('accountList'); list.innerHTML = '';
-            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.alias || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]" style="font-family: monospace;">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
+            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-4 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.alias || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]" style="font-family: monospace;">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
             document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
         }
         function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
@@ -693,14 +705,11 @@
         function showTypingBubble() {
             if(!document.getElementById('typing-bubble')) {
                 const msgArea = document.getElementById('chatMessageArea');
-                msgArea.innerHTML += `<div id="typing-bubble" class="flex flex-col items-start mb-2 animate-fade"><div class="chat-bubble-recv typing-indicator px-4 py-3"><span></span><span></span><span></span></div></div>`;
+                msgArea.innerHTML += `<div id="typing-bubble" class="flex flex-col items-start mb-2 animate-fade"><div class="chat-bubble-recv typing-indicator px-4 py-2.5"><span></span><span></span><span></span></div></div>`;
                 scrollToBottom();
             }
         }
-        function hideTypingBubble() {
-            const tb = document.getElementById('typing-bubble');
-            if(tb) tb.remove();
-        }
+        function hideTypingBubble() { const tb = document.getElementById('typing-bubble'); if(tb) tb.remove(); }
 
         function initGlobalCore() {
             if (!myAlias || myAlias === "User" || myAlias === "Anonymous") return;
@@ -719,12 +728,11 @@
                     conn.on('data', (data) => {
                         onlineStatuses[data.sender] = Date.now();
                         if (data.action === 'chat_sync') processIncomingMessage(data.sender, data.msgData, data.isSecret);
-                        else if (data.action === 'call_declined') { if (currentCall) { document.getElementById('callStatusText').innerText = "Call Declined"; document.getElementById('callStatusText').className = "text-white font-bold bg-red-500 px-4 py-1.5 rounded-full inline-block shadow-lg z-10"; setTimeout(endCall, 2000); } }
                         else if (data.action === 'ping') {
-                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && statusEl.innerText !== "Typing...") { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all"; } }
+                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; } }
                             try { const pongConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true }); pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); }); } catch(e) {}
                         }
-                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && statusEl.innerText !== "Typing...") { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all"; } } }
+                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; } } }
                         else if (data.action === 'reaction') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { if(data.reaction===''){delete history[index].reaction;}else{history[index].reaction = data.reaction;} saveChatHistory(data.sender, history); if (activeChatUser === data.sender) renderChatMessages(); } } 
                         } 
@@ -736,11 +744,11 @@
                                 saveChatHistory(data.sender, history); if (activeChatUser === data.sender) renderChatMessages();
                             }
                         } 
-                        else if (data.action === 'typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Typing..."; statusEl.className = "text-[10px] text-blue-400 font-bold transition-all animate-pulse"; showTypingBubble(); } } 
-                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all"; hideTypingBubble(); } } 
+                        else if (data.action === 'typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerHTML = `<div class="typing-indicator mt-1"><span></span><span></span><span></span></div>`; showTypingBubble(); } } 
+                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; hideTypingBubble(); } } 
                         else if (data.action === 'unsend') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { history[index].deleted = true; saveChatHistory(data.sender, history); } renderInbox(false); }
-                            if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(),300); } }
+                            if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(), 300); } }
                         }
                         if(!activeChatUser) renderInbox(false);
                     });
@@ -1075,8 +1083,12 @@
         function cancelReply() { hapticFeedback(); replyingToText = null; document.getElementById('replyPreviewContainer').classList.add('hidden'); }
 
         function processSendText() {
-            const input = document.getElementById('chatInput'); const text = input.value.trim(); if(!text) return;
-            hapticFeedback(20);
+            const input = document.getElementById('chatInput'); let text = input.value.trim(); if(!text) return;
+            hapticFeedback(15);
+            
+            // Mentions
+            text = text.replace(/(@\w+)/g, '<span class="mention-tag">$1</span>');
+
             saveAndSendMsg({ id: Date.now().toString(), text: text, type: 'sent', file: null, deleted: false, status: 'sent', replyContext: replyingToText });
             input.value = ''; requestAnimationFrame(() => { input.style.height = 'auto'; document.getElementById('sendBtn').style.display = 'none'; document.getElementById('micBtn').classList.remove('hidden'); }); cancelReply();
         }
