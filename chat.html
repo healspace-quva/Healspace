@@ -13,9 +13,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
         
         /* Minimal Reset & Strict Mobile Lock */
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030408; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
-        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; background: #030408; }
-        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #080a10; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,1); transition: background-color 0.5s ease; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #020305; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+        
+        /* Futuristic Ambient Background */
+        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; background: radial-gradient(circle at 50% 0%, #1a1e36 0%, #020305 60%); }
+        
+        #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: transparent; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,1); transition: background-color 0.5s ease; border-left: 1px solid rgba(255,255,255,0.03); border-right: 1px solid rgba(255,255,255,0.03); }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -27,16 +30,19 @@
         .screen-exit { animation: slideOutRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.8) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        .animate-fade { animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-fade { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         @keyframes slideInLeft { from { transform: translateX(-15px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .inbox-item-anim { animation: slideInLeft 0.3s ease-out forwards; opacity: 0; }
+        .inbox-item-anim { animation: slideInLeft 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
 
-        @keyframes pulseBubble { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.2); } 100% { transform: scale(1); } }
+        @keyframes pulseBubble { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.3); } 100% { transform: scale(1); } }
         .pulse-anim { animation: pulseBubble 0.3s ease-out; }
 
-        /* UI Elements */
-        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; border-radius: 50%; }
+        /* Premium Glassmorphism UI Elements */
+        .glass-panel { background: rgba(15, 18, 28, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+        .glass-header { background: linear-gradient(180deg, rgba(8, 10, 16, 0.9) 0%, rgba(8, 10, 16, 0.6) 100%); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .insta-ring { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); padding: 2px; border-radius: 50%; box-shadow: 0 0 15px rgba(220, 39, 67, 0.4); }
         
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
@@ -46,373 +52,411 @@
         .spin-slow { animation: spinSlow 1s linear infinite; }
 
         /* --- 6 PREMIUM THEME SYSTEM --- */
-        .chat-bg { background-color: #080a10; transition: all 0.3s ease; }
-        .chat-bubble-sent { background: #2563eb; color: white; border-radius: 18px 18px 4px 18px; align-self: flex-end; max-width: 78%; padding: 10px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); transition: transform 0.2s; }
-        .chat-bubble-recv { background-color: #1f2937; color: #f3f4f6; border-radius: 18px 18px 18px 4px; align-self: flex-start; max-width: 78%; padding: 10px 14px; font-size: 0.95rem; word-wrap: break-word; position: relative; transition: transform 0.2s; }
+        .chat-bg { background-color: #020305; transition: all 0.3s ease; } /* Fixed transparent issue */
+        .chat-bubble-sent { background: linear-gradient(135deg, #2563eb, #4f46e5); color: white; border-radius: 20px 20px 4px 20px; align-self: flex-end; max-width: 75%; padding: 10px 16px; font-size: 0.95rem; word-wrap: break-word; position: relative; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: transform 0.2s, filter 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .chat-bubble-recv { background: rgba(31, 41, 55, 0.8); backdrop-filter: blur(10px); color: #f3f4f6; border-radius: 20px 20px 20px 4px; align-self: flex-start; max-width: 75%; padding: 10px 16px; font-size: 0.95rem; word-wrap: break-word; position: relative; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         
         .theme-instagram .chat-bg { background-color: #000000; }
-        .theme-instagram .chat-bubble-sent { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); box-shadow: 0 2px 10px rgba(220, 39, 67, 0.25); }
-        .theme-instagram .chat-bubble-recv { background-color: #1c1c1e; border: 1px solid #333; }
+        .theme-instagram .chat-bubble-sent { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); box-shadow: 0 4px 15px rgba(220, 39, 67, 0.35); border: none; }
+        .theme-instagram .chat-bubble-recv { background: rgba(28, 28, 30, 0.9); border: 1px solid rgba(255,255,255,0.08); }
 
         .theme-telegram .chat-bg { background-color: #0e1621; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231f2937' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-        .theme-telegram .chat-bubble-sent { background: #2b5278; box-shadow: none; border-radius: 12px 12px 0px 12px; }
-        .theme-telegram .chat-bubble-recv { background-color: #182533; border-radius: 12px 12px 12px 0px; }
+        .theme-telegram .chat-bubble-sent { background: #2b5278; box-shadow: none; border-radius: 16px 16px 4px 16px; border: none; }
+        .theme-telegram .chat-bubble-recv { background: #182533; border-radius: 16px 16px 16px 4px; border: none; }
 
         .theme-cyberpunk .chat-bg { background-color: #050510; }
-        .theme-cyberpunk .chat-bubble-sent { background: transparent; border: 1px solid #00ffcc; color: #00ffcc; box-shadow: inset 0 0 10px rgba(0,255,204,0.2), 0 0 10px rgba(0,255,204,0.2); }
-        .theme-cyberpunk .chat-bubble-recv { background-color: transparent; border: 1px solid #ff007f; color: #ff007f; box-shadow: inset 0 0 10px rgba(255,0,127,0.2); }
+        .theme-cyberpunk .chat-bubble-sent { background: rgba(0, 255, 204, 0.1); border: 1px solid #00ffcc; color: #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.3); text-shadow: 0 0 5px rgba(0,255,204,0.5); }
+        .theme-cyberpunk .chat-bubble-recv { background: rgba(255, 0, 127, 0.05); border: 1px solid rgba(255, 0, 127, 0.5); color: #ff007f; box-shadow: 0 0 15px rgba(255,0,127,0.1); }
 
         .theme-midnight .chat-bg { background-color: #1a1a2e; }
-        .theme-midnight .chat-bubble-sent { background: #4a4e69; border-radius: 20px; }
-        .theme-midnight .chat-bubble-recv { background-color: #22223b; border-radius: 20px; }
+        .theme-midnight .chat-bubble-sent { background: linear-gradient(135deg, #4a4e69, #22223b); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .theme-midnight .chat-bubble-recv { background: rgba(34, 34, 59, 0.7); }
 
         .theme-sakura .chat-bg { background-color: #1c1018; }
-        .theme-sakura .chat-bubble-sent { background: #ff758f; color: white; box-shadow: 0 2px 15px rgba(255,117,143,0.3); }
-        .theme-sakura .chat-bubble-recv { background-color: #2b1c24; color: #ffccd5; }
+        .theme-sakura .chat-bubble-sent { background: linear-gradient(135deg, #ff758f, #ff4d6d); color: white; box-shadow: 0 4px 20px rgba(255,117,143,0.4); border: none; }
+        .theme-sakura .chat-bubble-recv { background: rgba(43, 28, 36, 0.8); color: #ffccd5; border: 1px solid rgba(255,117,143,0.2); }
 
         /* Smart Grouping Styles */
-        .chat-bubble-sent.grouped { border-top-right-radius: 4px; border-bottom-right-radius: 4px; margin-bottom: 2px !important; }
-        .chat-bubble-recv.grouped { border-top-left-radius: 4px; border-bottom-left-radius: 4px; margin-bottom: 2px !important; }
+        .chat-bubble-sent.grouped { border-top-right-radius: 6px; border-bottom-right-radius: 6px; margin-bottom: 2px !important; }
+        .chat-bubble-recv.grouped { border-top-left-radius: 6px; border-bottom-left-radius: 6px; margin-bottom: 2px !important; }
 
-        .bubble-active { transform: scale(0.97); filter: brightness(1.2); transition: 0.2s; z-index: 50; position: relative; }
+        .bubble-active { transform: scale(0.97); filter: brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.2)); transition: 0.2s; z-index: 50; position: relative; }
         
         /* Sticky Date Badges */
-        .date-badge { align-self: center; background: rgba(17, 19, 26, 0.7); backdrop-filter: blur(8px); color: #888; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 12px; margin: 16px 0 8px 0; border: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 1px; z-index: 5; position: sticky; top: 10px; }
+        .date-badge { align-self: center; background: rgba(17, 19, 26, 0.6); backdrop-filter: blur(12px); color: #a1a1aa; font-size: 0.75rem; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin: 20px 0 12px 0; border: 1px solid rgba(255,255,255,0.08); text-transform: uppercase; letter-spacing: 1.5px; z-index: 5; position: sticky; top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-        .vibe-note { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: #262626; border-radius: 12px; padding: 5px 10px; font-size: 0.7rem; color: white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; border: 1px solid #3f3f46; max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
-        .vibe-note::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: #262626; border-right: 1px solid #3f3f46; border-bottom: 1px solid #3f3f46; }
+        .vibe-note { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); background: rgba(38, 38, 38, 0.95); backdrop-filter: blur(5px); border-radius: 12px; padding: 5px 12px; font-size: 0.7rem; color: white; white-space: nowrap; box-shadow: 0 6px 15px rgba(0,0,0,0.6); z-index: 10; border: 1px solid rgba(255,255,255,0.1); max-width: 90px; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        .vibe-note::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 8px; height: 8px; background: rgba(38, 38, 38, 0.95); border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
 
+        /* Floating Input Bar */
+        .floating-chatbar { position: absolute; bottom: max(env(safe-area-inset-bottom), 16px); left: 12px; right: 12px; z-index: 40; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 32px; padding: 6px; }
         textarea { resize: none; overflow-y: auto; transition: height 0.1s ease-out; }
         
-        .reaction-btn { font-size: 1.8rem; transition: transform 0.2s; }
+        .reaction-btn { font-size: 1.8rem; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reaction-btn:hover { transform: scale(1.15); }
         .reaction-btn:active { transform: scale(1.3); }
-        .reaction-badge { position: absolute; bottom: -8px; right: 4px; background: #2c2c2e; padding: 2px 6px; border-radius: 12px; font-size: 12px; border: 1px solid #4b5563; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; animation: popIn 0.2s ease-out forwards; cursor: pointer; transition: transform 0.2s; }
+        .reaction-badge { position: absolute; bottom: -10px; right: 8px; background: rgba(44, 44, 46, 0.95); backdrop-filter: blur(5px); padding: 3px 8px; border-radius: 16px; font-size: 13px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; cursor: pointer; transition: transform 0.2s; }
         .reaction-badge:hover { transform: scale(1.15); }
-        .chat-bubble-recv .reaction-badge { right: auto; left: 4px; }
-        
-        /* Floating Chat Bar (Instagram Style) */
-        .floating-chat-bar { background: rgba(22, 24, 30, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.6); border-radius: 30px; }
+        .chat-bubble-recv .reaction-badge { right: auto; left: 8px; }
+
+        /* Voice Recording Anim */
+        .mic-recording { color: #ef4444 !important; animation: pulseMic 1.5s infinite; }
+        @keyframes pulseMic { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); } 70% { box-shadow: 0 0 0 15px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
         /* Dynamic Typing Dots */
-        .typing-indicator span { display: inline-block; width: 5px; height: 5px; background-color: #9ca3af; border-radius: 50%; margin: 0 2px; animation: typingBounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #60a5fa; border-radius: 50%; margin: 0 2px; animation: typingBounce 1.4s infinite ease-in-out both; box-shadow: 0 0 8px rgba(96, 165, 250, 0.6); }
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+        @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
 
-        @keyframes floatUpAndFade { 0% { opacity: 1; transform: scale(0.5) translateY(0) rotate(-10deg); } 50% { transform: scale(1.5) translateY(-30px) rotate(10deg); } 100% { opacity: 0; transform: scale(1) translateY(-60px) rotate(-5deg); } }
-        .floating-heart { position: fixed; font-size: 35px; pointer-events: none; z-index: 9999; animation: floatUpAndFade 0.9s ease-out forwards; filter: drop-shadow(0 4px 10px rgba(255,0,100,0.5)); }
+        @keyframes floatUpAndFade { 0% { opacity: 1; transform: scale(0.5) translateY(0) rotate(-10deg); } 50% { transform: scale(1.5) translateY(-40px) rotate(10deg); filter: brightness(1.2); } 100% { opacity: 0; transform: scale(1) translateY(-80px) rotate(-5deg); filter: brightness(1); } }
+        .floating-heart { position: fixed; font-size: 45px; pointer-events: none; z-index: 9999; animation: floatUpAndFade 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; filter: drop-shadow(0 4px 15px rgba(255,0,100,0.6)); }
 
         #scrollToBottomBtn { transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .status-icon { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
         /* Swipe to Reply Animation */
-        .swipe-reply-active { transform: translateX(40px) !important; opacity: 0.7; }
+        .swipe-reply-active { transform: translateX(50px) !important; opacity: 0.8; filter: brightness(1.2); }
         
         /* Draggable Video */
-        #localMediaContainer { cursor: grab; }
+        #localMediaContainer { cursor: grab; border: 2px solid rgba(255,255,255,0.1); }
         #localMediaContainer:active { cursor: grabbing; }
 
-        /* Calling Animation Rings */
-        @keyframes pulseRing { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.2); opacity: 0; } }
-        .call-ring { position: absolute; border: 2px solid #3b82f6; border-radius: 50%; width: 144px; height: 144px; animation: pulseRing 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
-        .call-ring-2 { animation-delay: 1s; }
-        
+        /* Holographic Calling Animation Rings */
+        @keyframes holoRing { 0% { transform: scale(0.8) rotate(0deg); opacity: 0.8; border-color: #3b82f6; } 100% { transform: scale(2.5) rotate(180deg); opacity: 0; border-color: #8b5cf6; } }
+        .call-ring { position: absolute; border: 2px dashed #3b82f6; border-radius: 50%; width: 150px; height: 150px; animation: holoRing 3s infinite cubic-bezier(0.1, 0.7, 0.3, 1); }
+        .call-ring-2 { animation-delay: 1.5s; border: 2px solid #8b5cf6; animation-direction: reverse; }
+
         /* Unsend Animation */
-        @keyframes poofOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0); opacity: 0; margin-bottom: -40px; } }
-        .msg-unsend { animation: poofOut 0.3s forwards cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes poofOut { 0% { transform: scale(1); opacity: 1; filter: blur(0px); } 100% { transform: scale(0.5) translateY(20px); opacity: 0; filter: blur(10px); margin-bottom: -40px; } }
+        .msg-unsend { animation: poofOut 0.4s forwards cubic-bezier(0.2, 0.8, 0.2, 1); }
         
-        .mention-tag { color: #60a5fa; background: rgba(59,130,246,0.15); padding: 0 4px; border-radius: 4px; font-weight: bold; }
+        .mention-tag { color: #60a5fa; background: rgba(59,130,246,0.15); padding: 2px 6px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(59,130,246,0.3); }
     </style>
 </head>
 <body>
     <div id="app-wrapper">
         <div id="mobile-container">
             
-            <div id="customNotification" class="hidden absolute top-4 left-3 right-3 z-[9999] bg-[#1c1c1e]/95 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-4 shadow-2xl cursor-pointer hover:bg-gray-800 transition">
+            <div id="customNotification" class="hidden absolute top-4 left-3 right-3 z-[9999] glass-panel rounded-2xl p-4 shadow-2xl cursor-pointer hover:bg-white/5 transition border border-blue-500/30">
                 <div class="flex items-start gap-3 pointer-events-none">
-                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
-                        <i id="notifIcon" class="fa-solid fa-comment-dots text-blue-400"></i>
+                    <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-600 to-purple-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                        <i id="notifIcon" class="fa-solid fa-bell text-white text-lg"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 id="notifTitle" class="text-white font-bold text-[13px]">New Message</h4>
-                        <p id="notifMessage" class="text-gray-400 text-[11px] mt-0.5 truncate">Tap to view...</p>
+                        <h4 id="notifTitle" class="text-white font-bold text-[14px]">New Message</h4>
+                        <p id="notifMessage" class="text-gray-300 text-[12px] mt-0.5 truncate font-medium">Tap to view...</p>
                     </div>
                 </div>
             </div>
 
-            <div id="imageLightbox" class="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
-                <div class="absolute top-12 right-6 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white text-xl cursor-pointer active:scale-90 transition">
+            <div id="imageLightbox" class="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+                <div class="absolute top-12 right-6 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl cursor-pointer hover:bg-white/20 active:scale-90 transition">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
-                <img id="lightboxImg" src="" class="max-w-[95vw] max-h-[80vh] object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] transition-transform duration-300 scale-90" onclick="event.stopPropagation()">
+                <img id="lightboxImg" src="" class="max-w-[95vw] max-h-[80vh] object-contain rounded-2xl shadow-[0_0_80px_rgba(255,255,255,0.1)] transition-transform duration-400 scale-90" onclick="event.stopPropagation()">
             </div>
 
             <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
-                <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
-                    <div class="w-10 h-1 bg-gray-700 rounded-full mb-6"></div>
-                    <div class="w-20 h-20 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3" id="mpAvatar">👤</div>
-                    <h2 class="text-white text-[22px] font-bold tracking-tight" id="mpName">Username</h2>
-                    <p class="text-gray-400 text-[12px] font-medium mt-1 mb-5 bg-black/40 px-3 py-1 rounded-full border border-gray-800/50" id="mpVibe">Chilling right now ✨</p>
-                    <button onclick="closeMiniProfile(true)" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold text-[14px] py-3.5 rounded-xl active:scale-95 transition shadow-lg">
-                        Close
+                <div class="glass-panel w-full rounded-t-[36px] p-6 shadow-2xl transform translate-y-full transition-transform duration-400 pb-safe flex flex-col items-center border-b-0" id="miniProfileSheet" onclick="event.stopPropagation()">
+                    <div class="w-12 h-1.5 bg-gray-600 rounded-full mb-6"></div>
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-gray-800 to-gray-900 border-2 border-white/10 flex items-center justify-center text-4xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] mb-4" id="mpAvatar">👤</div>
+                    <h2 class="text-white text-[24px] font-extrabold tracking-tight drop-shadow-md" id="mpName">Username</h2>
+                    <p class="text-blue-300 text-[13px] font-semibold mt-1 mb-6 bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20" id="mpVibe">Chilling right now ✨</p>
+                    <button onclick="closeMiniProfile(true)" class="w-full bg-white/10 hover:bg-white/20 text-white font-bold text-[15px] py-4 rounded-[20px] active:scale-95 transition backdrop-blur-md border border-white/5">
+                        Close Profile
                     </button>
                 </div>
             </div>
 
-            <div id="view-inbox" class="absolute inset-0 flex flex-col z-10 bg-[#080a10] overflow-hidden">
-                <header class="pt-12 pb-2 px-4 flex justify-between items-center shrink-0 sticky top-0 bg-[#080a10]/90 backdrop-blur-xl z-20 border-b border-gray-800/40">
-                    <div class="flex items-center gap-2.5 cursor-pointer group hover:opacity-80 transition" onclick="openSwitchAccountModal()">
-                        <div class="w-10 h-10 rounded-full border-[1.5px] border-gray-600 overflow-hidden flex items-center justify-center bg-gray-800 shadow-sm" id="mainHeaderAvatarContainer"></div>
+            <div id="view-inbox" class="absolute inset-0 flex flex-col z-10 overflow-hidden">
+                <header class="pt-12 pb-3 px-5 flex justify-between items-center shrink-0 sticky top-0 glass-header z-20">
+                    <div class="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition" onclick="openSwitchAccountModal()">
+                        <div class="w-11 h-11 rounded-full border-[2px] border-white/20 overflow-hidden flex items-center justify-center bg-gray-800 shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:border-blue-500 transition-colors" id="mainHeaderAvatarContainer"></div>
                         <div class="flex flex-col">
-                            <h1 class="text-[20px] font-extrabold tracking-tight text-white flex items-center gap-1.5 leading-none">
-                                Messages
+                            <span class="text-[10px] text-gray-400 font-bold tracking-widest uppercase mb-0.5 drop-shadow-md">Your Account</span>
+                            <h1 class="text-[18px] font-extrabold tracking-tight text-white flex items-center gap-1.5 leading-none drop-shadow-md">
+                                <span id="inboxUserIdText">@userid</span> 
+                                <i class="fa-solid fa-chevron-down text-[11px] text-gray-400 group-hover:text-white transition"></i>
                             </h1>
-                            <span class="text-[10px] text-gray-500 font-bold tracking-wider uppercase mt-1">Your Inbox</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2.5">
-                        <button onclick="openNewMessageScreen()" class="w-9 h-9 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 hover:bg-blue-600/40 transition active:scale-90 border border-blue-500/30"><i class="fa-regular fa-pen-to-square text-[14px]"></i></button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="refreshInboxAnim()" class="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/10 transition active:scale-90 border border-white/10 shadow-lg" id="btnRefresh"><i class="fa-solid fa-arrows-rotate text-[14px]"></i></button>
+                        <button onclick="openNewMessageScreen()" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white hover:opacity-90 transition active:scale-90 shadow-[0_0_15px_rgba(59,130,246,0.4)]"><i class="fa-solid fa-pen-to-square text-[14px]"></i></button>
                     </div>
                 </header>
 
-                <main id="inboxMainArea" class="flex-1 w-full overflow-y-auto no-scrollbar pb-[100px] pt-2 relative px-2">
-                    <div id="ptr-indicator" class="w-full h-0 flex items-center justify-center opacity-0 mb-1">
-                        <i class="fa-solid fa-circle-notch text-blue-500 text-lg spin-slow"></i>
+                <main id="inboxMainArea" class="flex-1 w-full overflow-y-auto no-scrollbar pb-[100px] pt-4 relative px-3">
+                    <div id="ptr-indicator" class="w-full h-0 flex items-center justify-center opacity-0 mb-2">
+                        <i class="fa-solid fa-circle-notch text-blue-500 text-xl spin-slow drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]"></i>
                     </div>
 
-                    <div class="px-2 mb-4 mt-2">
-                        <div class="bg-gray-900/80 rounded-xl px-3 py-2 flex items-center gap-2 border border-gray-700 focus-within:border-blue-500/50 transition-colors shadow-inner">
-                            <i class="fa-solid fa-magnifying-glass text-gray-500 text-[12px]"></i>
-                            <input type="text" id="userSearchInput" onkeyup="filterInbox()" placeholder="Search conversations" class="bg-transparent border-none outline-none text-white text-[13px] w-full placeholder-gray-500 font-medium">
+                    <div class="px-2 mb-6">
+                        <div class="glass-panel rounded-2xl px-4 py-3 flex items-center gap-3 focus-within:border-blue-500/50 focus-within:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all">
+                            <i class="fa-solid fa-magnifying-glass text-gray-400 text-[13px]"></i>
+                            <input type="text" id="userSearchInput" onkeyup="filterInbox()" placeholder="Search highly secured chats..." class="bg-transparent border-none outline-none text-white text-[14px] w-full placeholder-gray-500 font-medium tracking-wide">
                         </div>
                     </div>
 
-                    <div class="flex gap-3 overflow-x-auto no-scrollbar px-2 mb-4 pb-2" id="vibesList"></div>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar px-2 mb-6 pb-2" id="vibesList"></div>
+                    
+                    <div class="px-3 mb-3 flex justify-between items-center text-white">
+                        <h2 class="font-extrabold text-[18px] tracking-tight drop-shadow-sm">Messages</h2>
+                        <span class="text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full text-[11px] font-bold border border-blue-500/20 shadow-sm cursor-pointer hover:bg-blue-500/20 transition">Requests (0)</span>
+                    </div>
 
-                    <div id="inboxList" class="flex flex-col pb-10 gap-0">
-                        <div class="px-3 py-3 flex gap-3 animate-fade">
-                            <div class="w-12 h-12 rounded-full skeleton-bg shrink-0"></div>
-                            <div class="flex-1 py-1"><div class="h-3 skeleton-bg rounded w-1/2 mb-2"></div><div class="h-2 skeleton-bg rounded w-3/4"></div></div>
-                        </div>
-                        <div class="px-3 py-3 flex gap-3 animate-fade" style="animation-delay: 0.1s">
-                            <div class="w-12 h-12 rounded-full skeleton-bg shrink-0"></div>
-                            <div class="flex-1 py-1"><div class="h-3 skeleton-bg rounded w-1/3 mb-2"></div><div class="h-2 skeleton-bg rounded w-2/3"></div></div>
+                    <div id="inboxList" class="flex flex-col pb-10 gap-1.5">
+                        <div class="glass-panel rounded-2xl px-4 py-3.5 flex gap-4 animate-fade border-none">
+                            <div class="w-14 h-14 rounded-full skeleton-bg shrink-0"></div>
+                            <div class="flex-1 py-1.5"><div class="h-4 skeleton-bg rounded w-1/2 mb-3"></div><div class="h-2.5 skeleton-bg rounded w-3/4"></div></div>
                         </div>
                     </div>
                 </main>
 
-                <nav id="mainNav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] bg-[#11131a]/90 backdrop-blur-xl rounded-[32px] border border-gray-800/50 h-[64px] z-30 shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-colors duration-400 pb-0">
-                    <ul class="flex justify-between items-center h-full px-4">
-                        <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-house text-[18px]"></i></a>
-                        <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-compass text-[18px]"></i></a>
-                        <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-user-group text-[18px]"></i></a>
-                        <a href="chat.html" class="flex items-center gap-1.5 bg-[#1a1c23] text-pink-500 px-3 py-2 rounded-full transition-all shadow-sm border border-pink-500/10">
+                <nav id="mainNav" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[400px] glass-panel rounded-[32px] h-[68px] z-30 flex items-center justify-center px-2">
+                    <ul class="flex justify-between items-center w-full px-4">
+                        <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-house text-[20px]"></i></a>
+                        <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-compass text-[20px]"></i></a>
+                        <a href="chat.html" class="flex items-center gap-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 text-blue-400 px-4 py-2.5 rounded-full transition-all shadow-[0_0_20px_rgba(59,130,246,0.15)]">
                             <i class="fa-solid fa-message text-[16px]"></i>
-                            <span class="font-normal text-[13px] tracking-widest" style="font-family: 'Metal Mania', cursive; margin-top: 1px;">Chat</span>
-                            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden" id="navChatDot"></span>
+                            <span class="font-bold text-[13px] tracking-wide mt-0.5">Chat</span>
                         </a>
-                        <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-circle-user text-[18px]"></i></a>
+                        <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-user-group text-[20px]"></i></a>
+                        <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-circle-user text-[20px]"></i></a>
                     </ul>
                 </nav>
             </div>
 
-            <div id="userOptionsOverlay" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideUserOptions()">
-                <div class="bg-[#1c1c1e] w-full rounded-t-[32px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col border-t border-gray-800" id="userOptionsSheet" onclick="event.stopPropagation()">
-                    <div class="flex justify-center pt-4 pb-2"><div class="w-10 h-1 bg-gray-600 rounded-full"></div></div>
-                    <div class="px-6 py-4 border-b border-gray-800/50 flex items-center gap-3">
-                        <span id="optionsUserName" class="text-white font-bold text-[18px]" style="font-family: monospace;">Username</span>
+            <div id="userOptionsOverlay" class="absolute inset-0 z-[80] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideUserOptions()">
+                <div class="glass-panel w-full rounded-t-[36px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-400 flex flex-col border-b-0" id="userOptionsSheet" onclick="event.stopPropagation()">
+                    <div class="flex justify-center pt-5 pb-3"><div class="w-12 h-1.5 bg-gray-600 rounded-full"></div></div>
+                    <div class="px-6 py-4 border-b border-white/10 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white text-lg"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <span id="optionsUserName" class="text-white font-extrabold text-[20px] tracking-tight">Username</span>
                     </div>
-                    <div class="flex flex-col text-white pb-6 pt-2">
-                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[14px] font-medium text-left active:bg-[#3a3a3c]"><i class="fa-regular fa-clock text-lg w-6 text-center text-gray-400"></i> Set reminder</button>
-                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[14px] font-medium text-left active:bg-[#3a3a3c]"><i class="fa-regular fa-envelope text-lg w-6 text-center text-gray-400"></i> Mark as Unread</button>
-                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[14px] font-medium text-left active:bg-[#3a3a3c]"><i class="fa-solid fa-thumbtack text-lg w-6 text-center text-gray-400"></i> Pin</button>
-                        <button class="flex items-center gap-4 px-6 py-3.5 hover:bg-[#2c2c2e] transition text-[14px] font-medium text-left text-red-500 active:bg-[#3a3a3c]" onclick="deleteConversation()"><i class="fa-regular fa-trash-can text-lg w-6 text-center"></i> Delete Chat</button>
+                    <div class="flex flex-col text-white pb-8 pt-2 px-2">
+                        <button class="flex items-center gap-4 px-5 py-4 hover:bg-white/5 rounded-2xl transition text-[15px] font-semibold text-left active:scale-[0.98] mx-2"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-regular fa-clock text-gray-300"></i></div> Set reminder</button>
+                        <button class="flex items-center gap-4 px-5 py-4 hover:bg-white/5 rounded-2xl transition text-[15px] font-semibold text-left active:scale-[0.98] mx-2"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-regular fa-envelope text-gray-300"></i></div> Mark as Unread</button>
+                        <button class="flex items-center gap-4 px-5 py-4 hover:bg-white/5 rounded-2xl transition text-[15px] font-semibold text-left active:scale-[0.98] mx-2"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-thumbtack text-gray-300"></i></div> Pin Chat</button>
+                        <div class="h-[1px] bg-white/5 mx-6 my-2"></div>
+                        <button class="flex items-center gap-4 px-5 py-4 hover:bg-red-500/10 rounded-2xl transition text-[15px] font-semibold text-left text-red-500 active:scale-[0.98] mx-2 mt-1" onclick="deleteConversation()"><div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center"><i class="fa-regular fa-trash-can"></i></div> Delete Chat</button>
                     </div>
                 </div>
             </div>
 
-            <div id="view-chat" class="absolute inset-0 flex flex-col z-[60] bg-[#080a10] hidden">
-                <header class="pt-12 pb-2 px-3 flex justify-between items-center border-b border-white/5 shrink-0 bg-[#080a10]/80 backdrop-blur-xl z-20 shadow-sm">
-                    <div class="flex items-center gap-1.5">
-                        <button onclick="closeChat()" class="text-white hover:text-gray-300 transition active:scale-90 p-2"><i class="fa-solid fa-arrow-left text-[18px]"></i></button>
-                        <div class="flex items-center gap-2.5 cursor-pointer" onclick="openChatMiniProfile()">
-                            <div class="w-9 h-9 rounded-full overflow-hidden relative bg-gray-800" id="chatTargetAvatarContainer"></div>
+            <div id="view-chat" class="absolute inset-0 flex flex-col z-[60] bg-[#020305] hidden">
+                <header class="pt-12 pb-3 px-3 flex justify-between items-center shrink-0 glass-header z-20">
+                    <div class="flex items-center gap-1">
+                        <button onclick="closeChat()" class="text-white hover:text-blue-400 transition active:scale-90 p-2.5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5"><i class="fa-solid fa-arrow-left text-[18px]"></i></button>
+                        <div class="flex items-center gap-3 cursor-pointer p-1 rounded-full hover:bg-white/5 transition pr-4" onclick="openChatMiniProfile()">
+                            <div class="w-10 h-10 rounded-full overflow-hidden relative bg-gray-800 border border-white/20 shadow-md" id="chatTargetAvatarContainer"></div>
                             <div class="flex flex-col justify-center">
-                                <h3 class="text-white font-bold text-[14px] leading-tight tracking-wide" id="chatTargetName">User</h3>
-                                <p class="text-[10px] text-gray-500 font-medium transition-all mt-0.5" id="chatTargetStatus">Connecting...</p>
+                                <h3 class="text-white font-extrabold text-[15px] leading-tight tracking-wide drop-shadow-md" id="chatTargetName">User</h3>
+                                <p class="text-[11px] text-blue-400 font-semibold transition-all mt-0.5" id="chatTargetStatus">Connecting...</p>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 text-white pr-2">
-                        <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90" onclick="openThemeSelector()"><i class="fa-solid fa-palette text-[15px]"></i></button>
-                        <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90" onclick="startCall('audio')"><i class="fa-solid fa-phone text-[15px]"></i></button>
-                        <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90" onclick="startCall('video')"><i class="fa-solid fa-video text-[16px]"></i></button>
+                    <div class="flex items-center gap-1 text-white pr-2">
+                        <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90 text-gray-300 hover:text-white" onclick="openThemeSelector()"><i class="fa-solid fa-palette text-[16px]"></i></button>
+                        <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90 text-gray-300 hover:text-blue-400" onclick="startCall('audio')"><i class="fa-solid fa-phone text-[16px]"></i></button>
+                        <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition active:scale-90 text-gray-300 hover:text-blue-400" onclick="startCall('video')"><i class="fa-solid fa-video text-[16px]"></i></button>
                     </div>
                 </header>
 
-                <main id="chatMessageArea" class="chat-bg flex-1 overflow-y-auto no-scrollbar p-3 flex flex-col gap-[6px] pb-24 relative"></main>
+                <main id="chatMessageArea" class="chat-bg flex-1 overflow-y-auto no-scrollbar p-4 flex flex-col gap-1.5 pb-[100px] relative z-10"></main>
 
-                <button id="scrollToBottomBtn" onclick="scrollToBottom()" class="absolute bottom-[90px] right-4 w-9 h-9 bg-[#1c1c1e]/90 backdrop-blur-md border border-gray-700 rounded-full flex items-center justify-center text-white shadow-xl transform translate-y-20 opacity-0 z-30 active:scale-90">
-                    <i class="fa-solid fa-chevron-down text-[11px]"></i>
+                <button id="scrollToBottomBtn" onclick="scrollToBottom()" class="absolute bottom-28 right-5 w-10 h-10 glass-panel rounded-full flex items-center justify-center text-white shadow-[0_5px_20px_rgba(0,0,0,0.6)] transform translate-y-20 opacity-0 z-30 active:scale-90 hover:bg-white/10">
+                    <i class="fa-solid fa-chevron-down text-[14px]"></i>
                 </button>
 
-                <div class="fixed bottom-0 left-0 w-full px-3 pb-safe pt-2 bg-gradient-to-t from-[#080a10] via-[#080a10]/80 to-transparent z-50 pointer-events-none">
-                    
-                    <div id="replyPreviewContainer" class="hidden absolute -top-[30px] left-8 right-8 bg-[#1c1c1e]/95 backdrop-blur-md border-l-[3px] border-blue-500 rounded-t-xl px-3 py-1.5 flex justify-between items-center shadow-lg z-[-1] pointer-events-auto">
-                        <div class="flex flex-col overflow-hidden w-full"><span class="text-blue-400 text-[9px] font-bold uppercase tracking-wider">Replying to</span><span id="replyPreviewText" class="text-gray-300 text-[11px] truncate"></span></div>
-                        <button onclick="cancelReply()" class="text-gray-400 hover:text-white p-1 ml-2 active:scale-90"><i class="fa-solid fa-xmark text-xs"></i></button>
+                <footer class="floating-chatbar glass-panel shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col justify-end" id="chatFooter">
+                    <div id="replyPreviewContainer" class="hidden relative -top-2 mx-2 mb-2 bg-black/40 backdrop-blur-md border-l-[4px] border-blue-500 rounded-lg px-3 py-2 flex justify-between items-center shadow-inner border-[0.5px] border-white/5">
+                        <div class="flex flex-col overflow-hidden w-full"><span class="text-blue-400 text-[10px] font-extrabold uppercase tracking-widest mb-0.5 drop-shadow-sm">Replying to</span><span id="replyPreviewText" class="text-gray-200 text-[12px] truncate font-medium"></span></div>
+                        <button onclick="cancelReply()" class="text-gray-400 hover:text-white p-2 ml-2 bg-white/5 rounded-full w-7 h-7 flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
                     </div>
-
-                    <div class="floating-chat-bar flex items-end px-1.5 py-1.5 pointer-events-auto mb-2 relative transition-all" id="mainChatBar">
-                        
-                        <button class="w-10 h-10 rounded-full flex shrink-0 items-center justify-center text-gray-400 hover:text-white transition active:scale-90 mb-0.5" onclick="document.getElementById('fileUpload').click()">
-                            <i class="fa-solid fa-plus text-[22px]"></i>
-                        </button>
+                    
+                    <div class="flex items-end gap-2 px-1 relative">
+                        <button class="w-10 h-10 rounded-full flex shrink-0 items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition active:scale-90 mb-1 pointer-events-auto" onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-plus text-[20px]"></i></button>
                         <input type="file" id="fileUpload" class="hidden" accept="*/*" onchange="handleFileUpload(event)">
                         
-                        <div id="chatInputContainer" class="flex-1 flex items-end min-h-[40px] px-2 py-1 relative">
-                            <textarea id="chatInput" rows="1" placeholder="Message..." class="bg-transparent border-none outline-none text-white text-[15px] placeholder-gray-500 w-full py-1.5 max-h-[100px] leading-snug no-scrollbar"></textarea>
+                        <div class="flex-1 bg-black/40 rounded-[24px] flex items-center relative border border-white/5 focus-within:border-blue-500/40 focus-within:bg-black/60 transition-all min-h-[44px] shadow-inner py-1 overflow-hidden">
+                            <textarea id="chatInput" rows="1" placeholder="Message..." class="bg-transparent border-none outline-none text-white text-[15px] placeholder-gray-500 w-full px-4 py-2 max-h-[120px] leading-snug no-scrollbar"></textarea>
                         </div>
 
-                        <div id="recordingUI" class="flex-1 flex items-center justify-between min-h-[40px] px-3 hidden">
-                            <div class="flex items-center gap-2 text-red-500 font-bold text-[14px] animate-pulse">
-                                <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div> <span id="recordTimer">0:00</span>
-                            </div>
-                            <button onclick="cancelVoiceRecord()" class="text-gray-400 text-xs font-semibold active:scale-90 flex items-center"><i class="fa-solid fa-chevron-left mr-1.5 text-[10px]"></i> Cancel</button>
+                        <div class="relative w-11 h-11 flex items-center justify-center shrink-0 mb-0.5">
+                            <button id="micBtn" class="absolute inset-0 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-all active:scale-90 z-10" onclick="toggleVoiceRecord()"><i class="fa-solid fa-microphone text-[16px]"></i></button>
+                            <button id="sendBtn" class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] transition-all transform scale-0 opacity-0 pointer-events-none active:scale-90 z-20" onclick="processSendText()"><i class="fa-solid fa-paper-plane text-[16px] ml-[-2px]"></i></button>
                         </div>
-
-                        <button id="sendBtn" class="w-10 h-10 rounded-full flex shrink-0 items-center justify-center text-blue-500 hover:text-blue-400 transition active:scale-90 mb-0.5 hidden" onclick="processSendText()">
-                            <i class="fa-solid fa-circle-arrow-up text-[24px]"></i>
-                        </button>
-                        
-                        <button id="micBtn" class="w-10 h-10 rounded-full flex shrink-0 items-center justify-center text-gray-300 hover:text-white transition active:scale-90 mb-0.5" onclick="toggleVoiceRecord()">
-                            <i class="fa-solid fa-microphone text-[20px]"></i>
-                        </button>
                     </div>
-                </div>
+                </footer>
             </div>
             
-            <div id="themeModal" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeThemeSelector()">
-                <div class="bg-[#11131a] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-white text-[18px] font-bold">Chat Themes</h3>
-                        <button onclick="closeThemeSelector()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[11px]"></i></button>
+            <div id="themeModal" class="absolute inset-0 z-[80] bg-black/70 backdrop-blur-md flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-400" onclick="closeThemeSelector()">
+                <div class="glass-panel border-b-0 w-full rounded-t-[36px] p-6 shadow-2xl transform translate-y-full transition-transform duration-400 pb-safe" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <h3 class="text-white text-[20px] font-extrabold tracking-tight">Chat Themes</h3>
+                        <button onclick="closeThemeSelector()" class="text-gray-400 hover:text-white bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[14px]"></i></button>
                     </div>
-                    <div class="grid grid-cols-3 gap-3 pb-2">
-                        <button onclick="applyTheme('default')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-gray-800">
-                            <div class="w-10 h-10 rounded-full bg-[#2563eb]"></div><span class="text-white text-[10px] font-semibold">Dark Default</span>
+                    <div class="grid grid-cols-3 gap-4 pb-4">
+                        <button onclick="applyTheme('default')" class="bg-black/40 border border-white/5 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-white/10 transition active:scale-95 shadow-inner">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 shadow-lg"></div><span class="text-gray-300 text-[11px] font-bold tracking-wide uppercase">Default</span>
                         </button>
-                        <button onclick="applyTheme('instagram')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-gray-800">
-                            <div class="w-10 h-10 rounded-full insta-ring"></div><span class="text-white text-[10px] font-semibold">Instagram</span>
+                        <button onclick="applyTheme('instagram')" class="bg-black/40 border border-white/5 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-white/10 transition active:scale-95 shadow-inner">
+                            <div class="w-12 h-12 rounded-full insta-ring"></div><span class="text-gray-300 text-[11px] font-bold tracking-wide uppercase">InstaVibe</span>
                         </button>
-                        <button onclick="applyTheme('telegram')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-gray-800">
-                            <div class="w-10 h-10 rounded-full bg-[#2b5278]"></div><span class="text-white text-[10px] font-semibold">Telegram</span>
+                        <button onclick="applyTheme('telegram')" class="bg-black/40 border border-white/5 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-white/10 transition active:scale-95 shadow-inner">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-b from-[#38bdf8] to-[#0284c7] shadow-lg"></div><span class="text-gray-300 text-[11px] font-bold tracking-wide uppercase">TeleGlass</span>
                         </button>
-                        <button onclick="applyTheme('cyberpunk')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-[#00ffcc]/30">
-                            <div class="w-10 h-10 rounded-full bg-[#050510] border-2 border-[#00ffcc] shadow-[0_0_10px_#00ffcc]"></div><span class="text-[#00ffcc] text-[10px] font-semibold">Cyberpunk</span>
+                        <button onclick="applyTheme('cyberpunk')" class="bg-black/40 border border-[#00ffcc]/30 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-[#00ffcc]/10 transition active:scale-95 shadow-[inset_0_0_20px_rgba(0,255,204,0.05)]">
+                            <div class="w-12 h-12 rounded-full bg-[#050510] border-2 border-[#00ffcc] shadow-[0_0_15px_#00ffcc]"></div><span class="text-[#00ffcc] text-[11px] font-bold tracking-wide uppercase">NeonPunk</span>
                         </button>
-                        <button onclick="applyTheme('midnight')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-gray-800">
-                            <div class="w-10 h-10 rounded-full bg-[#4a4e69]"></div><span class="text-white text-[10px] font-semibold">Midnight</span>
+                        <button onclick="applyTheme('midnight')" class="bg-black/40 border border-white/5 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-white/10 transition active:scale-95 shadow-inner">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#4a4e69] to-[#22223b] shadow-lg border border-white/10"></div><span class="text-gray-300 text-[11px] font-bold tracking-wide uppercase">Midnight</span>
                         </button>
-                        <button onclick="applyTheme('sakura')" class="bg-[#1c1c1e] rounded-[16px] p-3 flex flex-col items-center gap-2 hover:bg-gray-800 transition active:scale-95 border border-gray-800">
-                            <div class="w-10 h-10 rounded-full bg-[#ff758f]"></div><span class="text-white text-[10px] font-semibold">Sakura</span>
+                        <button onclick="applyTheme('sakura')" class="bg-black/40 border border-white/5 rounded-[20px] p-4 flex flex-col items-center gap-3 hover:bg-white/10 transition active:scale-95 shadow-inner">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#ff758f] to-[#ff4d6d] shadow-[0_0_15px_rgba(255,117,143,0.5)]"></div><span class="text-[#ffb3c6] text-[11px] font-bold tracking-wide uppercase">Sakura</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div id="new-message-screen" class="absolute inset-0 z-[50] bg-[#080a10] hidden flex-col transition-transform duration-300 transform translate-x-full">
-                <header class="pt-12 pb-2 px-3 flex items-center justify-between border-b border-gray-800/60 shrink-0 bg-[#080a10]">
-                    <div class="flex items-center gap-3">
-                        <button onclick="closeNewMessageScreen()" class="text-white hover:text-gray-300 text-lg p-2 transition active:scale-90"><i class="fa-solid fa-arrow-left"></i></button>
-                        <h2 class="text-white text-[16px] font-bold" id="newMessageTitle">New message</h2>
+            <div id="new-message-screen" class="absolute inset-0 z-[50] glass-header hidden flex-col transition-transform duration-400 transform translate-x-full">
+                <header class="pt-12 pb-3 px-4 flex items-center justify-between border-b border-white/10 shrink-0">
+                    <div class="flex items-center gap-4">
+                        <button onclick="closeNewMessageScreen()" class="text-white hover:text-gray-300 w-10 h-10 rounded-full flex items-center justify-center bg-white/5 transition active:scale-90"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h2 class="text-white text-[18px] font-extrabold tracking-tight" id="newMessageTitle">New Message</h2>
                     </div>
                 </header>
-                <div class="px-3 py-2 border-b border-gray-800/60 flex items-center gap-2">
-                    <span class="text-gray-400 font-semibold text-[13px]">To:</span>
-                    <input type="text" id="newMsgSearch" onkeyup="filterNewMessageUsers()" placeholder="Search..." class="bg-transparent border-none outline-none text-white text-[14px] w-full placeholder-gray-600">
+                <div class="px-5 py-4 border-b border-white/5 flex items-center gap-3 bg-black/20">
+                    <span class="text-blue-400 font-bold text-[14px]">To:</span>
+                    <input type="text" id="newMsgSearch" onkeyup="filterNewMessageUsers()" placeholder="Search your network..." class="bg-transparent border-none outline-none text-white text-[15px] w-full placeholder-gray-600 font-medium">
                 </div>
-                <div class="flex-1 overflow-y-auto no-scrollbar pb-[100px]">
-                    <div id="suggestedUsersList" class="flex flex-col mt-1"><div class="text-center text-gray-500 mt-10 text-[12px]">Loading users...</div></div>
+                <div class="flex-1 overflow-y-auto no-scrollbar pb-[100px] pt-2">
+                    <div id="suggestedUsersList" class="flex flex-col"><div class="text-center text-gray-500 mt-12 text-[13px] font-medium"><i class="fa-solid fa-circle-notch animate-spin mb-3 text-xl text-blue-500"></i><br>Syncing network...</div></div>
                 </div>
             </div>
 
-            <div id="contextMenuOverlay" class="absolute inset-0 z-[150] bg-black/60 backdrop-blur-sm hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideContextMenu(event)">
-                <div class="bg-[#11131a] w-full rounded-t-[32px] pb-safe shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col border-t border-gray-800" id="contextMenuSheet" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center px-6 pt-5 pb-3 shrink-0">
+            <div id="contextMenuOverlay" class="absolute inset-0 z-[150] bg-black/70 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="hideContextMenu(event)">
+                <div class="glass-panel border-b-0 w-full rounded-t-[36px] pb-safe shadow-[0_-10px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-400 flex flex-col" id="contextMenuSheet" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center px-6 pt-6 pb-4 shrink-0 bg-black/20 rounded-t-[36px]">
                         <button class="reaction-btn" onclick="handleReaction('❤️')">❤️</button>
                         <button class="reaction-btn" onclick="handleReaction('😂')">😂</button>
                         <button class="reaction-btn" onclick="handleReaction('😮')">😮</button>
                         <button class="reaction-btn" onclick="handleReaction('😢')">😢</button>
                         <button class="reaction-btn" onclick="handleReaction('😡')">😡</button>
                         <button class="reaction-btn" onclick="handleReaction('👍')">👍</button>
-                        <button class="text-[18px] w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center text-white active:scale-90 transition border border-gray-700" onclick="toggleEmojiPicker()"><i class="fa-solid fa-plus"></i></button>
+                        <button class="text-[18px] w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition hover:bg-white/20 shadow-inner" onclick="toggleEmojiPicker()"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <div id="emojiPickerGrid" class="hidden grid-cols-6 sm:grid-cols-8 gap-y-4 gap-x-3 px-5 pb-5 max-h-[250px] overflow-y-auto no-scrollbar border-t border-gray-800 pt-4 shrink-0"></div>
-                    <div id="menuOptionsList" class="flex flex-col text-white bg-[#1c1c1e] rounded-[20px] overflow-hidden mx-4 mb-6 shrink-0 pb-1 mt-1 border border-gray-800">
-                        <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-[#2c2c2e] transition cursor-pointer text-[14px] font-medium" onclick="handleMenuAction('reply')"><i class="fa-solid fa-reply text-[16px] w-5 text-center text-gray-300"></i> Reply</div>
-                        <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-[#2c2c2e] transition cursor-pointer text-[14px] font-medium border-t border-gray-800/60" onclick="handleMenuAction('copy')"><i class="fa-regular fa-copy text-[16px] w-5 text-center text-gray-300"></i> Copy</div>
+                    <div id="emojiPickerGrid" class="hidden grid-cols-6 sm:grid-cols-8 gap-y-5 gap-x-3 px-6 pb-6 max-h-[250px] overflow-y-auto no-scrollbar border-t border-white/5 pt-5 shrink-0 bg-black/20"></div>
+                    <div id="menuOptionsList" class="flex flex-col text-white bg-white/5 rounded-[24px] overflow-hidden mx-5 mb-8 shrink-0 pb-1 mt-2 border border-white/10 shadow-lg">
+                        <div class="flex items-center gap-4 px-6 py-4 hover:bg-white/10 transition cursor-pointer text-[15px] font-semibold active:scale-[0.99]" onclick="handleMenuAction('reply')"><i class="fa-solid fa-reply text-[16px] w-5 text-center text-blue-400"></i> Reply Privately</div>
+                        <div class="flex items-center gap-4 px-6 py-4 hover:bg-white/10 transition cursor-pointer text-[15px] font-semibold border-t border-white/5 active:scale-[0.99]" onclick="handleMenuAction('copy')"><i class="fa-regular fa-copy text-[16px] w-5 text-center text-gray-300"></i> Copy Text</div>
                         <div id="menuReactionRemoveContainer"></div>
-                        <div id="menuDynamicBtnContainer" class="border-t border-gray-800/60"></div>
+                        <div id="menuDynamicBtnContainer" class="border-t border-white/5"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="switchAccountModal" class="absolute inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
-                <div class="bg-[#11131a] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe" id="switchAccountContent" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-5 border-b border-gray-800/60 pb-3">
-                        <h3 class="text-white text-[18px] font-bold">Switch Account</h3>
-                        <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            <div id="switchAccountModal" class="absolute inset-0 z-[80] bg-black/70 backdrop-blur-md flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
+                <div class="glass-panel border-b-0 w-full rounded-t-[36px] p-6 shadow-[0_-10px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-400 pb-safe" id="switchAccountContent" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                        <h3 class="text-white text-[20px] font-extrabold tracking-tight">Your Accounts</h3>
+                        <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[14px]"></i></button>
                     </div>
-                    <div id="accountList" class="space-y-2 mb-5 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
-                    <button onclick="window.location.href='index.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[14px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
+                    <div id="accountList" class="space-y-3 mb-6 max-h-[40vh] overflow-y-auto no-scrollbar px-1"></div>
+                    <button onclick="window.location.href='index.html'" class="w-full bg-transparent border border-white/20 text-white font-bold py-4 rounded-[20px] hover:bg-white/5 transition flex items-center justify-center gap-3 text-[15px] active:scale-95"><i class="fa-solid fa-plus text-[14px]"></i> Add Existing Account</button>
                 </div>
             </div>
 
-            <div id="callOverlay" class="absolute inset-0 bg-[#080a10] z-[90] hidden flex-col items-center justify-between pt-12 pb-16 opacity-0 transition-opacity duration-300">
-                <video id="remoteMedia" autoplay playsinline class="absolute inset-0 w-full h-full object-cover z-0 hidden"></video>
-                <div id="localMediaContainer" class="absolute top-20 right-4 w-[100px] h-[140px] bg-gray-900 rounded-xl overflow-hidden z-20 shadow-2xl border border-gray-600 hidden" style="touch-action: none;">
+            <div id="callOverlay" class="absolute inset-0 bg-[#020305] z-[90] hidden flex-col items-center justify-between pt-16 pb-12 opacity-0 transition-opacity duration-400 overflow-hidden">
+                
+                <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                    <div class="absolute top-[20%] left-[15%] w-2 h-2 bg-blue-500 rounded-full animate-[ping_4s_infinite]"></div>
+                    <div class="absolute top-[70%] right-[20%] w-3 h-3 bg-purple-500 rounded-full animate-[ping_5s_infinite_1s]"></div>
+                </div>
+
+                <video id="remoteMedia" autoplay playsinline class="absolute inset-0 w-full h-full object-cover z-0 hidden filter brightness-110"></video>
+                <div id="localMediaContainer" class="absolute top-24 right-5 w-[110px] h-[160px] bg-black/80 backdrop-blur-md rounded-2xl overflow-hidden z-20 shadow-[0_15px_30px_rgba(0,0,0,0.8)] hidden border-2 border-white/10" style="touch-action: none;">
                     <video id="localMedia" autoplay playsinline muted class="w-full h-full object-cover"></video>
                 </div>
-                <div id="callBgGlow" class="absolute inset-0 z-0 opacity-30 blur-[100px] rounded-full scale-150 pointer-events-none transition-all duration-1000 bg-blue-600"></div>
+                <div id="callBgGlow" class="absolute inset-0 z-0 opacity-40 blur-[120px] rounded-full scale-150 pointer-events-none transition-all duration-1000 bg-gradient-to-tr from-blue-600 to-purple-600"></div>
                 
-                <div class="w-full flex justify-between px-5 items-center text-white z-10">
-                    <button onclick="endCall()" class="w-9 h-9 hover:bg-white/20 bg-black/40 backdrop-blur-md rounded-full transition flex items-center justify-center shadow-lg"><i class="fa-solid fa-chevron-down text-[16px]"></i></button>
-                    <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg"><i class="fa-solid fa-lock text-green-400 text-[10px]"></i><span class="text-[9px] font-bold text-gray-200 tracking-wider uppercase">End-to-end encrypted</span></div>
+                <div class="w-full flex justify-between px-6 items-center text-white z-10">
+                    <button onclick="endCall()" class="w-11 h-11 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/10 rounded-full transition flex items-center justify-center shadow-lg active:scale-90" title="Minimize/End"><i class="fa-solid fa-compress text-[16px]"></i></button>
+                    
+                    <div class="glass-panel border border-blue-500/30 px-4 py-2 rounded-full flex items-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="text-[12px] font-extrabold text-blue-50 tracking-widest" id="callStatusTextTop">00:00</span>
+                    </div>
+
+                    <div class="glass-panel border border-green-500/30 w-11 h-11 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.2)] relative" title="HD Connection">
+                        <i class="fa-solid fa-signal text-green-400 text-[12px]"></i>
+                        <span class="text-[8px] font-bold text-green-400 absolute -bottom-1 bg-[#020305] px-1 rounded">HD</span>
+                    </div>
                 </div>
                 
-                <div id="callInfoBox" class="text-center mt-2 z-10 flex-1 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-500">
-                    <div class="relative flex items-center justify-center w-36 h-36 mb-6">
+                <div id="callInfoBox" class="text-center mt-6 z-10 flex-1 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-500 w-full relative">
+                    <div class="relative flex items-center justify-center w-40 h-40 mb-6">
                         <div class="call-ring absolute"></div>
                         <div class="call-ring call-ring-2 absolute"></div>
-                        <div class="w-28 h-28 rounded-full overflow-hidden border-[2px] border-blue-500 bg-gray-900 shadow-2xl z-10 text-5xl flex items-center justify-center" id="callAvatarContainer"></div>
+                        
+                        <div class="absolute w-[140px] h-[140px] border-[4px] border-dashed border-blue-400/50 rounded-full animate-[spin_10s_linear_infinite]"></div>
+
+                        <div class="w-32 h-32 rounded-full overflow-hidden border-[3px] border-blue-500 bg-gray-900 shadow-[0_0_40px_rgba(59,130,246,0.6)] z-10 text-5xl flex items-center justify-center" id="callAvatarContainer"></div>
                     </div>
-                    <h2 class="text-white text-[24px] font-bold mb-1 drop-shadow-lg z-10 tracking-wide" id="callTargetName">User</h2>
-                    <p class="text-gray-200 font-bold text-[12px] bg-black/50 backdrop-blur-md px-3 py-1 rounded-full inline-block shadow-lg border border-white/10 z-10 mt-1" id="callStatusText">Contacting...</p>
+                    <h2 class="text-white text-[32px] font-extrabold mb-1 drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)] z-10 tracking-tight" id="callTargetName">User</h2>
+                    
+                    <p class="text-gray-400 text-[11px] font-semibold tracking-widest uppercase mb-3"><i class="fa-regular fa-clock mr-1"></i>Local Time: 11:08 AM</p>
+
+                    <p class="text-blue-300 font-bold text-[14px] bg-blue-500/10 backdrop-blur-xl px-4 py-1.5 rounded-full inline-block shadow-lg border border-blue-500/20 z-10 mt-1 tracking-wide" id="callStatusText">Contacting...</p>
+
+                    <div class="flex gap-3 mt-4 text-gray-500 text-[10px] font-bold tracking-widest">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-battery-three-quarters text-green-500"></i> 78%</span>
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-wifi text-blue-400"></i> Stable</span>
+                    </div>
                 </div>
                 
-                <div class="w-full px-6 pb-6 z-10 relative">
-                    <div id="callBottomGradient" class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-[-1] pointer-events-none hidden opacity-0 transition-opacity duration-500"></div>
-                    <div class="flex justify-around items-center bg-gray-900/80 backdrop-blur-3xl px-5 py-3.5 rounded-[24px] border border-gray-600/50 shadow-2xl">
-                        <button id="btnSwitchCam" onclick="switchCamera()" class="text-white text-[20px] hover:text-blue-400 active:scale-90 transition-all w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-camera-rotate"></i></button>
-                        <button id="btnToggleVid" onclick="toggleVideo()" class="text-white text-[20px] hover:text-blue-400 active:scale-90 transition-all w-10 h-10 flex items-center justify-center"><i id="iconToggleVid" class="fa-solid fa-video"></i></button>
-                        <button onclick="toggleAudio()" class="text-white text-[20px] hover:text-blue-400 active:scale-90 transition-all w-10 h-10 flex items-center justify-center"><i id="iconToggleMic" class="fa-solid fa-microphone"></i></button>
-                        <button onclick="endCall()" class="w-12 h-12 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white text-[20px] shadow-[0_0_15px_rgba(239,68,68,0.4)] active:scale-90 transition-all ml-1"><i class="fa-solid fa-phone-slash"></i></button>
+                <div class="w-full px-4 z-10 relative flex flex-col gap-4">
+                    
+                    <div class="flex justify-center gap-4 opacity-80 hover:opacity-100 transition pointer-events-auto">
+                        <button class="w-10 h-10 rounded-full bg-black/40 border border-white/10 hover:bg-white/10 text-[18px] transition active:scale-90" onclick="hapticFeedback()">❤️</button>
+                        <button class="w-10 h-10 rounded-full bg-black/40 border border-white/10 hover:bg-white/10 text-[18px] transition active:scale-90" onclick="hapticFeedback()">👏</button>
+                        <button class="w-10 h-10 rounded-full bg-black/40 border border-white/10 hover:bg-white/10 text-[18px] transition active:scale-90" onclick="hapticFeedback()">😂</button>
+                        <button class="w-10 h-10 rounded-full bg-black/40 border border-white/10 hover:bg-white/10 text-[18px] transition active:scale-90" onclick="hapticFeedback()">🔥</button>
+                    </div>
+
+                    <div id="callBottomGradient" class="absolute bottom-[-20px] left-0 w-full h-64 bg-gradient-to-t from-black via-black/80 to-transparent z-[-1] pointer-events-none hidden opacity-0 transition-opacity duration-500"></div>
+                    
+                    <div class="flex justify-around items-center glass-panel px-4 py-4 rounded-[32px] border-white/10 shadow-[0_15px_40px_rgba(0,0,0,0.8)] w-full max-w-[400px] mx-auto pointer-events-auto">
+                        
+                        <button id="btnAiMic" onclick="hapticFeedback(); this.classList.toggle('text-purple-400')" class="text-white text-[20px] hover:text-purple-400 active:scale-90 transition-all w-11 h-11 flex items-center justify-center bg-white/5 rounded-full relative" title="AI Noise Cancel">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <div class="absolute -top-1 -right-1 bg-purple-500 text-[8px] px-1 rounded-sm font-bold text-white">AI</div>
+                        </button>
+
+                        <button id="btnSwitchCam" onclick="switchCamera()" class="text-white text-[22px] hover:text-blue-400 active:scale-90 transition-all w-11 h-11 flex items-center justify-center bg-white/5 rounded-full"><i class="fa-solid fa-camera-rotate"></i></button>
+                        <button id="btnToggleVid" onclick="toggleVideo()" class="text-white text-[22px] hover:text-blue-400 active:scale-90 transition-all w-11 h-11 flex items-center justify-center bg-white/5 rounded-full"><i id="iconToggleVid" class="fa-solid fa-video"></i></button>
+                        <button onclick="toggleAudio()" class="text-white text-[22px] hover:text-blue-400 active:scale-90 transition-all w-11 h-11 flex items-center justify-center bg-white/5 rounded-full"><i id="iconToggleMic" class="fa-solid fa-microphone"></i></button>
+                        
+                        <button id="btnScreenShare" onclick="hapticFeedback(); alert('Screen sharing initialized (Premium feature)')" class="text-white text-[20px] hover:text-blue-400 active:scale-90 transition-all w-11 h-11 flex items-center justify-center bg-white/5 rounded-full hidden"><i class="fa-solid fa-desktop"></i></button>
+
+                        <button onclick="endCall()" class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 rounded-full flex items-center justify-center text-white text-[22px] shadow-[0_0_25px_rgba(239,68,68,0.6)] active:scale-90 transition-all ml-1 border border-red-400/50"><i class="fa-solid fa-phone-slash"></i></button>
                     </div>
                 </div>
             </div>
 
-            <div id="incomingCallPopup" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-[#1c1c1e]/95 backdrop-blur-xl border border-gray-700 rounded-[20px] p-3.5 shadow-2xl z-[9999] flex flex-col items-center gap-3 w-[90%] max-w-[360px] transition-transform duration-500 -translate-y-[150%]">
-                <div class="flex items-center gap-3 w-full">
-                    <div id="incomingCallAvatar" class="w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-600 flex items-center justify-center bg-gray-900 shadow-inner"></div>
+            <div id="incomingCallPopup" class="absolute top-6 left-1/2 transform -translate-x-1/2 glass-panel rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-[9999] flex flex-col items-center gap-4 w-[92%] max-w-[380px] transition-transform duration-500 -translate-y-[150%] border-t-[1px] border-white/20">
+                <div class="flex items-center gap-4 w-full">
+                    <div id="incomingCallAvatar" class="w-14 h-14 rounded-full overflow-hidden shrink-0 border-2 border-green-500/50 flex items-center justify-center bg-gray-900 shadow-[0_0_15px_rgba(34,197,94,0.4)]"></div>
                     <div class="flex flex-col flex-1 overflow-hidden">
-                        <h3 class="text-white font-bold text-[15px] truncate" id="incomingCallerName">User</h3>
-                        <p class="text-green-400 text-[11px] font-bold animate-pulse mt-0.5" id="incomingCallType">Incoming Call...</p>
+                        <h3 class="text-white font-extrabold text-[18px] truncate drop-shadow-sm" id="incomingCallerName">User</h3>
+                        <p class="text-green-400 text-[12px] font-bold animate-pulse mt-0.5 tracking-wide" id="incomingCallType">Incoming Video Call...</p>
                     </div>
                 </div>
-                <div class="flex justify-between w-full gap-2 mt-0.5">
-                    <button onclick="declineIncomingCall()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2.5 rounded-xl text-[13px] font-bold transition active:scale-95"><i class="fa-solid fa-xmark mr-1.5 text-[11px]"></i>Decline</button>
-                    <button onclick="acceptIncomingCall()" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl text-[13px] font-bold transition shadow-lg shadow-green-500/20 active:scale-95"><i class="fa-solid fa-phone mr-1.5 text-[11px]"></i>Accept</button>
+                <div class="flex justify-between w-full gap-3 mt-1">
+                    <button onclick="declineIncomingCall()" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl text-[14px] font-bold transition active:scale-95 border border-white/10"><i class="fa-solid fa-xmark mr-2 text-[12px]"></i>Decline</button>
+                    <button onclick="acceptIncomingCall()" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white py-3 rounded-xl text-[14px] font-bold transition shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95 border border-green-400/30"><i class="fa-solid fa-phone mr-2 text-[12px]"></i>Accept</button>
                 </div>
             </div>
             <audio id="sndRingtone" src="https://actions.google.com/sounds/v1/alarms/phone_ringing.ogg" loop></audio>
@@ -447,7 +491,7 @@
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
                 document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
-                if (activeChatUser && document.activeElement.tagName === 'TEXTAREA') {
+                if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') {
                     setTimeout(scrollToBottom, 50);
                 }
             });
@@ -465,9 +509,6 @@
         let selectedUserForOptions = null; 
         
         let currentCall = null, localStream = null, incomingCallObj = null, incomingCallIsVideo = false, isAudioMuted = false, isVideoMuted = false, usingFrontCamera = true, callTimerInterval, callStartTime;
-
-        // Voice Message Vars
-        let mediaRecorder; let audioChunks = []; let isRecording = false; let recordStartTime; let recordTimerInterval; let cancelRecordFlag = false;
 
         const allEmojis = ["😀","😂","😅","😍","🥰","😘","🥲","😋","😛","😜","🤪","😝","🤑","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","🥸","😎","🤓","🧐","😕","😟","🙁","☹️","😮","😯","😲","😳","🥺","😦","😧","😨","😰","😥","😢","😭","😱","😖","😣","😞","😓","😩","😫","🥱","😤","😡","😠","🤬","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖","💯","💢","💥","💫","💦","💨","💣","💬","💭","💤"];
 
@@ -487,20 +528,19 @@
             setupDraggableVideo();
 
             const chatInput = document.getElementById('chatInput');
-            const micBtn = document.getElementById('micBtn');
-            const sendBtn = document.getElementById('sendBtn');
             let resizeTimeout;
-
             chatInput.addEventListener('input', function() {
                 cancelAnimationFrame(resizeTimeout);
                 resizeTimeout = requestAnimationFrame(() => {
-                    this.style.height = 'auto'; this.style.height = (this.scrollHeight < 100 ? this.scrollHeight : 100) + 'px';
-                    if(this.value.trim().length > 0) {
-                        micBtn.classList.add('hidden');
-                        sendBtn.classList.remove('hidden');
+                    this.style.height = 'auto'; this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
+                    
+                    // Input Text Toggle Logic (Send vs Mic)
+                    if(this.value.trim()) {
+                        document.getElementById('sendBtn').classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+                        document.getElementById('micBtn').classList.add('scale-0', 'opacity-0', 'pointer-events-none');
                     } else {
-                        micBtn.classList.remove('hidden');
-                        sendBtn.classList.add('hidden');
+                        document.getElementById('sendBtn').classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+                        document.getElementById('micBtn').classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
                     }
                 });
                 try {
@@ -534,7 +574,7 @@
                             const remoteUser = allNetworkUsers.find(u => u.alias === activeChatUser);
                             if (remoteUser && remoteUser.isOnline) {
                                 const statusEl = document.getElementById('chatTargetStatus');
-                                if (statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; }
+                                if (statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; }
                             }
                         }
                         renderInbox(false); 
@@ -557,24 +597,23 @@
                 if (!isPulling) return;
                 let diff = e.touches[0].clientY - startY;
                 if (diff > 0 && scrollArea.scrollTop === 0) {
-                    let height = Math.min(diff * 0.3, 40); 
+                    let height = Math.min(diff * 0.4, 45); 
                     ptrIndicator.style.height = height + 'px';
-                    ptrIndicator.style.opacity = height / 40;
+                    ptrIndicator.style.opacity = height / 45;
                 }
             }, {passive: true});
 
             scrollArea.addEventListener('touchend', e => {
                 if (!isPulling) return;
                 isPulling = false;
-                if (parseInt(ptrIndicator.style.height) >= 35) {
-                    hapticFeedback(15);
-                    ptrIndicator.style.height = '35px';
+                if (parseInt(ptrIndicator.style.height) >= 40) {
+                    hapticFeedback(20);
+                    ptrIndicator.style.height = '40px';
                     ptrIndicator.style.opacity = '1';
                     refreshInboxAnim();
                     setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 800);
                 } else {
-                    ptrIndicator.style.height = '0px';
-                    ptrIndicator.style.opacity = '0';
+                    ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
                 }
             });
         }
@@ -610,11 +649,13 @@
             document.addEventListener('touchend', () => isDragging = false);
         }
 
-        // THEME CONTROLLER
+        // THEME CONTROLLER & FIX FOR BACKGROUND BUG
         function loadChatTheme() {
             const savedTheme = localStorage.getItem('hs_chat_theme') || 'default';
-            document.getElementById('view-chat').className = `absolute inset-0 flex flex-col z-[60] hidden theme-${savedTheme}`;
+            // Added bg-[#020305] strictly into the base class so the theme replacement doesn't wipe it out!
+            document.getElementById('view-chat').className = `absolute inset-0 flex flex-col z-[60] hidden bg-[#020305] theme-${savedTheme}`;
         }
+
         function openThemeSelector() {
             hapticFeedback();
             document.getElementById('themeModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -645,21 +686,20 @@
             const lb = document.getElementById('imageLightbox');
             const img = document.getElementById('lightboxImg');
             lb.classList.add('opacity-0'); img.classList.add('scale-90');
-            setTimeout(() => { lb.classList.add('hidden'); lb.classList.remove('flex'); img.src = ''; }, 300);
+            setTimeout(() => { lb.classList.add('hidden'); lb.classList.remove('flex'); img.src = ''; }, 400);
         }
 
         // DOUBLE TAP HEART EXPLOSION
         function showHeartExplosion(x, y) {
             hapticFeedback([30, 50, 30]);
-            for(let i=0; i<5; i++) {
+            for(let i=0; i<6; i++) {
                 const heart = document.createElement('div');
-                heart.innerHTML = '❤️';
-                heart.className = 'floating-heart';
-                heart.style.left = (x - 15 + (Math.random()*30-15)) + 'px';
-                heart.style.top = (y - 15 + (Math.random()*30-15)) + 'px';
-                heart.style.animationDelay = (Math.random() * 0.1) + 's';
+                heart.innerHTML = '❤️'; heart.className = 'floating-heart';
+                heart.style.left = (x - 20 + (Math.random()*40-20)) + 'px';
+                heart.style.top = (y - 20 + (Math.random()*40-20)) + 'px';
+                heart.style.animationDelay = (Math.random() * 0.15) + 's';
                 document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 1000);
+                setTimeout(() => heart.remove(), 1200);
             }
         }
 
@@ -677,7 +717,7 @@
             const overlay = document.getElementById('userOptionsOverlay');
             const sheet = document.getElementById('userOptionsSheet');
             overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
-            setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); selectedUserForOptions = null; }, 300);
+            setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); selectedUserForOptions = null; }, 400);
         }
         function deleteConversation() {
             if(!selectedUserForOptions) return;
@@ -695,7 +735,7 @@
         function openSwitchAccountModal() {
             hapticFeedback();
             const list = document.getElementById('accountList'); list.innerHTML = '';
-            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-4 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.alias || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]" style="font-family: monospace;">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
+            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-4 rounded-[20px] ${isActive ? 'bg-white/10 border border-white/10 shadow-inner' : 'hover:bg-white/5 border border-transparent'} cursor-pointer transition active:scale-95"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-2xl border-2 border-white/10 overflow-hidden shadow-md">${getInnerAvatarHTML(acc.alias)}</div><div><h4 class="text-white font-bold text-[15px] tracking-wide">${acc.alias}</h4></div></div>${isActive ? '<div class="w-5 h-5 rounded-full border-[4px] border-blue-500 bg-transparent shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>' : '<div class="w-5 h-5 rounded-full border-2 border-gray-500 bg-transparent"></div>'}</div>`; });
             document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
         }
         function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
@@ -705,7 +745,7 @@
         function showTypingBubble() {
             if(!document.getElementById('typing-bubble')) {
                 const msgArea = document.getElementById('chatMessageArea');
-                msgArea.innerHTML += `<div id="typing-bubble" class="flex flex-col items-start mb-2 animate-fade"><div class="chat-bubble-recv typing-indicator px-4 py-2.5"><span></span><span></span><span></span></div></div>`;
+                msgArea.innerHTML += `<div id="typing-bubble" class="flex flex-col items-start mb-2 animate-fade"><div class="chat-bubble-recv typing-indicator px-5 py-3"><span></span><span></span><span></span></div></div>`;
                 scrollToBottom();
             }
         }
@@ -729,10 +769,10 @@
                         onlineStatuses[data.sender] = Date.now();
                         if (data.action === 'chat_sync') processIncomingMessage(data.sender, data.msgData, data.isSecret);
                         else if (data.action === 'ping') {
-                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; } }
+                            if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; } }
                             try { const pongConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true }); pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); }); } catch(e) {}
                         }
-                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; } } }
+                        else if (data.action === 'pong') { if (activeChatUser === data.sender) { clearTimeout(activeStatusTimeout); const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; } } }
                         else if (data.action === 'reaction') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { if(data.reaction===''){delete history[index].reaction;}else{history[index].reaction = data.reaction;} saveChatHistory(data.sender, history); if (activeChatUser === data.sender) renderChatMessages(); } } 
                         } 
@@ -745,26 +785,13 @@
                             }
                         } 
                         else if (data.action === 'typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerHTML = `<div class="typing-indicator mt-1"><span></span><span></span><span></span></div>`; showTypingBubble(); } } 
-                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; hideTypingBubble(); } } 
+                        else if (data.action === 'stop_typing') { if (activeChatUser === data.sender) { const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; hideTypingBubble(); } } 
                         else if (data.action === 'unsend') {
                             if (!isSecretChat) { let history = getChatHistory(data.sender); const index = history.findIndex(m => m.id === data.msgId); if (index > -1) { history[index].deleted = true; saveChatHistory(data.sender, history); } renderInbox(false); }
-                            if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(), 300); } }
+                            if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(), 400); } }
                         }
                         if(!activeChatUser) renderInbox(false);
                     });
-                });
-
-                // Call handling
-                globalPeer.on('call', (call) => {
-                    incomingCallObj = call; incomingCallIsVideo = call.metadata ? call.metadata.type === 'video' : false;
-                    const caller = call.peer.replace('hs_','');
-                    document.getElementById('incomingCallerName').innerText = caller;
-                    document.getElementById('incomingCallType').innerText = incomingCallIsVideo ? "Incoming Video Call..." : "Incoming Audio Call...";
-                    document.getElementById('incomingCallAvatar').innerHTML = getInnerAvatarHTML(caller);
-                    document.getElementById('incomingCallPopup').classList.remove('-translate-y-[150%]');
-                    triggerBrowserNotification(`Incoming Call`, `Call from ${caller}`);
-                    try { document.getElementById('sndRingtone').play().catch(()=>{}); } catch(e){}
-                    call.on('close', () => { hideIncomingCallPopup(); endCall(); });
                 });
             } catch(error) { console.log("PeerJS fallback handled"); }
         }
@@ -817,8 +844,6 @@
 
         function showGlobalNotification(sender, text, isCall = false) {
             hapticFeedback(20);
-            const dot = document.getElementById('notifDot'); if(dot) dot.classList.remove('hidden');
-            const navDot = document.getElementById('navChatDot'); if(navDot) navDot.classList.remove('hidden');
             
             const popup = document.getElementById('customNotification');
             document.getElementById('notifTitle').innerText = sender;
@@ -832,11 +857,11 @@
             try {
                 let avatarData = localStorage.getItem(`hs_avatar_${alias}`);
                 if (!avatarData && alias === myAlias && savedAccounts && savedAccounts[loggedInRole]) avatarData = savedAccounts[loggedInRole].avatar || savedAccounts[loggedInRole].emoji;
-                const fallbackIcon = `<i class="fa-solid fa-user text-gray-500 text-[18px]"></i>`;
+                const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
                 if (!avatarData || avatarData === 'null') return fallbackIcon;
                 if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
                 else if (avatarData.includes('@') || avatarData.includes('.com') || avatarData.length > 6) return fallbackIcon; 
-                else return `<span class="w-full h-full flex items-center justify-center text-[20px]">${avatarData}</span>`;
+                else return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
             } catch(e) { return `<i class="fa-solid fa-user text-gray-500 text-[18px]"></i>`; }
         }
 
@@ -864,9 +889,9 @@
 
         function renderNewMessageUsers(users) {
             const list = document.getElementById('suggestedUsersList'); list.innerHTML = '';
-            if(users.length === 0) { list.innerHTML = `<div class="text-center text-gray-500 mt-10 text-[12px]">No users found.</div>`; return; }
+            if(users.length === 0) { list.innerHTML = `<div class="text-center text-gray-500 mt-10 text-[13px] font-medium">No users found on network.</div>`; return; }
             users.forEach(u => {
-                list.innerHTML += `<div class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 cursor-pointer transition active:scale-95" onclick="startNewChat('${u.alias}')"><div class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-gray-800 flex items-center justify-center">${getInnerAvatarHTML(u.alias)}</div><div class="flex flex-col"><span class="text-white font-semibold text-[14px]">${u.alias}</span></div></div>`;
+                list.innerHTML += `<div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/5 cursor-pointer transition active:scale-95 border-b border-white/5" onclick="startNewChat('${u.alias}')"><div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-800 flex items-center justify-center border border-white/10 shadow-md">${getInnerAvatarHTML(u.alias)}</div><div class="flex flex-col"><span class="text-white font-bold text-[15px] tracking-wide">${u.alias}</span></div></div>`;
             });
         }
         function filterNewMessageUsers() { renderNewMessageUsers(allNetworkUsers.filter(u => u.alias.toLowerCase().includes(document.getElementById('newMsgSearch').value.toLowerCase()))); }
@@ -878,7 +903,7 @@
             let filtered = interactedList.filter(u => u.toLowerCase().includes(searchQ));
             filtered.sort((a, b) => { let histA = getChatHistory(a); let histB = getChatHistory(b); return (histB.length > 0 ? parseInt(histB[histB.length-1].id) : 0) - (histA.length > 0 ? parseInt(histA[histA.length-1].id) : 0); });
 
-            if(filtered.length === 0) { container.innerHTML = `<div class="flex flex-col items-center justify-center mt-12 opacity-60"><i class="fa-regular fa-comments text-4xl text-gray-700 mb-3"></i><p class="text-center text-gray-600 text-[11px]">No conversations yet.</p></div>`; return; }
+            if(filtered.length === 0) { container.innerHTML = `<div class="flex flex-col items-center justify-center mt-16 opacity-70"><i class="fa-solid fa-satellite-dish text-5xl text-blue-500/50 mb-4 drop-shadow-md"></i><p class="text-center text-gray-400 text-[13px] font-medium">No encrypted connections yet.</p></div>`; return; }
 
             filtered.forEach((userAlias, index) => {
                 const validHistory = getChatHistory(userAlias).filter(m => !m.deleted);
@@ -887,11 +912,7 @@
                 const isUnread = lastMsg && lastMsg.type === 'recv' && lastMsg.read === false;
 
                 if (lastMsg) {
-                    if (lastMsg.file) {
-                        previewText = lastMsg.file.type.startsWith('audio/') ? "Sent a voice message 🎤" : "Sent an attachment 📁";
-                    } else {
-                        previewText = lastMsg.text ? lastMsg.text.substring(0, 30) + (lastMsg.text.length > 30 ? "..." : "") : "Media";
-                    }
+                    if (lastMsg.file) previewText = "Sent an attachment"; else previewText = lastMsg.text ? lastMsg.text.substring(0, 30) + (lastMsg.text.length > 30 ? "..." : "") : "Media";
                     if (lastMsg.id) { 
                         const d = new Date(parseInt(lastMsg.id));
                         const now = new Date();
@@ -901,7 +922,7 @@
                             timeText = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
                         }
                     }
-                    if (lastMsg.type === 'sent') { if (lastMsg.status === 'read') tickIcon = `<i class="fa-solid fa-check-double text-blue-500 text-[10px] mr-1"></i>`; else if (lastMsg.status === 'delivered') tickIcon = `<i class="fa-solid fa-check-double text-gray-500 text-[10px] mr-1"></i>`; else tickIcon = `<i class="fa-solid fa-check text-gray-500 text-[10px] mr-1"></i>`; }
+                    if (lastMsg.type === 'sent') { if (lastMsg.status === 'read') tickIcon = `<i class="fa-solid fa-check-double text-blue-400 text-[10px] mr-1.5"></i>`; else if (lastMsg.status === 'delivered') tickIcon = `<i class="fa-solid fa-check-double text-gray-400 text-[10px] mr-1.5"></i>`; else tickIcon = `<i class="fa-solid fa-check text-gray-500 text-[10px] mr-1.5"></i>`; }
                 }
 
                 let isOnline = false;
@@ -911,18 +932,18 @@
                 let delay = index * 0.05;
                 
                 htmlBuffer += `
-                <div class="flex items-center gap-3 px-3 py-2.5 cursor-pointer group inbox-item-anim active:bg-white/5 transition active:scale-95" style="animation-delay: ${delay}s" onclick="openChat('${userAlias}')" oncontextmenu="event.preventDefault(); showUserOptions('${userAlias}')">
-                    <div class="w-[46px] h-[46px] rounded-full relative p-[2px] ${isOnline ? 'insta-ring' : ''} transition-colors flex items-center justify-center shrink-0 shadow-sm">
-                        <div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(userAlias)}</div>
+                <div class="flex items-center gap-4 px-4 py-3 cursor-pointer group inbox-item-anim glass-panel rounded-2xl border-transparent hover:border-white/10 transition-all active:scale-[0.98]" style="animation-delay: ${delay}s" onclick="openChat('${userAlias}')" oncontextmenu="event.preventDefault(); showUserOptions('${userAlias}')">
+                    <div class="w-[52px] h-[52px] rounded-full relative p-[2px] ${isOnline ? 'insta-ring' : 'border border-white/10'} transition-all flex items-center justify-center shrink-0 shadow-md">
+                        <div class="w-full h-full rounded-full bg-gray-900 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(userAlias)}</div>
                     </div>
-                    <div class="flex-1 overflow-hidden pr-1 border-b border-gray-800/40 group-hover:border-transparent pb-1 pt-0.5">
-                        <div class="flex justify-between items-center mb-0.5">
-                            <h3 class="text-[14px] ${isUnread ? 'text-white font-bold' : 'text-gray-200 font-medium'} truncate">${userAlias}</h3>
-                            <span class="text-[10px] text-gray-500">${timeText}</span>
+                    <div class="flex-1 overflow-hidden pr-1 pb-0.5">
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="text-[15px] ${isUnread ? 'text-white font-extrabold' : 'text-gray-200 font-bold'} truncate tracking-wide">${userAlias}</h3>
+                            <span class="text-[11px] font-semibold ${isUnread ? 'text-blue-400' : 'text-gray-500'}">${timeText}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <p class="${isUnread ? 'text-white font-medium' : 'text-gray-500 font-light'} text-[12px] truncate flex items-center">${tickIcon}${previewText}</p>
-                            ${isUnread ? '<div class="w-1.5 h-1.5 bg-blue-500 rounded-full shrink-0 shadow-[0_0_5px_rgba(59,130,246,0.8)]"></div>' : ''}
+                            <p class="${isUnread ? 'text-gray-300 font-semibold' : 'text-gray-500 font-medium'} text-[13px] truncate flex items-center">${tickIcon}${previewText}</p>
+                            ${isUnread ? '<div class="w-2.5 h-2.5 bg-blue-500 rounded-full shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.8)] ml-2"></div>' : ''}
                         </div>
                     </div>
                 </div>`;
@@ -939,7 +960,7 @@
                     }, {passive:true});
                     item.addEventListener('touchmove', (e) => {
                         let diff = e.touches[0].clientX - startX;
-                        if(Math.abs(diff) > 10) clearTimeout(pressTimer); 
+                        if(Math.abs(diff) > 10) clearTimeout(pressTimer); // Cancel if scrolling
                     }, {passive:true});
                     item.addEventListener('touchend', () => clearTimeout(pressTimer));
                 });
@@ -949,10 +970,10 @@
         function renderVibesTray() {
             const list = document.getElementById('vibesList'); list.innerHTML = ''; 
             const myVibeText = localStorage.getItem(`hs_vibe_${myAlias}`);
-            list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 mr-1.5 group active:scale-95 transition" onclick="openMiniProfile('${myAlias}')">${myVibeText ? `<div class="vibe-note">${myVibeText}</div>` : ''}<div class="w-[56px] h-[56px] rounded-full relative mt-2 flex items-center justify-center bg-gray-800 overflow-hidden border border-gray-700 shadow-sm">${getInnerAvatarHTML(myAlias)}<div class="absolute bottom-0 right-0 bg-blue-500 w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#080a10] text-white text-[8px]"><i class="fa-solid fa-plus"></i></div></div><span class="text-gray-400 text-[10px] mt-1.5 font-medium">Your note</span></div>`;
+            list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 mr-2 group active:scale-95 transition" onclick="openMiniProfile('${myAlias}')">${myVibeText ? `<div class="vibe-note">${myVibeText}</div>` : ''}<div class="w-[64px] h-[64px] rounded-full relative mt-3 flex items-center justify-center bg-gray-800 overflow-hidden border-2 border-white/20 shadow-lg group-hover:border-blue-500 transition-colors">${getInnerAvatarHTML(myAlias)}<div class="absolute bottom-0 right-0 bg-blue-500 w-5 h-5 rounded-full flex items-center justify-center border-[2.5px] border-[#020305] text-white text-[10px] shadow-sm"><i class="fa-solid fa-plus"></i></div></div><span class="text-gray-400 text-[11px] mt-2 font-semibold">Your note</span></div>`;
             getInteractedUsers().forEach(user => {
                 const userVibe = localStorage.getItem(`hs_remote_vibe_${user}`); 
-                list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 group active:scale-95 transition" onclick="openChat('${user}')">${userVibe ? `<div class="vibe-note">${userVibe}</div>` : ''}<div class="w-[56px] h-[56px] rounded-full relative insta-ring mt-2 flex items-center justify-center shadow-sm"><div class="w-full h-full rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user)}</div></div><span class="text-gray-300 text-[10px] mt-1.5 truncate max-w-[56px]">${user}</span></div>`;
+                list.innerHTML += `<div class="flex flex-col items-center relative cursor-pointer flex-shrink-0 group active:scale-95 transition" onclick="openChat('${user}')">${userVibe ? `<div class="vibe-note">${userVibe}</div>` : ''}<div class="w-[64px] h-[64px] rounded-full relative insta-ring mt-3 flex items-center justify-center shadow-lg"><div class="w-full h-full rounded-full bg-gray-900 overflow-hidden flex items-center justify-center border-[2px] border-transparent">${getInnerAvatarHTML(user)}</div></div><span class="text-gray-300 text-[11px] mt-2 font-semibold truncate max-w-[64px]">${user}</span></div>`;
             });
         }
 
@@ -977,15 +998,7 @@
             const modal = document.getElementById('miniProfileModal');
             const sheet = document.getElementById('miniProfileSheet');
             modal.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-        }
-
-        function sendPrivateRequest() {
-            hapticFeedback([10, 20]);
-            const targetUser = document.getElementById('mpName').innerText;
-            if(targetUser === myAlias) { alert("This is your profile!"); return; }
-            closeMiniProfile(true);
-            setTimeout(() => { window.location.href = `chat.html?chatWith=${encodeURIComponent(targetUser)}`; }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 400);
         }
 
         function checkActiveStatus() {
@@ -995,7 +1008,7 @@
                 clearTimeout(activeStatusTimeout);
                 activeStatusTimeout = setTimeout(() => {
                     const remoteUser = allNetworkUsers.find(u => u.alias === activeChatUser); if (remoteUser && remoteUser.isOnline) return; 
-                    const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Offline"; statusEl.className = "text-[10px] text-gray-500 font-medium transition-all mt-0.5"; }
+                    const statusEl = document.getElementById('chatTargetStatus'); if(statusEl && !statusEl.innerHTML.includes("typing-indicator")) { statusEl.innerText = "Offline"; statusEl.className = "text-[11px] text-gray-500 font-semibold transition-all mt-0.5"; }
                 }, 8000); 
             }
         }
@@ -1004,13 +1017,13 @@
             hapticFeedback();
             activeChatUser = name; isSecretChat = secret; document.getElementById('chatTargetName').innerText = name + (secret ? ' 👻' : ''); cancelReply(); 
             document.getElementById('chatTargetAvatarContainer').innerHTML = getInnerAvatarHTML(name);
-            const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Connecting..."; statusEl.className = "text-[10px] text-gray-500 font-medium transition-all mt-0.5";
-            if (allNetworkUsers) { const remoteUser = allNetworkUsers.find(u => u.alias === name); if (remoteUser && remoteUser.isOnline) { statusEl.innerText = "Active now"; statusEl.className = "text-[10px] text-gray-300 font-medium transition-all mt-0.5"; } }
+            const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Connecting..."; statusEl.className = "text-[11px] text-gray-500 font-semibold transition-all mt-0.5";
+            if (allNetworkUsers) { const remoteUser = allNetworkUsers.find(u => u.alias === name); if (remoteUser && remoteUser.isOnline) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; } }
             
             // Hardware back button state
             history.pushState({chatOpen: true}, "Chat", "?chatWith=" + encodeURIComponent(name));
 
-            if (!isSecretChat) { let history = getChatHistory(activeChatUser); let changed = false; history.forEach(m => { if(m.type === 'recv' && !m.read) { m.read = true; changed = true; } }); if (changed) saveChatHistory(activeChatUser, history); renderChatMessages(); } else { document.getElementById('chatMessageArea').innerHTML = `<div class="date-badge">Secret Chat Started</div>`; }
+            if (!isSecretChat) { let history = getChatHistory(activeChatUser); let changed = false; history.forEach(m => { if(m.type === 'recv' && !m.read) { m.read = true; changed = true; } }); if (changed) saveChatHistory(activeChatUser, history); renderChatMessages(); } else { document.getElementById('chatMessageArea').innerHTML = `<div class="date-badge">End-to-End Secret Chat Started</div>`; }
             const viewChat = document.getElementById('view-chat'); viewChat.classList.remove('hidden', 'screen-exit'); viewChat.classList.add('screen-enter');
             if (globalPeer && !globalPeer.destroyed) {
                 const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
@@ -1050,7 +1063,6 @@
             history.forEach(msg => {
                 if(msg.deleted) return;
                 
-                // Date grouping
                 const msgDate = new Date(parseInt(msg.id));
                 const today = new Date();
                 const yesterday = new Date(today);
@@ -1068,7 +1080,7 @@
                     badge.innerText = displayDate;
                     msgArea.appendChild(badge);
                     lastDateStr = dateStr;
-                    lastMsgType = null; // reset grouping after date badge
+                    lastMsgType = null; 
                 }
 
                 // Check grouping logic
@@ -1082,6 +1094,35 @@
 
         function cancelReply() { hapticFeedback(); replyingToText = null; document.getElementById('replyPreviewContainer').classList.add('hidden'); }
 
+        let isRecordingVoice = false;
+        let recordTimeout;
+        function toggleVoiceRecord() {
+            hapticFeedback([20, 30]);
+            const micBtn = document.getElementById('micBtn');
+            const chatInput = document.getElementById('chatInput');
+            
+            if(!isRecordingVoice) {
+                isRecordingVoice = true;
+                micBtn.classList.add('mic-recording');
+                micBtn.innerHTML = '<i class="fa-solid fa-stop text-white text-[16px]"></i>';
+                chatInput.placeholder = "Recording audio... (Tap to stop)";
+                chatInput.disabled = true;
+                
+                // Auto stop mock after 4 seconds to simulate sending
+                recordTimeout = setTimeout(() => { if(isRecordingVoice) toggleVoiceRecord(); }, 4000);
+            } else {
+                isRecordingVoice = false;
+                clearTimeout(recordTimeout);
+                micBtn.classList.remove('mic-recording');
+                micBtn.innerHTML = '<i class="fa-solid fa-microphone text-[16px]"></i>';
+                chatInput.placeholder = "Message...";
+                chatInput.disabled = false;
+                
+                // Mock send audio message
+                saveAndSendMsg({ id: Date.now().toString(), text: "🎤 Voice Message (0:04)", type: 'sent', file: null, deleted: false, status: 'sent' });
+            }
+        }
+
         function processSendText() {
             const input = document.getElementById('chatInput'); let text = input.value.trim(); if(!text) return;
             hapticFeedback(15);
@@ -1090,101 +1131,13 @@
             text = text.replace(/(@\w+)/g, '<span class="mention-tag">$1</span>');
 
             saveAndSendMsg({ id: Date.now().toString(), text: text, type: 'sent', file: null, deleted: false, status: 'sent', replyContext: replyingToText });
-            input.value = ''; requestAnimationFrame(() => { input.style.height = 'auto'; document.getElementById('sendBtn').style.display = 'none'; document.getElementById('micBtn').classList.remove('hidden'); }); cancelReply();
-        }
-
-        // --- VOICE NOTE ENGINE ---
-        async function toggleVoiceRecord() {
-            if (!isRecording) {
-                hapticFeedback();
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.start();
-                    isRecording = true;
-                    
-                    document.getElementById('recordingUI').classList.remove('hidden');
-                    document.getElementById('chatInputContainer').classList.add('hidden');
-                    document.getElementById('fileUpload').previousElementSibling.classList.add('hidden');
-                    
-                    const micBtn = document.getElementById('micBtn');
-                    micBtn.classList.replace('text-gray-300', 'text-white');
-                    micBtn.classList.add('bg-blue-500');
-                    micBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-[20px]"></i>';
-                    
-                    recordStartTime = Date.now();
-                    recordTimerInterval = setInterval(() => {
-                        const diff = Math.floor((Date.now() - recordStartTime)/1000);
-                        const m = String(Math.floor(diff/60)).padStart(2,'0');
-                        const s = String(diff%60).padStart(2,'0');
-                        document.getElementById('recordTimer').innerText = `${m}:${s}`;
-                    }, 1000);
-
-                    mediaRecorder.addEventListener("dataavailable", event => { audioChunks.push(event.data); });
-                    mediaRecorder.addEventListener("stop", () => {
-                        clearInterval(recordTimerInterval);
-                        if(!cancelRecordFlag && audioChunks.length > 0) {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const fileData = { name: "Voice Note", type: 'audio/webm', data: URL.createObjectURL(audioBlob) };
-                            saveAndSendMsg({ id: Date.now().toString(), text: "", type: 'sent', file: fileData, deleted: false, status: 'sent', replyContext: replyingToText });
-                        }
-                        audioChunks = []; cancelRecordFlag = false;
-                        stream.getTracks().forEach(t => t.stop());
-                    });
-                } catch(e) { alert("Microphone access needed for Voice Notes."); }
-            } else {
-                stopVoiceRecord(false); // Send it
-            }
-        }
-
-        function stopVoiceRecord(cancel) {
-            if(isRecording) {
-                hapticFeedback(10);
-                cancelRecordFlag = cancel;
-                mediaRecorder.stop();
-                isRecording = false;
-                
-                document.getElementById('recordingUI').classList.add('hidden');
-                document.getElementById('chatInputContainer').classList.remove('hidden');
-                document.getElementById('fileUpload').previousElementSibling.classList.remove('hidden');
-                
-                const micBtn = document.getElementById('micBtn');
-                micBtn.classList.replace('text-white', 'text-gray-300');
-                micBtn.classList.remove('bg-blue-500');
-                micBtn.innerHTML = '<i class="fa-solid fa-microphone text-[20px]"></i>';
-                document.getElementById('recordTimer').innerText = "0:00";
-            }
-        }
-
-        function cancelVoiceRecord() {
-            stopVoiceRecord(true);
-        }
-
-        // --- Custom Audio Player Logic ---
-        let currentAudio = null;
-        let currentAudioBtn = null;
-        function playVoiceMessage(btn, src) {
-            if(currentAudio) {
-                currentAudio.pause();
-                if(currentAudioBtn) currentAudioBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5 text-xs"></i>';
-                if(currentAudio.src.includes(src)) { currentAudio = null; return; } // Paused
-            }
-            currentAudio = new Audio(src);
-            currentAudioBtn = btn;
-            btn.innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
-            
-            currentAudio.play();
-            const progress = btn.nextElementSibling.firstElementChild;
-            currentAudio.ontimeupdate = () => {
-                if(currentAudio.duration) {
-                    progress.style.width = (currentAudio.currentTime / currentAudio.duration * 100) + '%';
-                }
-            };
-            currentAudio.onended = () => {
-                btn.innerHTML = '<i class="fa-solid fa-play ml-0.5 text-xs"></i>';
-                progress.style.width = '0%';
-                currentAudio = null;
-            };
+            input.value = ''; 
+            requestAnimationFrame(() => { 
+                input.style.height = 'auto'; 
+                document.getElementById('sendBtn').classList.add('scale-0', 'opacity-0', 'pointer-events-none'); 
+                document.getElementById('micBtn').classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+            }); 
+            cancelReply();
         }
 
         function handleFileUpload(e) { 
@@ -1193,6 +1146,7 @@
             hapticFeedback();
             const msgObj = { id: Date.now().toString(), text: "", type: 'sent', file: { name: f.name, type: f.type, data: URL.createObjectURL(f) }, deleted: false, status: 'sent', replyContext: replyingToText };
             
+            // Smart grouping check
             const history = getChatHistory(activeChatUser);
             const isGrouped = history.length > 0 && history[history.length-1].type === 'sent';
 
@@ -1207,7 +1161,6 @@
 
         function saveAndSendMsg(msgObj) {
             try {
-                // To apply smart grouping dynamically
                 const history = getChatHistory(activeChatUser);
                 const isGrouped = history.length > 0 && history[history.length-1].type === msgObj.type;
                 
@@ -1231,7 +1184,6 @@
             const msgArea = document.getElementById('chatMessageArea'); if (!msgArea || msgObj.deleted) return; 
             const wrapper = document.createElement('div'); wrapper.id = `msg-${msgObj.id}`; wrapper.className = `flex flex-col relative ${msgObj.type === 'sent' ? 'items-end' : 'items-start'} ${animate ? 'animate-fade' : ''}`;
             
-            // Only regular emojis now, jumbo logic removed
             const bubbleClass = (msgObj.type === 'sent' ? 'chat-bubble-sent' : 'chat-bubble-recv') + (isGrouped ? ' grouped' : '');
             
             const bubble = document.createElement('div'); 
@@ -1246,9 +1198,10 @@
             bubble.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
             bubble.addEventListener('touchmove', e => { 
                 let diff = e.touches[0].clientX - startX;
-                if(diff > 40) { bubble.style.transform = 'translateX(20px)'; }
+                if(diff > 40) { bubble.style.transform = 'translateX(25px)'; bubble.classList.add('swipe-reply-active'); }
             }, {passive: true});
             bubble.addEventListener('touchend', e => {
+                bubble.classList.remove('swipe-reply-active');
                 if(bubble.style.transform !== '') {
                     bubble.style.transform = '';
                     hapticFeedback(20);
@@ -1268,33 +1221,13 @@
                 }
             });
 
-            if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/20 border-l-[3px] border-white/40 px-2 py-1 mb-1 rounded-[4px] text-[10px] opacity-80 truncate max-w-[200px] pointer-events-none'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
+            if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/30 border-l-[3px] border-blue-400 px-2.5 py-1.5 mb-1.5 rounded-[6px] text-[11px] opacity-90 truncate max-w-[200px] pointer-events-none font-medium'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
             
             if (msgObj.file) {
-                if(msgObj.file.type.startsWith('audio/')) {
-                    bubble.innerHTML += `
-                        <div class="flex items-center gap-2 bg-black/20 p-2 rounded-[16px] w-[180px]">
-                            <button class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white shrink-0 active:scale-90" onclick="playVoiceMessage(this, '${msgObj.file.data}')">
-                                <i class="fa-solid fa-play ml-0.5 text-xs"></i>
-                            </button>
-                            <div class="flex-1 h-1.5 bg-gray-600 rounded-full overflow-hidden relative"><div class="absolute left-0 top-0 bottom-0 bg-white w-0 transition-all duration-100 playback-progress"></div></div>
-                        </div>`;
-                } else if (!msgObj.file.data) {
-                    bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/20 p-2 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-arrow-down text-2xl text-blue-300"></i> <div class="truncate text-[12px] max-w-[150px] font-semibold">${msgObj.file.name}<br><span class="text-[9px] text-gray-400">File session ended</span></div></div>`;
-                } else if (msgObj.file.type.startsWith('image/')) {
-                    bubble.innerHTML += `<img src="${msgObj.file.data}" class="rounded-xl max-w-[200px] max-h-[250px] object-cover bg-black/20 cursor-pointer hover:opacity-90 transition" onclick="openLightbox('${msgObj.file.data}')">`;
-                } else {
-                    bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/20 p-2 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-lines text-2xl text-blue-300"></i> <div class="truncate text-[12px] max-w-[150px] font-semibold">${msgObj.file.name}</div></div>`;
-                }
-            } else { 
-                let formattedText = (msgObj.text || "").replace(/\n/g, '<br>');
-                // Re-apply mention styling securely for display
-                formattedText = formattedText.replace(/(@\w+)/g, '<span class="mention-tag">$1</span>');
-                const textSpan = document.createElement('span'); 
-                textSpan.innerHTML = formattedText; 
-                textSpan.className = "pointer-events-none"; 
-                bubble.appendChild(textSpan); 
-            }
+                if (!msgObj.file.data) bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/30 p-2.5 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-arrow-down text-3xl text-blue-400 drop-shadow-md"></i> <div class="truncate text-[13px] max-w-[150px] font-bold">${msgObj.file.name}<br><span class="text-[10px] text-gray-400 font-medium">File session ended</span></div></div>`;
+                else if (msgObj.file.type.startsWith('image/')) bubble.innerHTML += `<img src="${msgObj.file.data}" class="rounded-xl max-w-[220px] max-h-[300px] object-cover bg-black/20 cursor-pointer hover:opacity-90 transition shadow-inner" onclick="openLightbox('${msgObj.file.data}')">`;
+                else bubble.innerHTML += `<div class="flex items-center gap-3 bg-black/30 p-2.5 rounded-xl border border-white/10 pointer-events-none"><i class="fa-solid fa-file-lines text-3xl text-blue-400 drop-shadow-md"></i> <div class="truncate text-[13px] max-w-[150px] font-bold">${msgObj.file.name}</div></div>`;
+            } else { const textSpan = document.createElement('span'); textSpan.innerHTML = (msgObj.text || "").replace(/\n/g, '<br>'); textSpan.className = "pointer-events-none font-medium tracking-wide"; bubble.appendChild(textSpan); }
             
             if (msgObj.reaction) { 
                 const reactDiv = document.createElement('div'); 
@@ -1307,17 +1240,17 @@
             let timeString = "", statusIcon = "";
             if (msgObj.id) timeString = new Date(parseInt(msgObj.id)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             if (msgObj.type === 'sent') {
-                if (msgObj.status === 'read') statusIcon = `<i class="fa-solid fa-check-double text-blue-400 ml-1 text-[9px] status-icon"></i>`;
-                else if (msgObj.status === 'delivered') statusIcon = `<i class="fa-solid fa-check-double text-gray-400 ml-1 text-[9px] status-icon"></i>`;
-                else statusIcon = `<i class="fa-solid fa-check text-gray-400 ml-1 text-[9px] status-icon"></i>`;
+                if (msgObj.status === 'read') statusIcon = `<i class="fa-solid fa-check-double text-blue-400 ml-1.5 text-[10px] status-icon drop-shadow-sm"></i>`;
+                else if (msgObj.status === 'delivered') statusIcon = `<i class="fa-solid fa-check-double text-gray-300 ml-1.5 text-[10px] status-icon drop-shadow-sm"></i>`;
+                else statusIcon = `<i class="fa-solid fa-check text-gray-300 ml-1.5 text-[10px] status-icon drop-shadow-sm"></i>`;
             }
 
             wrapper.appendChild(bubble);
             
-            const metaEl = document.createElement('div'); metaEl.className = `text-[8px] text-gray-500 mt-0.5 px-1 flex items-center ${msgObj.type === 'sent' ? 'justify-end' : 'justify-start'} ${isGrouped ? 'hidden' : ''}`; metaEl.innerHTML = `<span>${timeString}</span>${statusIcon}`; wrapper.appendChild(metaEl);
+            const metaEl = document.createElement('div'); metaEl.className = `text-[9px] text-gray-500 font-bold mt-1 px-1.5 flex items-center ${msgObj.type === 'sent' ? 'justify-end' : 'justify-start'} ${isGrouped ? 'hidden' : ''}`; metaEl.innerHTML = `<span>${timeString}</span>${statusIcon}`; wrapper.appendChild(metaEl);
             
             if (isGrouped && msgArea.lastChild && msgArea.lastChild.id !== 'typing-bubble') {
-                const lastMeta = msgArea.lastChild.querySelector('.text-\\[8px\\]');
+                const lastMeta = msgArea.lastChild.querySelector('.text-\\[9px\\]');
                 if(lastMeta) lastMeta.classList.add('hidden');
             }
 
@@ -1331,14 +1264,14 @@
 
         function showContextMenu() {
             const dynamicBtnContainer = document.getElementById('menuDynamicBtnContainer');
-            if (selectedMessageType === 'sent') dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-5 py-3 hover:bg-[#3a3a3c] transition cursor-pointer text-[14px] font-medium text-red-500" onclick="unsendMessage()"><i class="fa-regular fa-trash-can text-[16px] w-5 text-center"></i> Unsend</div>`;
-            else dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-5 py-3 hover:bg-[#3a3a3c] transition cursor-pointer text-[14px] font-medium text-red-500" onclick="handleMenuAction('report')"><i class="fa-solid fa-triangle-exclamation text-[16px] w-5 text-center"></i> Report</div>`;
+            if (selectedMessageType === 'sent') dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-6 py-4 hover:bg-red-500/10 transition cursor-pointer text-[15px] font-bold text-red-500 active:scale-[0.99]" onclick="unsendMessage()"><i class="fa-regular fa-trash-can text-[18px] w-5 text-center"></i> Unsend Message</div>`;
+            else dynamicBtnContainer.innerHTML = `<div class="flex items-center gap-4 px-6 py-4 hover:bg-red-500/10 transition cursor-pointer text-[15px] font-bold text-red-500 active:scale-[0.99]" onclick="handleMenuAction('report')"><i class="fa-solid fa-triangle-exclamation text-[18px] w-5 text-center"></i> Report Abuse</div>`;
             
             const history = getChatHistory(activeChatUser);
             const msg = history.find(m => m.id === selectedMessageId);
             const reactContainer = document.getElementById('menuReactionRemoveContainer');
             if (msg && msg.reaction) {
-                reactContainer.innerHTML = `<div class="flex items-center gap-4 px-5 py-3 hover:bg-[#3a3a3c] transition cursor-pointer text-[14px] font-medium text-yellow-500 border-t border-gray-800/60" onclick="handleReaction('')"><i class="fa-solid fa-face-frown-open text-[16px] w-5 text-center"></i> Remove Reaction</div>`;
+                reactContainer.innerHTML = `<div class="flex items-center gap-4 px-6 py-4 hover:bg-yellow-500/10 transition cursor-pointer text-[15px] font-bold text-yellow-500 border-t border-white/5 active:scale-[0.99]" onclick="handleReaction('')"><i class="fa-solid fa-face-frown-open text-[18px] w-5 text-center"></i> Remove Reaction</div>`;
             } else {
                 reactContainer.innerHTML = '';
             }
@@ -1353,7 +1286,7 @@
             if (e && e.target !== document.getElementById('contextMenuOverlay')) return;
             document.querySelectorAll('.bubble-active').forEach(el => el.classList.remove('bubble-active'));
             const overlay = document.getElementById('contextMenuOverlay'), sheet = document.getElementById('contextMenuSheet');
-            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300);
+            overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 400);
         }
 
         function unsendMessage() {
@@ -1365,7 +1298,7 @@
             const msgEl = document.getElementById(`msg-${selectedMessageId}`); 
             if (msgEl) {
                 msgEl.classList.add('msg-unsend');
-                setTimeout(()=>msgEl.remove(), 300);
+                setTimeout(()=>msgEl.remove(), 400);
             }
             hideContextMenu(); if(!isSecretChat) renderInbox(false); 
         }
@@ -1375,10 +1308,10 @@
             const history = getChatHistory(activeChatUser); const msg = history.find(m => m.id === selectedMessageId); hideContextMenu();
             if (action === 'copy') { if (msg && msg.text) { navigator.clipboard.writeText(msg.text); } } 
             else if (action === 'reply') { if (msg) { replyingToText = msg.text ? msg.text.substring(0, 50) + "..." : "Attachment"; document.getElementById('replyPreviewText').innerText = replyingToText; document.getElementById('replyPreviewContainer').classList.remove('hidden'); document.getElementById('chatInput').focus(); } }
-            else if (action === 'report') { if(msg) fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "report", reporter: myAlias, reportedUser: activeChatUser, msgId: msg.id, msgText: msg.text || "Media File" }) }).then(() => alert("Message reported.")).catch(e=>{}); }
+            else if (action === 'report') { if(msg) fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "report", reporter: myAlias, reportedUser: activeChatUser, msgId: msg.id, msgText: msg.text || "Media File" }) }).then(() => alert("Message reported. Our team will review.")).catch(e=>{}); }
         }
 
-        function initEmojiPicker() { const grid = document.getElementById('emojiPickerGrid'); allEmojis.forEach(em => { grid.innerHTML += `<button class="text-[26px] hover:scale-125 transition-transform active:scale-90" onclick="handleReaction('${em}')">${em}</button>`; }); }
+        function initEmojiPicker() { const grid = document.getElementById('emojiPickerGrid'); allEmojis.forEach(em => { grid.innerHTML += `<button class="text-[30px] hover:scale-125 transition-transform active:scale-90" onclick="handleReaction('${em}')">${em}</button>`; }); }
         function toggleEmojiPicker() {
             hapticFeedback();
             const grid = document.getElementById('emojiPickerGrid'), menuList = document.getElementById('menuOptionsList');
@@ -1402,17 +1335,19 @@
         function openChatMiniProfile() { openMiniProfile(activeChatUser); }
 
         function openNewMessageScreen() { hapticFeedback(); const screen = document.getElementById('new-message-screen'); screen.classList.remove('hidden', 'translate-x-full'); if(allNetworkUsers.length > 0) renderNewMessageUsers(allNetworkUsers); }
-        function closeNewMessageScreen() { document.getElementById('new-message-screen').classList.add('translate-x-full'); setTimeout(() => { document.getElementById('new-message-screen').classList.add('hidden'); }, 300); }
+        function closeNewMessageScreen() { document.getElementById('new-message-screen').classList.add('translate-x-full'); setTimeout(() => { document.getElementById('new-message-screen').classList.add('hidden'); }, 400); }
 
         // --- CALL UI CONTROLLERS ---
         function startCallTimer() {
             callStartTime = Date.now();
             document.getElementById('callStatusText').innerText = "00:00";
+            if(document.getElementById('callStatusTextTop')) document.getElementById('callStatusTextTop').innerText = "00:00";
             callTimerInterval = setInterval(() => {
                 let diff = Math.floor((Date.now() - callStartTime)/1000);
                 let m = String(Math.floor(diff/60)).padStart(2,'0');
                 let s = String(diff%60).padStart(2,'0');
                 document.getElementById('callStatusText').innerText = `${m}:${s}`;
+                if(document.getElementById('callStatusTextTop')) document.getElementById('callStatusTextTop').innerText = `${m}:${s}`;
             }, 1000);
         }
         function stopCallTimer() { clearInterval(callTimerInterval); }
@@ -1451,7 +1386,7 @@
         function startCall(type) {
             hapticFeedback();
             if(!activeChatUser) return;
-            if(!globalPeer || globalPeer.destroyed || !globalPeer.open) { alert("Connecting... Try again."); return; }
+            if(!globalPeer || globalPeer.destroyed || !globalPeer.open) { alert("Connecting to secure node... Try again."); return; }
             const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             document.getElementById('callStatusText').innerText = "Contacting..."; document.getElementById('callTargetName').innerText = activeChatUser;
             const avatarEl = document.getElementById('callAvatarContainer'); if(avatarEl) avatarEl.innerHTML = getInnerAvatarHTML(activeChatUser);
@@ -1498,19 +1433,28 @@
             if (currentCall) { currentCall.close(); currentCall = null; }
             if (localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
             const rMedia = document.getElementById('remoteMedia'); if(rMedia) { rMedia.srcObject = null; rMedia.classList.add('hidden'); }
-            const lMedia = document.getElementById('localMediaContainer'); if(lMedia) { document.getElementById('localMedia').srcObject = null; lMedia.classList.add('hidden'); lMedia.style.left = ''; lMedia.style.top = ''; lMedia.style.right = '16px'; }
+            const lMedia = document.getElementById('localMediaContainer'); if(lMedia) { document.getElementById('localMedia').srcObject = null; lMedia.classList.add('hidden'); lMedia.style.left = ''; lMedia.style.top = ''; lMedia.style.right = '20px'; }
             const cBox = document.getElementById('callInfoBox'); if(cBox) cBox.classList.remove('opacity-0');
             const cGlow = document.getElementById('callBgGlow'); if(cGlow) cGlow.classList.remove('opacity-0');
-            const statusEl = document.getElementById('callStatusText'); if(statusEl) { statusEl.innerText = "Contacting..."; statusEl.className = "text-gray-200 font-bold text-[12px] bg-black/50 backdrop-blur-md px-3 py-1 rounded-full inline-block shadow-lg border border-white/10 z-10 mt-1"; }
+            const statusEl = document.getElementById('callStatusText'); if(statusEl) { statusEl.innerText = "Contacting..."; statusEl.className = "text-blue-300 font-bold text-[14px] bg-blue-500/10 backdrop-blur-xl px-4 py-1.5 rounded-full inline-block shadow-lg border border-blue-500/20 z-10 mt-1 tracking-wide"; }
             const gradient = document.getElementById('callBottomGradient'); if(gradient) { gradient.classList.add('opacity-0'); setTimeout(() => { gradient.classList.add('hidden'); }, 500); }
-            const overlay = document.getElementById('callOverlay'); if(overlay) { overlay.classList.add('opacity-0'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 300); }
+            const overlay = document.getElementById('callOverlay'); if(overlay) { overlay.classList.add('opacity-0'); setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }, 400); }
         }
 
         function resetCallUI(isVideo) {
             isAudioMuted = false; isVideoMuted = false; usingFrontCamera = true;
             document.getElementById('iconToggleMic').className = "fa-solid fa-microphone"; document.getElementById('iconToggleVid').className = "fa-solid fa-video";
-            const statusEl = document.getElementById('callStatusText'); statusEl.innerText = "Contacting..."; statusEl.className = "text-gray-200 font-bold text-[12px] bg-black/50 backdrop-blur-md px-3 py-1 rounded-full inline-block shadow-lg border border-white/10 z-10 mt-1";
-            if (!isVideo) { document.getElementById('btnSwitchCam').style.display = 'none'; document.getElementById('btnToggleVid').style.display = 'none'; } else { document.getElementById('btnSwitchCam').style.display = 'flex'; document.getElementById('btnToggleVid').style.display = 'flex'; }
+            const statusEl = document.getElementById('callStatusText'); statusEl.innerText = "Contacting..."; statusEl.className = "text-blue-300 font-bold text-[14px] bg-blue-500/10 backdrop-blur-xl px-4 py-1.5 rounded-full inline-block shadow-lg border border-blue-500/20 z-10 mt-1 tracking-wide";
+            
+            if (!isVideo) { 
+                document.getElementById('btnSwitchCam').style.display = 'none'; 
+                document.getElementById('btnToggleVid').style.display = 'none'; 
+                document.getElementById('btnScreenShare').style.display = 'none';
+            } else { 
+                document.getElementById('btnSwitchCam').style.display = 'flex'; 
+                document.getElementById('btnToggleVid').style.display = 'flex'; 
+                document.getElementById('btnScreenShare').style.display = 'flex';
+            }
         }
         function showCallOverlayUI() { const overlay = document.getElementById('callOverlay'); overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10); }
 
