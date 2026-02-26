@@ -21,16 +21,14 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Animations */
-        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-        .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 10px rgba(0,0,0,0.4); } 50% { box-shadow: 0 0 25px var(--glow-color); } }
-        .theme-pulse { animation: pulseGlow 3s infinite ease-in-out; }
+        .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .modal-bg { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); }
+        @keyframes pop { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         .animate-float { animation: float 4s ease-in-out infinite; }
 
-        /* UI Elements */
+        /* Profile UI Components */
         .editable-section { position: relative; border: 1px solid rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.02); border-radius: 20px; padding: 16px; margin-bottom: 12px; transition: all 0.3s; cursor: pointer; backdrop-filter: blur(10px); }
         .editable-section:active { transform: scale(0.97); background-color: rgba(255, 255, 255, 0.05); }
         .edit-icon-corner { position: absolute; top: 12px; right: 12px; color: #4b5563; font-size: 0.75rem; padding: 5px; background: rgba(0,0,0,0.3); border-radius: 50%; }
@@ -41,20 +39,22 @@
 
         .interest-chip { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.03); color: #9ca3af; margin: 0 6px 6px 0; transition: all 0.2s; }
 
+        /* Modal Selection Chips */
         .select-chip { border: 1.5px solid #1f2937; color: #9ca3af; padding: 8px 14px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); background: #080a10; }
-        .select-chip.selected { border-color: #ec4899; background-color: rgba(236, 72, 153, 0.1); color: white; transform: scale(1.03); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
+        .select-chip.selected { border-color: #ec4899; background-color: rgba(236, 72, 153, 0.1); color: white; transform: scale(1.05); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
+        input[type="date"] { color-scheme: dark; }
 
-        /* Skeleton Loading Shimmer */
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
+        /* Ghost Mode Toggle */
+        .ghost-active-bg { background-color: #a855f7 !important; }
+        .ghost-active-knob { transform: translateX(20px) !important; }
 
         /* Confetti Animation */
-        .confetti-piece { position: absolute; width: 6px; height: 6px; border-radius: 50%; z-index: 1000; pointer-events: none; animation: fall 3s linear forwards; }
+        .confetti-piece { position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; z-index: 1000; pointer-events: none; animation: fall 3s linear forwards; }
         @keyframes fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 
-        .notif-dropdown { transform-origin: top right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .notif-open { transform: scale(1); opacity: 1; pointer-events: auto; }
-        .notif-closed { transform: scale(0.95); opacity: 0; pointer-events: none; }
+        /* Skeleton */
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .skeleton-bg { background: linear-gradient(90deg, #111827 25%, #1f2937 50%, #111827 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
     </style>
 </head>
 <body>
@@ -74,30 +74,19 @@
                 </div>
             </div>
 
-            <div id="notifDropdownMenu" class="absolute top-16 right-4 w-72 bg-[#1c1c1e]/95 backdrop-blur-3xl rounded-[20px] border border-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex-col z-[150] notif-closed">
-                <div class="p-3.5 border-b border-gray-800 flex justify-between items-center">
-                    <h3 class="text-white font-bold text-[15px] tracking-tight">Notifications</h3>
-                    <button onclick="toggleNotifCenter()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-2" id="notifList">
-                    <div class="text-center text-gray-500 text-[11px] py-4">No new alerts</div>
-                </div>
-            </div>
-
-            <header class="w-full bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 pt-12 pb-2 px-2 z-30 shrink-0">
-                <div class="flex justify-between items-center px-4 mb-3">
+            <header class="w-full bg-[#080a10]/80 backdrop-blur-xl border-b border-gray-800/40 pt-12 pb-3 px-4 z-30 shrink-0">
+                <div class="flex justify-between items-center mb-1">
                     <h1 class="text-[20px] font-extrabold text-white tracking-tight">Account</h1>
-                    <button onclick="toggleNotifCenter()" class="w-8 h-8 rounded-full bg-gray-800/60 flex items-center justify-center border border-gray-700/50 hover:bg-gray-700 transition active:scale-95 shadow-sm relative text-gray-300">
+                    <button onclick="hapticFeedback()" class="w-8 h-8 rounded-full bg-gray-800/60 flex items-center justify-center border border-gray-700/50 hover:bg-gray-700 transition active:scale-95 shadow-sm relative text-gray-300">
                         <i class="fa-solid fa-bell text-[12px]"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden animate-pulse" id="notifDot"></span>
                     </button>
                 </div>
-                <div class="flex gap-2 overflow-x-auto no-scrollbar px-2 pb-1" id="categoryTabs"></div>
             </header>
 
-            <main id="mainProfileScroll" class="flex-1 w-full overflow-y-auto no-scrollbar pb-[100px] z-20 relative px-2">
+            <main id="mainProfileScroll" class="flex-1 w-full overflow-y-auto no-scrollbar pb-[100px] z-20 animate-pop relative px-2">
 
                 <div class="flex flex-col items-center pt-6 pb-6 relative">
+
                     <div id="avatarRing" class="theme-transition w-[90px] h-[90px] rounded-full bg-gradient-to-tr from-gray-600 to-gray-400 p-[2.5px] mb-4 relative shadow-xl animate-float cursor-pointer" onclick="openEditModal('avatar')">
                         <div class="w-full h-full bg-[#080a10] rounded-full flex items-center justify-center text-4xl overflow-hidden relative">
                             <img id="profilePic" src="" class="w-full h-full object-cover hidden" alt="Profile">
@@ -187,6 +176,24 @@
                     </div>
                 </div>
 
+                <div class="mt-4 px-1 space-y-2 mb-8">
+                    <h3 class="text-gray-600 font-bold mb-2 uppercase tracking-widest text-[9px] pl-2">App Settings</h3>
+                    <div class="bg-gray-900/40 rounded-[20px] border border-gray-800/60 overflow-hidden shadow-sm">
+                        <div class="flex items-center justify-between p-4 border-b border-gray-800/60 cursor-pointer active:bg-gray-800/80 transition" onclick="openSwitchAccountModal()">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-users text-gray-400 w-4 text-center"></i><span class="text-gray-200 text-[13px] font-bold">Switch Account</span></div>
+                            <i class="fa-solid fa-chevron-right text-gray-600 text-[10px]"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-4 border-b border-gray-800/60 cursor-pointer active:bg-gray-800/80 transition" onclick="hapticFeedback()">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-bell text-gray-400 w-4 text-center"></i><span class="text-gray-200 text-[13px] font-bold">Notifications</span></div>
+                            <i class="fa-solid fa-chevron-right text-gray-600 text-[10px]"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-4 cursor-pointer active:bg-gray-800/80 transition" onclick="hapticFeedback()">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-gray-400 w-4 text-center"></i><span class="text-gray-200 text-[13px] font-bold">Privacy & Safety</span></div>
+                            <i class="fa-solid fa-chevron-right text-gray-600 text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="px-2 mb-10 space-y-3">
                     <button onclick="logOutUser()" class="w-full bg-red-500/5 border border-red-500/10 text-red-500/80 font-bold py-3 rounded-xl active:scale-95 transition text-[13px]">
                         Log Out
@@ -195,14 +202,13 @@
 
             </main>
 
-            <nav id="mainNav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] bg-[#11131a]/90 backdrop-blur-xl rounded-[32px] border border-gray-800/50 h-[64px] z-30 shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-colors duration-400">
+            <nav id="mainNav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] bg-[#11131a]/90 backdrop-blur-xl rounded-[32px] border border-gray-800/50 h-[64px] z-30 shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-colors duration-400 pb-0">
                 <ul class="flex justify-between items-center h-full px-4">
                     <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-house text-[18px]"></i></a>
                     <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-compass text-[18px]"></i></a>
                     <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90"><i class="fa-solid fa-user-group text-[18px]"></i></a>
                     <a href="chat.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90 relative">
                         <i class="fa-solid fa-message text-[18px]"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-pink-500 rounded-full border border-[#0B0E14] hidden" id="navChatDot"></span>
                     </a>
                     <a href="profile.html" class="flex items-center gap-1.5 bg-[#1a1c23] text-pink-500 px-3 py-2 rounded-full transition-all shadow-sm border border-pink-500/10">
                         <i class="fa-solid fa-circle-user text-[16px]"></i>
@@ -213,27 +219,25 @@
 
             <div id="switchAccountModal" class="absolute inset-0 z-[120] bg-black/70 backdrop-blur-md flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
                 <div class="bg-[#11131a] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe" id="switchAccountContent" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-5 border-b border-gray-800/60 pb-3"><h3 class="text-white text-[18px] font-bold">Switch Account</h3><button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[10px]"></i></button></div>
+                    <div class="flex justify-center pt-1 pb-3"><div class="w-10 h-1 bg-gray-600 rounded-full"></div></div>
+                    <div class="flex justify-between items-center mb-5 border-b border-gray-800/60 pb-3">
+                        <h3 class="text-white text-[18px] font-bold">Switch Account</h3>
+                        <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                    </div>
                     <div id="accountList" class="space-y-2 mb-5 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
-                    <button onclick="window.location.href='login.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[14px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
+                    <button onclick="window.location.href='login.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[13px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
                 </div>
             </div>
 
-            <div id="editModal" class="absolute inset-0 z-[150] bg-black/70 backdrop-blur-md flex items-center justify-end opacity-0 pointer-events-none transition-opacity duration-300">
-                <div class="bg-[#0f1118] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col max-h-[90vh] pb-safe" id="modalContainer">
-                    <div class="flex justify-between items-center mb-6 shrink-0"><h3 class="text-white text-[20px] font-bold tracking-tight" id="modalTitle">Edit</h3><button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[12px]"></i></button></div>
+            <div id="editModal" class="absolute inset-0 z-[150] bg-black/70 backdrop-blur-md flex items-center justify-end opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeModal()">
+                <div class="bg-[#0f1118] border-t border-gray-800 w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 flex flex-col max-h-[90vh] pb-safe" id="modalContainer" onclick="event.stopPropagation()">
+                    <div class="flex justify-center pt-1 pb-3"><div class="w-10 h-1 bg-gray-600 rounded-full"></div></div>
+                    <div class="flex justify-between items-center mb-6 shrink-0">
+                        <h3 class="text-white text-[20px] font-bold tracking-tight" id="modalTitle">Edit</h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[11px]"></i></button>
+                    </div>
                     <div id="modalBody" class="mb-6 flex-1 overflow-y-auto no-scrollbar"></div>
-                    <button onclick="saveModalData()" id="modalSaveBtn" class="w-full bg-pink-600 text-white font-bold text-[16px] py-4 rounded-[20px] transition active:scale-95 shrink-0 shadow-lg">Save Changes</button>
-                </div>
-            </div>
-
-            <div id="restrictionModal" class="absolute inset-0 z-[180] bg-black/80 backdrop-blur-lg flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-                <div class="bg-[#111418] border border-gray-700 w-10/12 max-w-sm rounded-[32px] p-8 shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col items-center text-center" id="restrictionContent">
-                    <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600 mb-5 text-gray-400 text-2xl"><i class="fa-solid fa-lock"></i></div>
-                    <h3 class="text-white text-xl font-bold mb-2">Locked Role</h3>
-                    <p class="text-gray-500 text-sm mb-8" id="restDesc">Switch accounts to view this role profile.</p>
-                    <button onclick="confirmSwitchAccount()" id="btnSwitchConfirm" class="w-full bg-pink-600 text-white font-bold py-3.5 rounded-xl transition mb-3">Switch Account</button>
-                    <button onclick="closeRestrictionModal()" class="w-full bg-transparent text-gray-500 font-bold py-2 rounded-xl">Cancel</button>
+                    <button onclick="saveModalData()" id="modalSaveBtn" class="w-full bg-pink-600 text-white font-bold text-[15px] py-4 rounded-[16px] transition active:scale-95 shrink-0 shadow-lg flex items-center justify-center gap-2">Save Changes</button>
                 </div>
             </div>
 
@@ -241,6 +245,13 @@
     </div>
 
     <audio id="sndPop" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
+    <audio id="sndTada" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+
+    <div class="hidden border-blue-500/50 bg-blue-500/10 text-blue-400 text-blue-500 from-blue-600 to-blue-400 text-blue-300 border-blue-500/30"></div>
+    <div class="hidden border-emerald-500/50 bg-emerald-500/10 text-emerald-400 text-emerald-500 from-emerald-600 to-emerald-400 text-emerald-300 border-emerald-500/30"></div>
+    <div class="hidden border-rose-500/50 bg-rose-500/10 text-rose-400 text-rose-500 from-rose-600 to-rose-400 text-rose-300 border-rose-500/30"></div>
+    <div class="hidden border-yellow-500/50 bg-yellow-500/10 text-yellow-400 text-yellow-500 from-yellow-600 to-yellow-400 text-yellow-300 border-yellow-500/30"></div>
+    <div class="hidden border-purple-500/50 bg-purple-500/10 text-purple-400 text-purple-500 from-purple-600 to-purple-400 text-purple-300 border-purple-500/30"></div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
@@ -267,24 +278,42 @@
         let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker"; 
         let myAlias = localStorage.getItem("healspace_alias") || "User";
         let userProfile = { alias: "Ghost", emoji: '', avatar: '', customAvatar: false, birthday: '', gender: '', lookingFor: '', vibes: { communication: '', social: '' }, interests: [], mainLanguage: '', languages: [], ghostMode: false };
+        let currentEditMode = '';
 
+        // Hardware Fixes
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
+        window.addEventListener('popstate', function(event) {
+            closeModal();
+            closeSwitchAccountModal();
+        });
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                document.getElementById('mobile-container').style.height = window.visualViewport.height + 'px';
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
             initAccountSystem();
-            buildTabs();
             renderTheme(loggedInRole);
             animateStats();
         });
 
         function safeParseJSON(str, fallback) { try { if (!str || str === "undefined") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; } }
 
+        // --- SELF HEALING DATA ENGINE (Bug Fix) ---
         function initAccountSystem() {
             if(!savedAccounts[loggedInRole]) {
                 savedAccounts[loggedInRole] = { alias: myAlias, emoji: '✨', avatar: `https://avatar.iran.liara.run/public?username=${Math.random()}`, customAvatar: false, birthday: '', gender: '', lookingFor: '', vibes: { communication: '', social: '' }, interests: [], mainLanguage: '', languages: [], ghostMode: false };
             }
             userProfile = savedAccounts[loggedInRole];
+
+            // Self-Heal missing objects to prevent modal crashes
+            userProfile.vibes = userProfile.vibes || { communication: '', social: '' };
+            userProfile.languages = userProfile.languages || [];
+            userProfile.interests = userProfile.interests || [];
+
             updateUI();
         }
 
@@ -343,28 +372,20 @@
             saveProfile();
         }
 
-        function logOutUser() { if (confirm("Log out of HealSpace?")) { localStorage.clear(); window.location.href = "login.html"; } }
-
-        function buildTabs() {
-            const container = document.getElementById('categoryTabs');
-            container.innerHTML = '';
-            ['seeker', 'motivator', 'lover', 'friend'].forEach(id => {
-                const isUnlocked = (loggedInRole === 'all' || loggedInRole === id);
-                container.innerHTML += `<button onclick="attemptTabSwitch('${id}')" id="cat-${id}" class="flex-shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold border border-gray-800 bg-gray-900/40 text-gray-500 transition-all active:scale-95">${categories_map[id]} ${isUnlocked ? '' : '🔒'}</button>`;
-            });
+        function logOutUser() { 
+            hapticFeedback(30);
+            if (confirm("Log out of HealSpace?")) { 
+                document.getElementById('app-wrapper').style.opacity = '0';
+                document.getElementById('app-wrapper').style.transition = 'opacity 0.5s ease';
+                setTimeout(() => { localStorage.clear(); window.location.href = "login.html"; }, 500);
+            } 
         }
-        const categories_map = { seeker: 'Motivation', motivator: 'Healer', lover: 'Lover', friend: 'Friend' };
-
-        function attemptTabSwitch(target) { if (loggedInRole === 'all' || loggedInRole === target) renderTheme(target); else showRestrictionModal(target); }
 
         function renderTheme(id) {
             const t = themes[id] || themes['seeker'];
-            document.querySelectorAll('[id^="cat-"]').forEach(b => b.className = 'flex-shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold border border-gray-800 bg-gray-900/40 text-gray-500 transition-all');
-            const active = document.getElementById(`cat-${id}`);
-            if(active) active.className = `flex-shrink-0 px-4 py-1.5 rounded-full text-[11px] font-bold border border-${t.color}-500/50 bg-${t.color}-500/10 text-${t.color}-400 shadow-sm`;
-
             document.getElementById('roleText').innerText = t.role;
             document.getElementById('roleIcon').className = `fa-solid ${t.icon} text-${t.color}-400 text-[9px]`;
+            document.getElementById('avatarRing').className = `theme-transition w-[90px] h-[90px] rounded-full bg-gradient-to-tr ${t.ringClass} p-[2.5px] mb-4 relative shadow-xl animate-float cursor-pointer`;
             document.getElementById('avatarRing').style.boxShadow = `0 0 20px ${t.glow}`;
             document.getElementById('progressBar').style.backgroundColor = t.hex;
             document.getElementById('modalSaveBtn').style.backgroundColor = t.hex;
@@ -376,10 +397,20 @@
             currentEditMode = mode;
             document.getElementById('modalTitle').innerText = mode.toUpperCase();
             let html = '';
-            if (mode === 'name') html = `<input type="text" id="inputName" value="${userProfile.alias}" class="w-full bg-[#1c1c1e] border border-gray-800 rounded-xl px-4 py-3.5 text-white outline-none font-bold text-lg">`;
-            else if (mode === 'avatar') html = `<input type="text" id="inputAvatar" value="${userProfile.avatar || userProfile.emoji}" placeholder="Emoji or Image Link" class="w-full bg-[#1c1c1e] border border-gray-800 rounded-xl px-4 py-3.5 text-white outline-none text-center">`;
+
+            // Using safe fallbacks to prevent errors
+            const vComm = userProfile.vibes.communication;
+            const vSoc = userProfile.vibes.social;
+            const vMain = userProfile.mainLanguage;
+            const vLangs = userProfile.languages;
+            const vInts = userProfile.interests;
+
+            if (mode === 'name') html = `<input type="text" id="inputName" value="${userProfile.alias}" class="w-full bg-[#1c1c1e] border border-gray-800 rounded-xl px-4 py-3.5 text-white outline-none font-bold text-lg focus:border-gray-500 transition">`;
+            else if (mode === 'avatar') html = `<input type="text" id="inputAvatar" value="${userProfile.avatar || userProfile.emoji}" placeholder="Emoji or Image Link" class="w-full bg-[#1c1c1e] border border-gray-800 rounded-xl px-4 py-3.5 text-white outline-none text-center focus:border-gray-500 transition"><p class="text-[10px] text-gray-500 text-center mt-3">Paste any image link or type a single emoji.</p>`;
             else if (mode === 'basics') html = `<label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block">Birthday</label><input type="date" id="inputBday" value="${userProfile.birthday}" class="w-full bg-[#1c1c1e] border border-gray-800 rounded-xl p-3 text-white mb-5"><label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block">Gender</label><div class="grid grid-cols-3 gap-2 mb-5">${generateChips('gender', OPTIONS.gender, userProfile.gender)}</div><label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block">Looking For</label><div class="grid grid-cols-2 gap-2">${generateChips('lookingFor', OPTIONS.lookingFor, userProfile.lookingFor)}</div>`;
-            else if (mode === 'interests') html = `<div class="flex flex-wrap gap-2">${generateMultiChips(OPTIONS.interests, userProfile.interests)}</div>`;
+            else if (mode === 'vibes') html = `<label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block"><i class="fa-solid fa-comments"></i> Communication</label><div class="flex flex-wrap gap-2 mb-5">${generateChips('communication', OPTIONS.communication, vComm)}</div><label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block"><i class="fa-solid fa-battery-half"></i> Social Battery</label><div class="flex flex-wrap gap-2">${generateChips('social', OPTIONS.social, vSoc)}</div>`;
+            else if (mode === 'languages') html = `<label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block"><i class="fa-solid fa-globe"></i> Main Language</label><div class="flex flex-wrap gap-2 mb-5">${generateChips('mainLanguage', OPTIONS.mainLanguage, vMain)}</div><label class="text-gray-500 text-[9px] font-bold uppercase mb-2 block"><i class="fa-solid fa-language"></i> Also Speaks (Max 3)</label><div class="flex flex-wrap gap-2">${generateMultiChips(OPTIONS.languages, vLangs)}</div>`;
+            else if (mode === 'interests') html = `<div class="flex flex-wrap gap-2">${generateMultiChips(OPTIONS.interests, vInts)}</div>`;
             
             document.getElementById('modalBody').innerHTML = html;
             document.getElementById('editModal').classList.remove('opacity-0', 'pointer-events-none');
@@ -393,13 +424,19 @@
         function setupChipListeners() {
             document.querySelectorAll('.single-chip').forEach(c => c.onclick = function() { document.querySelectorAll(`.single-chip[data-group="${this.dataset.group}"]`).forEach(x => x.classList.remove('selected')); this.classList.add('selected'); hapticFeedback(5); });
             document.querySelectorAll('.multi-chip').forEach(c => c.onclick = function() { 
+                const max = currentEditMode === 'interests' ? 5 : 3;
                 const count = document.querySelectorAll('.multi-chip.selected').length;
-                if(!this.classList.contains('selected') && count >= 5) { hapticFeedback(40); return alert("Max 5!"); }
+                if(!this.classList.contains('selected') && count >= max) { hapticFeedback(40); return alert(`Max ${max}!`); }
                 this.classList.toggle('selected'); hapticFeedback(5); 
             });
         }
 
         function saveModalData() {
+            hapticFeedback(20);
+            const btn = document.getElementById('modalSaveBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
             if(currentEditMode === 'name') userProfile.alias = document.getElementById('inputName').value.trim();
             else if(currentEditMode === 'avatar') {
                 const v = document.getElementById('inputAvatar').value.trim();
@@ -408,30 +445,81 @@
                 userProfile.birthday = document.getElementById('inputBday').value;
                 userProfile.gender = document.querySelector('.single-chip[data-group="gender"].selected')?.dataset.value;
                 userProfile.lookingFor = document.querySelector('.single-chip[data-group="lookingFor"].selected')?.dataset.value;
-            } else if(currentEditMode === 'interests') userProfile.interests = Array.from(document.querySelectorAll('.multi-chip.selected')).map(x => x.dataset.value);
+            } else if(currentEditMode === 'vibes') {
+                userProfile.vibes.communication = document.querySelector('.single-chip[data-group="communication"].selected')?.dataset.value || '';
+                userProfile.vibes.social = document.querySelector('.single-chip[data-group="social"].selected')?.dataset.value || '';
+            } else if(currentEditMode === 'languages') {
+                userProfile.mainLanguage = document.querySelector('.single-chip[data-group="mainLanguage"].selected')?.dataset.value || '';
+                userProfile.languages = Array.from(document.querySelectorAll('.multi-chip.selected')).map(x => x.dataset.value);
+            } else if(currentEditMode === 'interests') {
+                userProfile.interests = Array.from(document.querySelectorAll('.multi-chip.selected')).map(x => x.dataset.value);
+            }
             
-            saveProfile(); updateUI(); closeModal(); hapticFeedback([10, 20]);
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
+                saveProfile(); 
+                updateUI(); 
+                setTimeout(() => {
+                    closeModal();
+                    setTimeout(()=> btn.innerHTML = originalText, 300);
+                }, 400);
+            }, 500);
         }
 
         function saveProfile() { savedAccounts[loggedInRole] = userProfile; localStorage.setItem('healspace_saved_accounts', JSON.stringify(savedAccounts)); syncToBackend(); }
         function closeModal() { document.getElementById('editModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('modalContainer').classList.add('translate-y-full'); }
+        
         function calculateOverallProgress() {
-            let s = 0; if(userProfile.birthday) s += 20; if(userProfile.gender) s += 20; if(userProfile.lookingFor) s += 20; if(userProfile.interests.length > 0) s += 40;
+            let s = 0; if(userProfile.birthday) s += 20; if(userProfile.gender) s += 20; if(userProfile.lookingFor) s += 20; if(userProfile.interests && userProfile.interests.length > 0) s += 40;
             document.getElementById('progressBar').style.width = s + '%'; document.getElementById('progressText').innerText = s + '%';
+            
+            const msg = document.getElementById('progressMessage');
+            if(s < 40) msg.innerText = "Add your basics to get noticed.";
+            else if (s < 80) msg.innerText = "Almost there! Add your interests.";
+            else msg.innerText = "Profile complete!";
+
             if(s === 100) { setTimeout(()=> { document.getElementById('progressSection').classList.add('hidden'); shootConfetti(); }, 500); }
         }
 
         function shootConfetti() {
+            try { document.getElementById('sndTada').play().catch(()=>{}); } catch(e){}
             for(let i=0; i<30; i++){
                 let c = document.createElement('div'); c.className = 'confetti-piece'; c.style.left = Math.random()*100+'vw'; c.style.background = ['#ff007f','#00e5ff','#ffaa00'][i%3];
                 c.style.animationDuration = (Math.random()*2+1)+'s'; document.body.appendChild(c); setTimeout(()=>c.remove(), 3000);
             }
         }
 
-        function toggleNotifCenter() { hapticFeedback(); } // Stub
-        function openSwitchAccountModal() { hapticFeedback(); } // Stub
-        function closeSwitchAccountModal() { hapticFeedback(); } // Stub
-        function closeRestrictionModal() { hapticFeedback(); } // Stub
+        // --- ACCOUNT SWITCHER ---
+        function openSwitchAccountModal() {
+            hapticFeedback();
+            const savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
+            const list = document.getElementById('accountList'); list.innerHTML = '';
+            Object.keys(savedAccounts).forEach(roleKey => { 
+                const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); 
+                const t = themes[roleKey] || themes['seeker'];
+                
+                let avatarHTML = `<i class="fa-solid fa-user text-gray-500 text-[14px]"></i>`;
+                let avaData = acc.avatar || acc.emoji;
+                if(avaData) {
+                    if (avaData.startsWith('http')) avatarHTML = `<img src="${avaData}" class="w-full h-full object-cover">`;
+                    else avatarHTML = `<span class="w-full h-full flex items-center justify-center text-[16px]">${avaData}</span>`;
+                }
+
+                list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition border border-transparent ${isActive ? 'border-gray-700/50' : ''}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${avatarHTML}</div>
+                        <div>
+                            <h4 class="text-white font-bold text-[14px]">${acc.alias}</h4>
+                            <p class="text-[10px] text-${t.color}-400 font-bold mt-0.5"><i class="fa-solid ${t.icon} mr-1"></i>${t.role}</p>
+                        </div>
+                    </div>
+                    ${isActive ? `<div class="w-4 h-4 rounded-full border-[3px] border-${t.color}-500 bg-transparent shadow-[0_0_10px_${t.glow}]"></div>` : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}
+                </div>`; 
+            });
+            document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
+        }
+        function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
+        function executeAccountSwitch(targetRole) { localStorage.setItem("healspace_logged_role", targetRole); window.location.reload(); }
 
         function syncToBackend() {
             fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "updateFullProfile", role: loggedInRole, profileData: userProfile }) }).catch(e=>{});
