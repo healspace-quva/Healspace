@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0E14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HealSpace">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Chat</title>
@@ -259,7 +272,7 @@
                     <div class="flex items-center gap-1">
                         <button onclick="closeChat()" class="text-white hover:text-blue-400 transition active:scale-90 p-2.5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5"><i class="fa-solid fa-arrow-left text-[18px]"></i></button>
                         <div class="flex items-center gap-3 cursor-pointer p-1 rounded-full hover:bg-white/5 transition pr-4" onclick="openChatMiniProfile()">
-                            <div class="w-10 h-10 rounded-full overflow-hidden relative bg-gray-800 border border-white/20 shadow-md" id="chatTargetAvatarContainer"></div>
+                            <div class="w-10 h-10 rounded-full overflow-hidden relative bg-gray-800 border border-white/20 shadow-md flex items-center justify-center" id="chatTargetAvatarContainer"></div>
                             <div class="flex flex-col justify-center">
                                 <h3 class="text-white font-extrabold text-[15px] leading-tight tracking-wide drop-shadow-md" id="chatTargetName">User</h3>
                                 <p class="text-[11px] text-blue-400 font-semibold transition-all mt-0.5" id="chatTargetStatus">Connecting...</p>
@@ -364,17 +377,6 @@
                         <div id="menuReactionRemoveContainer"></div>
                         <div id="menuDynamicBtnContainer" class="border-t border-white/5"></div>
                     </div>
-                </div>
-            </div>
-
-            <div id="switchAccountModal" class="absolute inset-0 z-[80] bg-black/70 backdrop-blur-md flex items-end justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeSwitchAccountModal()">
-                <div class="glass-panel border-b-0 w-full rounded-t-[36px] p-6 shadow-[0_-10px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-400 pb-safe" id="switchAccountContent" onclick="event.stopPropagation()">
-                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-                        <h3 class="text-white text-[20px] font-extrabold tracking-tight">Your Accounts</h3>
-                        <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition active:scale-90"><i class="fa-solid fa-xmark text-[14px]"></i></button>
-                    </div>
-                    <div id="accountList" class="space-y-3 mb-6 max-h-[40vh] overflow-y-auto no-scrollbar px-1"></div>
-                    <button onclick="window.location.href='login.html'" class="w-full bg-transparent border border-white/20 text-white font-bold py-4 rounded-[20px] hover:bg-white/5 transition flex items-center justify-center gap-3 text-[15px] active:scale-95"><i class="fa-solid fa-plus text-[14px]"></i> Add Existing Account</button>
                 </div>
             </div>
 
@@ -508,6 +510,7 @@
             try { return JSON.parse(str) || fallback; } catch(e) { return fallback; } 
         }
 
+        // --- UNIFIED DATA SOURCE FIX ---
         let savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
         if (!savedAccounts || !savedAccounts[loggedInRole]) savedAccounts[loggedInRole] = { alias: myAlias, emoji: '✨' };
 
@@ -526,7 +529,6 @@
             req.onerror = e => reject(e);
         });
         
-        // Convert Blob/File to Base64 to ensure 100% native save and perfect extraction across devices
         function getBase64(file) {
            return new Promise((resolve, reject) => {
              const reader = new FileReader();
@@ -577,7 +579,6 @@
                 resizeTimeout = requestAnimationFrame(() => {
                     this.style.height = 'auto'; this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
                     
-                    // Input Text Toggle Logic (Send vs Mic)
                     if(this.value.trim()) {
                         document.getElementById('sendBtn').classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
                         document.getElementById('micBtn').classList.add('scale-0', 'opacity-0', 'pointer-events-none');
@@ -626,7 +627,6 @@
             }, 15000);
         });
 
-        // --- PULL TO REFRESH ENGINE ---
         function initPullToRefresh() {
             const scrollArea = document.getElementById('inboxMainArea');
             const ptrIndicator = document.getElementById('ptr-indicator');
@@ -670,7 +670,6 @@
             setTimeout(() => btn.classList.remove('animate-spin'), 1000);
         }
 
-        // Draggable Video UI & PiP Swap Fix
         let isVideoSwapped = false;
         function setupDraggableVideo() {
             const el = document.getElementById('localMediaContainer');
@@ -691,7 +690,7 @@
                 el.style.right = 'auto'; 
             }, {passive: false});
             document.addEventListener('touchend', () => {
-                if(isDragging && !moved) swapVideoStreams(); // TAP TO SWAP FACES
+                if(isDragging && !moved) swapVideoStreams(); 
                 isDragging = false;
             });
         }
@@ -709,7 +708,6 @@
             remoteVid.muted = isVideoSwapped ? true : false; 
         }
 
-        // THEME CONTROLLER & FIX FOR BACKGROUND BUG
         function loadChatTheme() {
             const savedTheme = localStorage.getItem('hs_chat_theme') || 'default';
             document.getElementById('view-chat').className = `absolute inset-0 flex flex-col z-[60] hidden bg-[#020305] theme-${savedTheme}`;
@@ -732,7 +730,6 @@
             closeThemeSelector();
         }
 
-        // FULLSCREEN LIGHTBOX
         function openLightbox(src) {
             hapticFeedback();
             const lb = document.getElementById('imageLightbox');
@@ -748,7 +745,6 @@
             setTimeout(() => { lb.classList.add('hidden'); lb.classList.remove('flex'); img.src = ''; }, 400);
         }
 
-        // DOUBLE TAP HEART EXPLOSION
         function showHeartExplosion(x, y) {
             hapticFeedback([30, 50, 30]);
             for(let i=0; i<6; i++) {
@@ -762,7 +758,6 @@
             }
         }
 
-        // LIVE CALL EMOJI SENDER
         function sendCallEmoji(emoji) {
             hapticFeedback();
             showCallEmojiLocally(emoji);
@@ -782,7 +777,6 @@
             setTimeout(() => el.remove(), 2500);
         }
 
-        // USER INBOX OPTIONS
         function showUserOptions(alias) {
             hapticFeedback(25);
             selectedUserForOptions = alias;
@@ -810,7 +804,6 @@
             }
         }
 
-        // SWITCH ACCOUNT MODAL
         function openSwitchAccountModal() {
             hapticFeedback();
             const list = document.getElementById('accountList'); list.innerHTML = '';
@@ -820,7 +813,6 @@
         function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
         function executeAccountSwitch(targetRole) { localStorage.setItem("healspace_logged_role", targetRole); window.location.reload(); }
 
-        // LIVE TYPING BUBBLE
         function showTypingBubble() {
             if(!document.getElementById('typing-bubble')) {
                 const msgArea = document.getElementById('chatMessageArea');
@@ -844,7 +836,6 @@
                 globalPeer = new Peer("hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
                 globalPeer.on('disconnected', () => { globalPeer.reconnect(); });
                 
-                // --- INCOMING CALL FIX (Global Over-arching Popup) ---
                 globalPeer.on('call', (call) => {
                     incomingCallObj = call;
                     incomingCallIsVideo = call.metadata && call.metadata.type === 'video';
@@ -939,7 +930,6 @@
             let history = getChatHistory(sender); if (history.find(m => m.id === msgData.id)) return;
             msgData.type = 'recv'; msgData.read = false; 
             
-            // Reconstruct and save Base64 to device instantly
             if (msgData.file && msgData.file.data && typeof msgData.file.data === 'string' && msgData.file.data.startsWith('data:')) {
                 saveFileToDB(msgData.id, msgData.file.data); 
                 msgData.file.data = 'indexeddb'; 
@@ -982,15 +972,23 @@
             setTimeout(() => { popup.classList.remove('animate-fade'); popup.classList.add('hidden'); }, 4000);
         }
 
+        // --- UNIFIED AVATAR HTML FETCHER ---
         function getInnerAvatarHTML(alias) {
             try {
-                let avatarData = localStorage.getItem(`hs_avatar_${alias}`);
-                if (!avatarData && alias === myAlias && savedAccounts && savedAccounts[loggedInRole]) avatarData = savedAccounts[loggedInRole].avatar || savedAccounts[loggedInRole].emoji;
+                let avatarData;
+                if (alias === myAlias) {
+                    avatarData = savedAccounts[loggedInRole]?.avatarInput || savedAccounts[loggedInRole]?.emoji;
+                } else {
+                    avatarData = localStorage.getItem(`hs_avatar_${alias}`);
+                }
+                
                 const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
                 if (!avatarData || avatarData === 'null') return fallbackIcon;
+                
+                if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
                 if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-                else if (avatarData.includes('@') || avatarData.includes('.com') || avatarData.length > 6) return fallbackIcon; 
-                else return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
+                
+                return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
             } catch(e) { return `<i class="fa-solid fa-user text-gray-500 text-[18px]"></i>`; }
         }
 
@@ -1005,7 +1003,12 @@
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`); const data = await response.json();
                 if (!Array.isArray(data)) return;
                 allNetworkUsers = data.filter(u => u.alias && u.alias !== myAlias);
-                allNetworkUsers.forEach(u => { if (u.vibe) localStorage.setItem(`hs_remote_vibe_${u.alias}`, u.vibe); else localStorage.removeItem(`hs_remote_vibe_${u.alias}`); if (u.avatar || u.emoji) localStorage.setItem(`hs_avatar_${u.alias}`, u.avatar || u.emoji); });
+                allNetworkUsers.forEach(u => { 
+                    if (u.vibe) localStorage.setItem(`hs_remote_vibe_${u.alias}`, u.vibe); 
+                    else localStorage.removeItem(`hs_remote_vibe_${u.alias}`); 
+                    
+                    if (u.avatar || u.emoji) localStorage.setItem(`hs_avatar_${u.alias}`, u.avatar || u.emoji); 
+                });
                 const me = data.find(u => u.alias === myAlias);
                 if (me && me.vibe && !localStorage.getItem(`hs_vibe_${myAlias}`)) { localStorage.setItem(`hs_vibe_${myAlias}`, me.vibe); }
             } catch(e) {} 
@@ -1089,7 +1092,7 @@
                     }, {passive:true});
                     item.addEventListener('touchmove', (e) => {
                         let diff = e.touches[0].clientX - startX;
-                        if(Math.abs(diff) > 10) clearTimeout(pressTimer); // Cancel if scrolling
+                        if(Math.abs(diff) > 10) clearTimeout(pressTimer); 
                     }, {passive:true});
                     item.addEventListener('touchend', () => clearTimeout(pressTimer));
                 });
@@ -1106,7 +1109,6 @@
             });
         }
 
-        // Mini profile logic for inbox
         function openMiniProfile(alias) {
             hapticFeedback();
             document.getElementById('mpName').innerText = alias;
@@ -1149,7 +1151,6 @@
             const statusEl = document.getElementById('chatTargetStatus'); statusEl.innerText = "Connecting..."; statusEl.className = "text-[11px] text-gray-500 font-semibold transition-all mt-0.5";
             if (allNetworkUsers) { const remoteUser = allNetworkUsers.find(u => u.alias === name); if (remoteUser && remoteUser.isOnline) { statusEl.innerText = "Active now"; statusEl.className = "text-[11px] text-blue-300 font-semibold transition-all mt-0.5"; } }
             
-            // Hardware back button state
             history.pushState({chatOpen: true}, "Chat", "?chatWith=" + encodeURIComponent(name));
 
             if (!isSecretChat) { let history = getChatHistory(activeChatUser); let changed = false; history.forEach(m => { if(m.type === 'recv' && !m.read) { m.read = true; changed = true; } }); if (changed) saveChatHistory(activeChatUser, history); renderChatMessages(); } else { document.getElementById('chatMessageArea').innerHTML = `<div class="date-badge">End-to-End Secret Chat Started</div>`; }
@@ -1212,7 +1213,6 @@
                     lastMsgType = null; 
                 }
 
-                // Check grouping logic
                 const isGrouped = lastMsgType === msg.type;
                 appendMessageToDOM(msg, false, isGrouped);
                 lastMsgType = msg.type;
@@ -1223,7 +1223,6 @@
 
         function cancelReply() { hapticFeedback(); replyingToText = null; document.getElementById('replyPreviewContainer').classList.add('hidden'); }
 
-        // --- REAL VOICE RECORDING SYSTEM FIXED ---
         let isRecordingVoice = false;
         let mediaRecorder;
         let audioChunks = [];
@@ -1245,10 +1244,10 @@
                     
                     mediaRecorder.onstop = async () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const b64Data = await getBase64(audioBlob); // PERFECT EXTRACTION
+                        const b64Data = await getBase64(audioBlob); 
                         const msgId = Date.now().toString();
                         
-                        saveFileToDB(msgId, b64Data); // SAVE BASE64 PERMANENTLY
+                        saveFileToDB(msgId, b64Data); 
                         
                         const msgObj = { 
                             id: msgId, 
@@ -1307,7 +1306,6 @@
             const input = document.getElementById('chatInput'); let text = input.value.trim(); if(!text) return;
             hapticFeedback(15);
             
-            // Mentions
             text = text.replace(/(@\w+)/g, '<span class="mention-tag">$1</span>');
 
             saveAndSendMsg({ id: Date.now().toString(), text: text, type: 'sent', file: null, deleted: false, status: 'sent', replyContext: replyingToText });
@@ -1327,7 +1325,7 @@
             
             const b64Data = await getBase64(f);
             const msgId = Date.now().toString();
-            saveFileToDB(msgId, b64Data); // SAVE BASE64 PERMANENTLY
+            saveFileToDB(msgId, b64Data); 
             
             const msgObj = { id: msgId, text: "", type: 'sent', file: { name: f.name, type: f.type, data: b64Data }, deleted: false, status: 'sent', replyContext: replyingToText };
             
@@ -1382,7 +1380,6 @@
             const handleLongPress = () => { pressTimer = setTimeout(() => { selectedMessageId = msgObj.id; selectedMessageType = msgObj.type; bubble.classList.add('bubble-active'); showContextMenu(); hapticFeedback([30, 50]); }, 400); };
             bubble.ontouchstart = handleLongPress; bubble.onmousedown = handleLongPress; bubble.ontouchend = () => clearTimeout(pressTimer); bubble.onmouseup = () => clearTimeout(pressTimer); bubble.onmouseleave = () => clearTimeout(pressTimer);
 
-            // Swipe to reply logic
             let startX = 0;
             bubble.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
             bubble.addEventListener('touchmove', e => { 
@@ -1412,7 +1409,6 @@
 
             if (msgObj.replyContext) { const replyDiv = document.createElement('div'); replyDiv.className = 'bg-black/30 border-l-[3px] border-blue-400 px-2.5 py-1.5 mb-1.5 rounded-[6px] text-[11px] opacity-90 truncate max-w-[200px] pointer-events-none font-medium'; replyDiv.innerText = msgObj.replyContext; bubble.appendChild(replyDiv); }
             
-            // --- INDEXEDDB ASYNC FILE RENDERING FIX ---
             if (msgObj.file) {
                 const renderFileUI = (fileUrl, isVoice) => {
                     if (isVoice) {
@@ -1466,7 +1462,6 @@
                 if(lastMeta) lastMeta.classList.add('hidden');
             }
 
-            // Insert before typing bubble if exists
             const typingBubble = document.getElementById('typing-bubble');
             if(typingBubble) msgArea.insertBefore(wrapper, typingBubble);
             else msgArea.appendChild(wrapper); 
@@ -1549,7 +1544,6 @@
         function openNewMessageScreen() { hapticFeedback(); const screen = document.getElementById('new-message-screen'); screen.classList.remove('hidden', 'translate-x-full'); if(allNetworkUsers.length > 0) renderNewMessageUsers(allNetworkUsers); }
         function closeNewMessageScreen() { document.getElementById('new-message-screen').classList.add('translate-x-full'); setTimeout(() => { document.getElementById('new-message-screen').classList.add('hidden'); }, 400); }
 
-        // --- CALL UI CONTROLLERS ---
         function startCallTimer() {
             callStartTime = Date.now();
             document.getElementById('callStatusText').innerText = "00:00";
@@ -1568,6 +1562,7 @@
         function stopCallTimer() { clearInterval(callTimerInterval); }
 
         function hideIncomingCallPopup() { try { const ringtone = document.getElementById('sndRingtone'); if(ringtone) { ringtone.pause(); ringtone.currentTime = 0; } } catch(e) {} document.getElementById('incomingCallPopup').classList.add('-translate-y-[150%]'); }
+        
         function declineIncomingCall() { hapticFeedback(30); hideIncomingCallPopup(); if(incomingCallObj && globalPeer && !globalPeer.destroyed) { const callerPeerId = incomingCallObj.peer; try { const conn = globalPeer.connect(callerPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'call_declined', sender: myAlias }); }); } catch(e){} incomingCallObj.close(); incomingCallObj = null; } }
 
         function acceptIncomingCall() {
@@ -1631,7 +1626,6 @@
             }
         }
 
-        // --- NEW FEATURE: Call Filtering & UI ---
         let currentFilterIdx = 0;
         function cycleCallFilter() {
             hapticFeedback();
@@ -1705,6 +1699,7 @@
                 document.getElementById('btnCallFilter').style.display = 'flex';
             }
         }
+        
         function showCallOverlayUI() { const overlay = document.getElementById('callOverlay'); overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10); }
 
     </script>
