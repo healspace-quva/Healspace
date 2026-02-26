@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0E14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HealSpace">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Explore</title>
@@ -373,8 +386,9 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
 
         const currentUserId = localStorage.getItem("healspace_userId");
-        let loggedInRole = localStorage.getItem("healspace_logged_role");
+        let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker";
         const myAlias = localStorage.getItem("healspace_alias") || "User";
+        
         let roomOpen = false;
         let activeRoomType = 'public';
         let activeRoomId = '';
@@ -405,6 +419,10 @@
         function safeParseJSON(str, fallback) {
             try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; }
         }
+
+        // --- UNIFIED DATA SOURCE FIX ---
+        let savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
+        if (!savedAccounts || !savedAccounts[loggedInRole]) savedAccounts[loggedInRole] = { alias: myAlias, emoji: '✨' };
 
         document.addEventListener("DOMContentLoaded", function() {
             loadUserData();
@@ -501,19 +519,23 @@
             } catch(e) {}
         }
 
+        function getRawAvatarHTML(avatarData) {
+            const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
+            if (!avatarData || avatarData === 'null') return fallbackIcon;
+            if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
+            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
+            return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
+        }
+
         function getInnerAvatarHTML(alias) {
             try {
-                let avatarData = localStorage.getItem(`hs_avatar_${alias}`);
-                if (!avatarData && alias === myAlias) {
-                    const activeProfile = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {})[loggedInRole] || {};
-                    avatarData = activeProfile.avatar || activeProfile.emoji || '✨';
-                }
-                const fallbackIcon = `<i class="fa-solid fa-user text-gray-500 text-[16px]"></i>`;
-                if (!avatarData || avatarData === 'null') return fallbackIcon;
-                if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-                else if (avatarData.includes('@') || avatarData.includes('.com') || avatarData.length > 6) return fallbackIcon; 
-                else return `<span class="w-full h-full flex items-center justify-center text-[18px]">${avatarData}</span>`;
-            } catch(e) { return `<i class="fa-solid fa-user text-gray-500 text-[16px]"></i>`; }
+                let avatarData = (alias === myAlias) 
+                    ? (savedAccounts[loggedInRole]?.avatarInput || savedAccounts[loggedInRole]?.emoji) 
+                    : localStorage.getItem(`hs_avatar_${alias}`);
+                return getRawAvatarHTML(avatarData);
+            } catch(e) { 
+                return `<i class="fa-solid fa-user text-gray-500 text-[18px]"></i>`; 
+            }
         }
 
         function loadUserData() {
