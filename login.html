@@ -6,16 +6,19 @@
     <title>HealSpace - Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0E14">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         
-        /* Base Reset & Strict Overflow Constraints (Matching Profile.html) */
-        html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background-color: #030712; font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        /* Base Reset & Strict Overflow Constraints for Full Screen App */
+        html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background-color: #0B0E14; font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
-        /* App Container */
-        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; background-color: #030712; z-index: 9999; }
-        #mobile-container { width: 100%; max-width: 448px; height: 100dvh; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.9); transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
+        /* App Container - NOW FULL SCREEN (100% WIDTH) */
+        #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; background-color: #0B0E14; z-index: 9999; }
+        #mobile-container { width: 100%; max-width: 100%; height: 100dvh; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
 
         /* Ambient Floating Background Orbs */
         .ambient-glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; filter: blur(90px); z-index: 1; pointer-events: none; animation: floatGlow 12s infinite alternate ease-in-out; opacity: 0.4; }
@@ -24,7 +27,7 @@
         @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.2); } }
 
         /* Screen Transitions & Overflow Handling */
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 20px; overflow: hidden; }
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 24px; overflow: hidden; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
         .screen-active { transform: translateX(0); opacity: 1; z-index: 20; }
@@ -59,7 +62,7 @@
         .anim-pulse-gold { animation: pulseGold 2.5s infinite ease-in-out; }
 
         /* Inner Scrollable Area */
-        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 120px; z-index: 10; position: relative; }
+        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 130px; z-index: 10; position: relative; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -67,7 +70,7 @@
         #progressBarContainer { position: absolute; top: 0; left: 0; right: 0; height: 3px; background-color: #1f2937; z-index: 50; display: none; }
         #progressBarFill { height: 100%; background: linear-gradient(90deg, #ec4899, #a855f7); width: 0%; transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 0 2px 2px 0; box-shadow: 0 0 10px rgba(236,72,153,0.5); }
 
-        /* UI Components - SCALED DOWN SIZES */
+        /* UI Components */
         .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 14px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: none; outline: none; box-shadow: 0 4px 12px rgba(255,255,255,0.1); flex-shrink: 0; }
         .btn-bottom:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 0 16px rgba(255,255,255,0.3); }
         .btn-bottom:disabled { opacity: 0.4; cursor: not-allowed; transform: scale(1); box-shadow: none; }
@@ -91,8 +94,8 @@
         .chip:active { transform: scale(0.93); }
         .chip.selected { border-color: #ec4899; color: white; background-color: rgba(236, 72, 153, 0.2); transform: scale(1.05); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2); }
 
-        /* Fixed Bottom Panel */
-        .glass-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: max(env(safe-area-inset-bottom), 16px); background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.02); z-index: 40; display: flex; flex-direction: column; gap: 10px; }
+        /* Fixed Bottom Panel - Appears above content natively */
+        .glass-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 24px; padding-bottom: max(env(safe-area-inset-bottom), 16px); background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.02); z-index: 40; display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
@@ -105,8 +108,8 @@
 
             <div id="progressBarContainer"><div id="progressBarFill"></div></div>
 
-            <div id="screen-landing" class="screen screen-active justify-between pt-10 pb-6 z-20 relative">
-                <div class="flex-1 flex flex-col items-center justify-center pb-8">
+            <div id="screen-landing" class="screen screen-active justify-center pt-10 pb-[150px] z-20 relative">
+                <div class="flex-1 flex flex-col items-center justify-center">
                     <div class="w-20 h-20 bg-gray-900 rounded-[20px] flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(236,72,153,0.3)] border border-gray-800 relative overflow-hidden transform hover:scale-105 transition-transform duration-500">
                         <i class="fa-solid fa-leaf text-pink-500 text-[36px] drop-shadow-md z-10"></i>
                         <div class="absolute inset-0 bg-gradient-to-tr from-pink-500/20 to-purple-600/20"></div>
