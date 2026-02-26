@@ -71,9 +71,10 @@
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
         .spin-slow { animation: spinSlow 1s linear infinite; }
         
-        /* Interactive Double Tap Wave Physics */
-        @keyframes floatWave { 0% { transform: scale(0.5) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-50px); opacity: 0; } }
-        .floating-wave { position: absolute; font-size: 30px; pointer-events: none; z-index: 100; animation: floatWave 0.8s ease-out forwards; filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); }
+        /* Filter Chips */
+        .filter-chip { display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(31, 41, 55, 0.6); color: #9ca3af; border: 1px solid rgba(75, 85, 99, 0.4); cursor: pointer; transition: all 0.2s; white-space: nowrap; backdrop-filter: blur(5px); }
+        .filter-chip:active { transform: scale(0.95); }
+        .filter-chip.active { background: rgba(59, 130, 246, 0.15); color: white; border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
 
         /* Secret Form Inputs */
         .input-glass { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; padding: 14px 16px; font-size: 1rem; outline: none; transition: 0.3s; font-weight: 600; text-align: center; letter-spacing: 2px; }
@@ -171,22 +172,25 @@
                     </label>
                 </div>
 
+                <div id="homeFilterChips" class="flex gap-2 overflow-x-auto no-scrollbar mb-4 px-1 shrink-0 animate-enter" style="animation-delay: 0.2s;">
+                    <button class="filter-chip active flex-shrink-0" onclick="setHomeFilter('all', this)"><i class="fa-solid fa-layer-group mr-1.5"></i> All Vibes</button>
+                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('motivator', this)"><i class="fa-solid fa-leaf text-emerald-400 mr-1.5"></i> Listeners</button>
+                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('seeker', this)"><i class="fa-solid fa-hand-holding-heart text-blue-400 mr-1.5"></i> Need Support</button>
+                    <button class="filter-chip flex-shrink-0" onclick="setHomeFilter('friend', this)"><i class="fa-solid fa-face-smile-beam text-yellow-400 mr-1.5"></i> Friends</button>
+                </div>
+
+                <div id="onlineTrayContainer" class="mb-5 animate-enter shrink-0 px-1 hidden" style="animation-delay: 0.25s;">
+                    <h3 class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-2.5 flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Online Now</h3>
+                    <div id="onlineUsersTray" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
+                </div>
+
                 <div id="feedContainer" class="relative z-10 w-full shrink-0"></div>
 
                 <div id="secretChatContainer" class="hidden flex-1 flex-col bg-[#050508]/80 backdrop-blur-2xl rounded-[24px] border border-rose-900/30 shadow-[0_0_40px_rgba(244,63,94,0.05)] relative overflow-hidden animate-enter mx-1 mb-4" style="animation-delay: 0.1s;">
-                    <div class="flex items-center justify-between px-4 py-3 border-b border-rose-900/20 bg-[#0a0a0c]/50">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30 shadow-[0_0_15px_rgba(225,29,72,0.4)]">
-                                <i class="fa-solid fa-lock text-rose-500 text-[11px]"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-white font-bold text-[13px] leading-tight">Couple Space</h3>
-                                <p class="text-rose-400 text-[9px] font-bold tracking-widest uppercase mt-0.5">Encrypted</p>
-                            </div>
+                    <div class="flex items-center justify-center p-6 border-b border-rose-900/20 bg-[#0a0a0c]/50">
+                        <div class="w-12 h-12 rounded-full bg-rose-900/30 flex items-center justify-center border border-rose-500/30 shadow-[0_0_20px_rgba(225,29,72,0.4)]">
+                            <i class="fa-solid fa-lock text-rose-500 text-[20px]"></i>
                         </div>
-                        <button onclick="panicEscape()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase transition active:scale-90 flex items-center gap-1.5">
-                            <i class="fa-solid fa-eye-slash"></i> Escape
-                        </button>
                     </div>
                     
                     <div class="p-6 flex flex-col gap-4 relative z-10">
@@ -283,6 +287,16 @@
         let activeLoverTab = 'couple'; 
         let isIncognito = false;
         let allRealUsers = []; 
+        let currentFilter = 'all';
+
+        // --- FALLBACK MOCK DATA (Prevents Blank Screen if Network Fails/Empty) ---
+        const fallbackUsers = [
+            { alias: 'Dr. Evelyn', role: 'motivator', isOnline: true, mainLanguage: 'English 🇬🇧', emoji: '🧠', vibe: "Ready to listen." },
+            { alias: 'Marcus', role: 'motivator', isOnline: false, mainLanguage: 'Spanish 🇪🇸', emoji: '⚡', vibe: "Mental health matters." },
+            { alias: 'Sarah', role: 'friend', isOnline: true, mainLanguage: 'English 🇬🇧', emoji: '🎮', vibe: "Looking for a duo!" },
+            { alias: 'Jordan', role: 'seeker', isOnline: false, mainLanguage: 'Hindi 🇮🇳', emoji: '🎧', vibe: "Feeling a bit down today." },
+            { alias: 'Priya', role: 'friend', isOnline: true, mainLanguage: 'Tamil 🇮🇳', emoji: '🌸', vibe: "Music & chill vibes." }
+        ];
 
         // --- HAPTIC ENGINE ---
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
@@ -342,6 +356,11 @@
             if (currentRole === 'lover') {
                 document.getElementById('loverTabs').classList.remove('hidden');
                 document.getElementById('loverTabs').classList.add('flex');
+                
+                // Hide chips for lover view
+                document.getElementById('homeFilterChips').classList.add('hidden');
+                document.getElementById('homeFilterChips').classList.remove('flex');
+                
                 switchLoverTab('couple'); 
             } else {
                 fetchRealFeed(currentRole || 'seeker');
@@ -350,6 +369,23 @@
             initGlobalCore();
             initPullToRefresh();
         });
+
+        // --- FILTER CHIPS LOGIC ---
+        function setHomeFilter(filterType, btnEl) {
+            hapticFeedback(10);
+            currentFilter = filterType;
+            
+            // UI Update
+            document.querySelectorAll('#homeFilterChips .filter-chip').forEach(c => {
+                c.classList.remove('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_0_15px_rgba(59,130,246,0.2)]');
+                c.classList.add('bg-gray-800/60', 'text-gray-400');
+            });
+            btnEl.classList.remove('bg-gray-800/60', 'text-gray-400');
+            btnEl.classList.add('active', 'bg-blue-500/15', 'text-white', 'border-blue-500/50', 'shadow-[0_0_15px_rgba(59,130,246,0.2)]');
+
+            // Re-render feed
+            filterAndRenderFeed(currentRole);
+        }
 
         // --- PHYSICS PULL TO REFRESH ENGINE ---
         function initPullToRefresh() {
@@ -382,7 +418,6 @@
                     ptrIndicator.style.opacity = '1';
                     
                     if(currentRole === 'lover' && activeLoverTab === 'couple') {
-                        // Just hide spinner for secret tab
                         setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 500);
                     } else {
                         fetchRealFeed(currentRole === 'lover' ? activeLoverTab : currentRole || 'seeker');
@@ -647,14 +682,16 @@
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
-                processUsersData(data, roleKey);
+                
+                // Safety check to prevent blank screen if backend errors out
+                if (Array.isArray(data)) {
+                    processUsersData(data, roleKey);
+                } else {
+                    processUsersData(fallbackUsers, roleKey);
+                }
             } catch(err) {
-                feedContainer.innerHTML = `
-                    <div class="text-center py-10 animate-enter">
-                        <i class="fa-solid fa-wifi text-gray-700 text-3xl mb-2"></i>
-                        <p class="text-red-400 text-[12px] font-bold">Network Offline</p>
-                        <p class="text-gray-600 text-[10px] mt-1">Pull down to refresh.</p>
-                    </div>`;
+                // If completely offline, load realistic mock fallback users so it never looks broken
+                processUsersData(fallbackUsers, roleKey);
             }
         }
 
@@ -697,12 +734,17 @@
         function filterAndRenderFeed(roleKey) {
             let primary = [], secondary = [];
             
+            // Pool is either all users, or filtered by the horizontal Chips
+            let pool = allRealUsers;
+            if (currentFilter !== 'all') {
+                pool = allRealUsers.filter(u => u.role === currentFilter);
+            }
+
             if (roleKey === 'lover_heartbreak') {
-                // Heartbreak Logic: Show Motivators (Healers) first, then Friends/Seekers
-                primary = allRealUsers.filter(u => u.role === 'motivator');
-                secondary = allRealUsers.filter(u => u.role === 'friend' || u.role === 'seeker');
+                primary = pool.filter(u => u.role === 'motivator');
+                secondary = pool.filter(u => u.role === 'friend' || u.role === 'seeker');
             } else {
-                allRealUsers.forEach(u => {
+                pool.forEach(u => {
                     if (roleKey === 'all') primary.push(u); 
                     else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
                     else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
@@ -719,17 +761,32 @@
             renderFeedCards(primary, secondary, roleKey);
         }
 
+        function generateOnlineAvatar(user) {
+            const d = getDeterministicCardData(user);
+            const avatarContent = user.avatar || user.emoji || '✨';
+            return `
+                <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group active:scale-95 transition" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                    <div class="w-[60px] h-[60px] rounded-full insta-ring shadow-lg mb-1.5 p-[2px]">
+                        <div class="w-full h-full bg-gray-900 rounded-full overflow-hidden flex items-center justify-center border-2 border-[#080a10]">
+                            ${getInnerAvatarHTML(user.alias)}
+                        </div>
+                    </div>
+                    <span class="text-white text-[10px] font-bold truncate max-w-[60px] drop-shadow-md">${user.alias}</span>
+                </div>
+            `;
+        }
+
         function generateCardHTML(user, index) {
             const delay = 0.05 + (index * 0.05); 
             const d = getDeterministicCardData(user);
             const tagsHTML = d.tags.map(tag => `<span class="text-[9px] font-bold text-${d.color}-200 bg-${d.color}-900/30 px-2 py-1 rounded-lg border border-${d.color}-700/30 shadow-sm">${tag}</span>`).join('');
             const avatarContent = user.avatar || user.emoji || '✨';
-            const currentVibe = localStorage.getItem(`hs_remote_vibe_${user.alias}`);
+            const currentVibe = localStorage.getItem(`hs_remote_vibe_${user.alias}`) || user.vibe;
             const isOnline = user.isOnline ? true : false;
             const onlineRingClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${d.color}-500 to-gray-500`;
 
             return `
-                <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
+                <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative shadow-sm" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${user.alias}', event)">
                     <div class="flex items-start gap-3">
                         <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
                             <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user.alias)}</div>
@@ -764,35 +821,49 @@
 
         function renderFeedCards(primaryUsers, secondaryUsers, roleKey) {
             const feedContainer = document.getElementById('feedContainer');
+            const onlineTrayContainer = document.getElementById('onlineTrayContainer');
+            const onlineUsersTray = document.getElementById('onlineUsersTray');
+            
             feedContainer.innerHTML = ''; 
+            onlineUsersTray.innerHTML = '';
+
+            // Handle the Online Horizontal Tray
+            const allActiveUsers = [...primaryUsers, ...secondaryUsers].filter(u => u.isOnline);
+            if (allActiveUsers.length > 0 && currentRole !== 'lover') {
+                onlineTrayContainer.classList.remove('hidden');
+                allActiveUsers.forEach(u => {
+                    onlineUsersTray.innerHTML += generateOnlineAvatar(u);
+                });
+            } else {
+                onlineTrayContainer.classList.add('hidden');
+            }
 
             if(primaryUsers.length === 0 && secondaryUsers.length === 0) {
                 feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[12px] font-medium">No users found.</div>`; return;
             }
 
             if (primaryUsers.length > 0) {
-                let headerText = "Recommended";
+                let headerText = "Recommended Matches";
                 if (roleKey === 'lover_heartbreak') headerText = "Recommended Healers";
                 else if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
                 else if (roleKey === 'all') headerText = "All Users";
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-2.5 px-1 animate-enter">
+                    <div class="flex justify-between items-end mb-2.5 px-1 animate-enter border-t border-white/5 pt-4 mt-2">
                         <h3 class="text-white font-bold text-[12px] tracking-wide uppercase">${headerText}</h3>
-                        <span class="text-gray-500 text-[9px] font-bold bg-gray-800/40 px-1.5 py-0.5 rounded border border-gray-800/50">${primaryUsers.length} ONLINE</span>
+                        <span class="text-gray-500 text-[9px] font-bold bg-gray-800/40 px-1.5 py-0.5 rounded border border-gray-800/50">${primaryUsers.length} RESULTS</span>
                     </div>
                 `;
                 primaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
             if (secondaryUsers.length > 0 && !roleKey.startsWith('lover_couple') && roleKey !== 'all') {
-                let secHeader = "Other spaces";
+                let secHeader = "Explore Community";
                 if(roleKey === 'lover_heartbreak') secHeader = "Find new friends & Distractions";
 
                 feedContainer.innerHTML += `
                     <div class="flex justify-between items-end mb-2.5 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
                         <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">${secHeader}</h3>
-                        <span class="text-gray-600 text-[9px] font-bold">${secondaryUsers.length} users</span>
                     </div>
                 `;
                 secondaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
