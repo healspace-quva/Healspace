@@ -14,11 +14,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         
         /* Base Reset & Strict Overflow Constraints for Full Screen App */
-        html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background-color: #0B0E14; font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #0B0E14; font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
-        /* App Container - NOW FULL SCREEN (100% WIDTH) */
+        /* App Container - FULL SCREEN (100% WIDTH/HEIGHT) */
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; background-color: #0B0E14; z-index: 9999; }
-        #mobile-container { width: 100%; max-width: 100%; height: 100dvh; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
+        #mobile-container { width: 100%; height: 100%; background-color: #0B0E14; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
 
         /* Ambient Floating Background Orbs */
         .ambient-glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; filter: blur(90px); z-index: 1; pointer-events: none; animation: floatGlow 12s infinite alternate ease-in-out; opacity: 0.4; }
@@ -26,16 +26,24 @@
         .glow-2 { bottom: -100px; right: -50px; background-color: rgba(168, 85, 247, 0.3); animation-delay: -6s; } 
         @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.2); } }
 
-        /* Screen Transitions & Overflow Handling */
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 24px; overflow: hidden; }
+        /* Bulletproof Flexbox Screen Transitions */
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; overflow: hidden; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
         .screen-active { transform: translateX(0); opacity: 1; z-index: 20; }
 
+        /* Inner Scrollable Area */
+        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; z-index: 10; position: relative; width: 100%; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Fixed Bottom Panel - Handled by Flexbox safely at the bottom */
+        .glass-bottom-panel { width: 100%; padding: 16px 24px; padding-bottom: max(env(safe-area-inset-bottom), 16px); background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.02); z-index: 40; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
         /* Staggered Parallax Entrance Animations */
         .screen-active h2 { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .screen-active p { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; opacity: 0; }
-        .screen-active .scroll-area { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+        .screen-active .scroll-area-content { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
 
         @keyframes popSlideUp {
             0% { opacity: 0; transform: translateY(20px); }
@@ -61,16 +69,11 @@
         }
         .anim-pulse-gold { animation: pulseGold 2.5s infinite ease-in-out; }
 
-        /* Inner Scrollable Area */
-        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 130px; z-index: 10; position: relative; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
         /* Progress Bar */
         #progressBarContainer { position: absolute; top: 0; left: 0; right: 0; height: 3px; background-color: #1f2937; z-index: 50; display: none; }
         #progressBarFill { height: 100%; background: linear-gradient(90deg, #ec4899, #a855f7); width: 0%; transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 0 2px 2px 0; box-shadow: 0 0 10px rgba(236,72,153,0.5); }
 
-        /* UI Components */
+        /* UI Components - SCALED DOWN SIZES */
         .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 14px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: none; outline: none; box-shadow: 0 4px 12px rgba(255,255,255,0.1); flex-shrink: 0; }
         .btn-bottom:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 0 16px rgba(255,255,255,0.3); }
         .btn-bottom:disabled { opacity: 0.4; cursor: not-allowed; transform: scale(1); box-shadow: none; }
@@ -93,9 +96,6 @@
         .chip { border: 1px solid #374151; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: #9ca3af; padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 11px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 0 6px 6px 0; }
         .chip:active { transform: scale(0.93); }
         .chip.selected { border-color: #ec4899; color: white; background-color: rgba(236, 72, 153, 0.2); transform: scale(1.05); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2); }
-
-        /* Fixed Bottom Panel - Appears above content natively */
-        .glass-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 24px; padding-bottom: max(env(safe-area-inset-bottom), 16px); background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.02); z-index: 40; display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
@@ -108,8 +108,8 @@
 
             <div id="progressBarContainer"><div id="progressBarFill"></div></div>
 
-            <div id="screen-landing" class="screen screen-active justify-center pt-10 pb-[150px] z-20 relative">
-                <div class="flex-1 flex flex-col items-center justify-center">
+            <div id="screen-landing" class="screen screen-active">
+                <div class="scroll-area no-scrollbar flex flex-col items-center justify-center">
                     <div class="w-20 h-20 bg-gray-900 rounded-[20px] flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(236,72,153,0.3)] border border-gray-800 relative overflow-hidden transform hover:scale-105 transition-transform duration-500">
                         <i class="fa-solid fa-leaf text-pink-500 text-[36px] drop-shadow-md z-10"></i>
                         <div class="absolute inset-0 bg-gradient-to-tr from-pink-500/20 to-purple-600/20"></div>
@@ -132,20 +132,22 @@
                 </div>
             </div>
 
-            <div id="screen-login" class="screen screen-hidden-right pt-8">
-                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-login" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Welcome back</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">Enter your details to continue to HealSpace.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Welcome back</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">Enter your details to continue to HealSpace.</p>
 
-                <div class="scroll-area space-y-4">
-                    <div>
-                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
-                        <input type="email" id="loginEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkLoginInputs()">
-                    </div>
-                    <div>
-                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
-                        <input type="password" id="loginPass" placeholder="••••••••" class="input-premium font-semibold" oninput="checkLoginInputs()">
+                    <div class="scroll-area-content space-y-4">
+                        <div>
+                            <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
+                            <input type="email" id="loginEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkLoginInputs()">
+                        </div>
+                        <div>
+                            <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
+                            <input type="password" id="loginPass" placeholder="••••••••" class="input-premium font-semibold" oninput="checkLoginInputs()">
+                        </div>
                     </div>
                 </div>
 
@@ -154,24 +156,26 @@
                 </div>
             </div>
 
-            <div id="screen-reg-creds" class="screen screen-hidden-right pt-8">
-                <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-reg-creds" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="showScreen('screen-landing')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Create Account</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">Let's secure your space.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Create Account</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">Let's secure your space.</p>
 
-                <div class="scroll-area space-y-4">
-                    <div>
-                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
-                        <input type="email" id="regEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkRegCreds()">
-                    </div>
-                    <div>
-                        <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
-                        <input type="password" id="regPass" placeholder="Min. 6 characters" class="input-premium font-semibold" oninput="checkRegCreds()">
-                    </div>
-                    <div class="pt-1">
-                        <label class="text-pink-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1.5 pl-1"><i class="fa-solid fa-ticket"></i> Referral Code (Optional)</label>
-                        <input type="text" id="regRef" placeholder="Got a code?" class="input-premium text-pink-300 uppercase font-bold tracking-wider focus:border-pink-400">
+                    <div class="scroll-area-content space-y-4">
+                        <div>
+                            <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Email</label>
+                            <input type="email" id="regEmail" placeholder="name@example.com" class="input-premium font-semibold" oninput="checkRegCreds()">
+                        </div>
+                        <div>
+                            <label class="text-gray-400 text-[9px] font-bold uppercase tracking-widest pl-1">Password</label>
+                            <input type="password" id="regPass" placeholder="Min. 6 characters" class="input-premium font-semibold" oninput="checkRegCreds()">
+                        </div>
+                        <div class="pt-1">
+                            <label class="text-pink-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1.5 pl-1"><i class="fa-solid fa-ticket"></i> Referral Code (Optional)</label>
+                            <input type="text" id="regRef" placeholder="Got a code?" class="input-premium text-pink-300 uppercase font-bold tracking-wider focus:border-pink-400">
+                        </div>
                     </div>
                 </div>
 
@@ -180,36 +184,38 @@
                 </div>
             </div>
 
-            <div id="screen-reg-role" class="screen screen-hidden-right pt-8">
-                <button onclick="prevScreen('screen-reg-creds')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-reg-role" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="prevScreen('screen-reg-creds')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Who are you here as?</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">This shapes your experience. Select "All" to unlock everything.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-1 tracking-tight">Who are you here as?</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">This shapes your experience. Select "All" to unlock everything.</p>
 
-                <div class="scroll-area no-scrollbar">
-                    <button class="option-card role-select" data-role="seeker">
-                        <span>Need Motivation</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card role-select" data-role="motivator">
-                        <span>Motivator</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card role-select" data-role="lover">
-                        <span>Lovers / Heartbreak</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card role-select" data-role="friend">
-                        <span>Looking for Friends</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
+                    <div class="scroll-area-content">
+                        <button class="option-card role-select" data-role="seeker">
+                            <span>Need Motivation</span> 
+                            <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card role-select" data-role="motivator">
+                            <span>Motivator</span> 
+                            <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card role-select" data-role="lover">
+                            <span>Lovers / Heartbreak</span> 
+                            <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card role-select" data-role="friend">
+                            <span>Looking for Friends</span> 
+                            <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
 
-                    <div class="my-4 border-t border-gray-800"></div>
+                        <div class="my-4 border-t border-gray-800"></div>
 
-                    <button class="option-card role-select anim-pulse-gold border-amber-500/50 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 hover:border-amber-400 transition" data-role="all" style="border-width: 2px;">
-                        <span class="font-extrabold tracking-wide">Access All Spaces ✨</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
+                        <button class="option-card role-select anim-pulse-gold border-amber-500/50 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 hover:border-amber-400 transition" data-role="all" style="border-width: 2px;">
+                            <span class="font-extrabold tracking-wide">Access All Spaces ✨</span> 
+                            <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="glass-bottom-panel">
@@ -217,14 +223,16 @@
                 </div>
             </div>
 
-            <div id="screen-q-name" class="screen screen-hidden-right pt-8">
-                <button onclick="prevScreen('screen-reg-role')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-name" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="prevScreen('screen-reg-role')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">What's your alias?</h2>
+                    <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">What's your alias?</h2>
 
-                <div class="scroll-area">
-                    <input type="text" id="regName" placeholder="Type here..." class="input-premium text-[20px] font-extrabold py-4 text-center" oninput="checkInput('regName', 'btnQName')">
-                    <p class="text-gray-500 mt-4 text-center text-[11px] font-medium">This is how you'll appear. <br><span class="text-gray-400">HealSpace encourages anonymity.</span></p>
+                    <div class="scroll-area-content">
+                        <input type="text" id="regName" placeholder="Type here..." class="input-premium text-[20px] font-extrabold py-4 text-center" oninput="checkInput('regName', 'btnQName')">
+                        <p class="text-gray-500 mt-4 text-center text-[11px] font-medium">This is how you'll appear. <br><span class="text-gray-400">HealSpace encourages anonymity.</span></p>
+                    </div>
                 </div>
 
                 <div class="glass-bottom-panel">
@@ -232,14 +240,16 @@
                 </div>
             </div>
 
-            <div id="screen-q-bday" class="screen screen-hidden-right pt-8">
-                <button onclick="prevScreen('screen-q-name')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-bday" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="prevScreen('screen-q-name')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">Your b-day?</h2>
+                    <h2 class="text-white text-[24px] font-extrabold mb-6 tracking-tight">Your b-day?</h2>
 
-                <div class="scroll-area">
-                    <input type="date" id="regBday" class="input-premium text-[18px] font-bold py-4 uppercase tracking-widest text-center" onchange="checkInput('regBday', 'btnQBday')">
-                    <p class="text-gray-400 mt-4 text-center text-[11px] font-medium">Your profile shows your age, not your exact date of birth.</p>
+                    <div class="scroll-area-content">
+                        <input type="date" id="regBday" class="input-premium text-[18px] font-bold py-4 uppercase tracking-widest text-center" onchange="checkInput('regBday', 'btnQBday')">
+                        <p class="text-gray-400 mt-4 text-center text-[11px] font-medium">Your profile shows your age, not your exact date of birth.</p>
+                    </div>
                 </div>
 
                 <div class="glass-bottom-panel">
@@ -247,28 +257,30 @@
                 </div>
             </div>
 
-            <div id="screen-q-gender" class="screen screen-hidden-right pt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevScreen('screen-q-bday')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-looking')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
-                </div>
+            <div id="screen-q-gender" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevScreen('screen-q-bday')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="nextScreen('screen-q-looking')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
+                    </div>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What's your gender?</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">Select one to help us show your profile to the right people.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What's your gender?</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">Select one to help us show your profile to the right people.</p>
 
-                <div class="scroll-area no-scrollbar space-y-2.5">
-                    <button class="option-card gender-select" data-gender="Boy">
-                        <span>Boy</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card gender-select" data-gender="Girl">
-                        <span>Girl</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card gender-select" data-gender="Non-binary">
-                        <span>Non-binary</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
-                    <button class="option-card gender-select" data-gender="Genderfluid">
-                        <span>Genderfluid</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
-                    </button>
+                    <div class="scroll-area-content space-y-2.5">
+                        <button class="option-card gender-select" data-gender="Boy">
+                            <span>Boy</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card gender-select" data-gender="Girl">
+                            <span>Girl</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card gender-select" data-gender="Non-binary">
+                            <span>Non-binary</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                        <button class="option-card gender-select" data-gender="Genderfluid">
+                            <span>Genderfluid</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="glass-bottom-panel">
@@ -276,28 +288,30 @@
                 </div>
             </div>
 
-            <div id="screen-q-looking" class="screen screen-hidden-right pt-8">
-                <button onclick="prevScreen('screen-q-gender')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+            <div id="screen-q-looking" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <button onclick="prevScreen('screen-q-gender')" class="text-gray-400 hover:text-white text-[18px] mb-4 w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">What are you<br>looking for?</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">All good if it changes. HealSpace is about the journey.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">What are you<br>looking for?</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">All good if it changes. HealSpace is about the journey.</p>
 
-                <div class="scroll-area no-scrollbar">
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div class="grid-card looking-select" data-looking="Relationship">
-                            <span class="text-[24px] drop-shadow-md">💘</span><span class="text-white font-bold text-[11px]">Relationship</span>
-                        </div>
-                        <div class="grid-card looking-select" data-looking="New friends">
-                            <span class="text-[24px] drop-shadow-md">👋</span><span class="text-white font-bold text-[11px]">New friends</span>
-                        </div>
-                        <div class="grid-card looking-select" data-looking="Support & Venting">
-                            <span class="text-[24px] drop-shadow-md">🗣️</span><span class="text-white font-bold text-[11px]">Support &<br>Venting</span>
-                        </div>
-                        <div class="grid-card looking-select" data-looking="Casual vibes">
-                            <span class="text-[24px] drop-shadow-md">✨</span><span class="text-white font-bold text-[11px]">Casual vibes</span>
-                        </div>
-                        <div class="grid-card looking-select" data-looking="Not sure yet">
-                            <span class="text-[24px] drop-shadow-md">🤔</span><span class="text-white font-bold text-[11px]">Not sure yet</span>
+                    <div class="scroll-area-content">
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div class="grid-card looking-select" data-looking="Relationship">
+                                <span class="text-[24px] drop-shadow-md">💘</span><span class="text-white font-bold text-[11px]">Relationship</span>
+                            </div>
+                            <div class="grid-card looking-select" data-looking="New friends">
+                                <span class="text-[24px] drop-shadow-md">👋</span><span class="text-white font-bold text-[11px]">New friends</span>
+                            </div>
+                            <div class="grid-card looking-select" data-looking="Support & Venting">
+                                <span class="text-[24px] drop-shadow-md">🗣️</span><span class="text-white font-bold text-[11px]">Support &<br>Venting</span>
+                            </div>
+                            <div class="grid-card looking-select" data-looking="Casual vibes">
+                                <span class="text-[24px] drop-shadow-md">✨</span><span class="text-white font-bold text-[11px]">Casual vibes</span>
+                            </div>
+                            <div class="grid-card looking-select" data-looking="Not sure yet">
+                                <span class="text-[24px] drop-shadow-md">🤔</span><span class="text-white font-bold text-[11px]">Not sure yet</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,35 +321,37 @@
                 </div>
             </div>
 
-            <div id="screen-q-vibes" class="screen screen-hidden-right pt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevScreen('screen-q-looking')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-languages')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
-                </div>
-
-                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Vibe Check ⚡</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">How do you match their energy?</p>
-
-                <div class="scroll-area no-scrollbar">
-                    <div class="mb-6">
-                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-comments text-emerald-400"></i> Communication Style</h3>
-                        <div class="flex flex-wrap">
-                            <div class="chip vibe-comm">Big time texter</div>
-                            <div class="chip vibe-comm">Voice notes 🎙️</div>
-                            <div class="chip vibe-comm">FaceTime enthusiast</div>
-                            <div class="chip vibe-comm">Better in person</div>
-                            <div class="chip vibe-comm">Slow replier</div>
-                        </div>
+            <div id="screen-q-vibes" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevScreen('screen-q-looking')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="nextScreen('screen-q-languages')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                     </div>
 
-                    <div class="mb-2">
-                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-battery-half text-yellow-400"></i> Social Battery</h3>
-                        <div class="flex flex-wrap">
-                            <div class="chip vibe-social">Introvert</div>
-                            <div class="chip vibe-social">Extrovert</div>
-                            <div class="chip vibe-social">Ambivert</div>
-                            <div class="chip vibe-social">Homebody</div>
-                            <div class="chip vibe-social">Life of the party</div>
+                    <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Vibe Check ⚡</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">How do you match their energy?</p>
+
+                    <div class="scroll-area-content">
+                        <div class="mb-6">
+                            <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-comments text-emerald-400"></i> Communication Style</h3>
+                            <div class="flex flex-wrap">
+                                <div class="chip vibe-comm">Big time texter</div>
+                                <div class="chip vibe-comm">Voice notes 🎙️</div>
+                                <div class="chip vibe-comm">FaceTime enthusiast</div>
+                                <div class="chip vibe-comm">Better in person</div>
+                                <div class="chip vibe-comm">Slow replier</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-battery-half text-yellow-400"></i> Social Battery</h3>
+                            <div class="flex flex-wrap">
+                                <div class="chip vibe-social">Introvert</div>
+                                <div class="chip vibe-social">Extrovert</div>
+                                <div class="chip vibe-social">Ambivert</div>
+                                <div class="chip vibe-social">Homebody</div>
+                                <div class="chip vibe-social">Life of the party</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -345,42 +361,44 @@
                 </div>
             </div>
 
-            <div id="screen-q-languages" class="screen screen-hidden-right pt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevScreen('screen-q-vibes')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="nextScreen('screen-q-interests')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
-                </div>
-
-                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Speak your mind 🌍</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">What languages do you communicate in?</p>
-
-                <div class="scroll-area no-scrollbar">
-                    <div class="mb-6">
-                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-globe text-blue-400"></i> Main Language</h3>
-                        <div class="flex flex-wrap">
-                            <div class="chip lang-main">English 🇬🇧</div>
-                            <div class="chip lang-main">Hindi 🇮🇳</div>
-                            <div class="chip lang-main">Tamil 🇮🇳</div>
-                            <div class="chip lang-main">Telugu 🇮🇳</div>
-                            <div class="chip lang-main">Malayalam 🇮🇳</div>
-                            <div class="chip lang-main">Kannada 🇮🇳</div>
-                            <div class="chip lang-main">Urdu 🇮🇳</div>
-                        </div>
+            <div id="screen-q-languages" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevScreen('screen-q-vibes')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="nextScreen('screen-q-interests')" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
                     </div>
 
-                    <div class="mb-2">
-                        <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-language text-purple-400"></i> Also Speaks (Max 3)</h3>
-                        <div class="flex flex-wrap">
-                            <div class="chip lang-multi">English</div>
-                            <div class="chip lang-multi">Hindi</div>
-                            <div class="chip lang-multi">Tamil</div>
-                            <div class="chip lang-multi">Telugu</div>
-                            <div class="chip lang-multi">Malyalam</div>
-                            <div class="chip lang-multi">Urdu</div>
-                            <div class="chip lang-multi">Kannada</div>
-                            <div class="chip lang-multi">Marathi</div>
-                            <div class="chip lang-multi">Gujarati</div>
-                            <div class="chip lang-multi">Sign Language</div>
+                    <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight leading-tight">Speak your mind 🌍</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">What languages do you communicate in?</p>
+
+                    <div class="scroll-area-content">
+                        <div class="mb-6">
+                            <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-globe text-blue-400"></i> Main Language</h3>
+                            <div class="flex flex-wrap">
+                                <div class="chip lang-main">English 🇬🇧</div>
+                                <div class="chip lang-main">Hindi 🇮🇳</div>
+                                <div class="chip lang-main">Tamil 🇮🇳</div>
+                                <div class="chip lang-main">Telugu 🇮🇳</div>
+                                <div class="chip lang-main">Malayalam 🇮🇳</div>
+                                <div class="chip lang-main">Kannada 🇮🇳</div>
+                                <div class="chip lang-main">Urdu 🇮🇳</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <h3 class="text-gray-300 font-bold mb-3 flex items-center gap-2 uppercase tracking-wider text-[10px]"><i class="fa-solid fa-language text-purple-400"></i> Also Speaks (Max 3)</h3>
+                            <div class="flex flex-wrap">
+                                <div class="chip lang-multi">English</div>
+                                <div class="chip lang-multi">Hindi</div>
+                                <div class="chip lang-multi">Tamil</div>
+                                <div class="chip lang-multi">Telugu</div>
+                                <div class="chip lang-multi">Malyalam</div>
+                                <div class="chip lang-multi">Urdu</div>
+                                <div class="chip lang-multi">Kannada</div>
+                                <div class="chip lang-multi">Marathi</div>
+                                <div class="chip lang-multi">Gujarati</div>
+                                <div class="chip lang-multi">Sign Language</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -390,30 +408,32 @@
                 </div>
             </div>
 
-            <div id="screen-q-interests" class="screen screen-hidden-right pt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevScreen('screen-q-languages')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button onclick="submitFinalRegistration()" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
-                </div>
+            <div id="screen-q-interests" class="screen screen-hidden-right">
+                <div class="scroll-area no-scrollbar px-6 pt-12 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevScreen('screen-q-languages')" class="text-gray-400 hover:text-white text-[18px] w-8 h-8 flex items-center justify-start transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="submitFinalRegistration()" class="text-gray-500 font-bold text-[11px] uppercase tracking-widest hover:text-white transition">Skip</button>
+                    </div>
 
-                <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What are you into?</h2>
-                <p class="text-gray-400 mb-6 text-[11px] font-medium">Add up to 5 interests to find your people.</p>
+                    <h2 class="text-white text-[24px] font-extrabold mb-2 tracking-tight">What are you into?</h2>
+                    <p class="text-gray-400 mb-6 text-[11px] font-medium">Add up to 5 interests to find your people.</p>
 
-                <div class="scroll-area no-scrollbar">
-                    <div class="flex flex-wrap">
-                        <div class="chip interest-select">Music/Concerts</div>
-                        <div class="chip interest-select">Gaming 🎮</div>
-                        <div class="chip interest-select">TikTok/Reels</div>
-                        <div class="chip interest-select">Anime/Manga</div>
-                        <div class="chip interest-select">Movies & TV</div>
-                        <div class="chip interest-select">Gym/Fitness</div>
-                        <div class="chip interest-select">Mental Health</div>
-                        <div class="chip interest-select">Art & Design</div>
-                        <div class="chip interest-select">Coding/Tech</div>
-                        <div class="chip interest-select">Thrifting 👕</div>
-                        <div class="chip interest-select">Deep Talks</div>
-                        <div class="chip interest-select">Memes</div>
-                        <div class="chip interest-select">Pets 🐶</div>
+                    <div class="scroll-area-content">
+                        <div class="flex flex-wrap">
+                            <div class="chip interest-select">Music/Concerts</div>
+                            <div class="chip interest-select">Gaming 🎮</div>
+                            <div class="chip interest-select">TikTok/Reels</div>
+                            <div class="chip interest-select">Anime/Manga</div>
+                            <div class="chip interest-select">Movies & TV</div>
+                            <div class="chip interest-select">Gym/Fitness</div>
+                            <div class="chip interest-select">Mental Health</div>
+                            <div class="chip interest-select">Art & Design</div>
+                            <div class="chip interest-select">Coding/Tech</div>
+                            <div class="chip interest-select">Thrifting 👕</div>
+                            <div class="chip interest-select">Deep Talks</div>
+                            <div class="chip interest-select">Memes</div>
+                            <div class="chip interest-select">Pets 🐶</div>
+                        </div>
                     </div>
                 </div>
 
