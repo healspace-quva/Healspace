@@ -217,12 +217,12 @@
 
             <nav id="mainNav">
                 <ul class="flex justify-between items-center h-full px-4">
-                    <a href="#" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-house text-[18px]"></i></a>
-                    <a href="#" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-compass text-[18px]"></i></a>
-                    <a href="#" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-user-group text-[18px]"></i></a>
-                    <a href="#" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-message text-[18px]"></i></a>
+                    <a href="index.html" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-house text-[18px]"></i></a>
+                    <a href="explore.html" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-compass text-[18px]"></i></a>
+                    <a href="community.html" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-user-group text-[18px]"></i></a>
+                    <a href="chat.html" class="nav-icon text-gray-400 hover:text-white transition-all p-2"><i class="fa-solid fa-message text-[18px]"></i></a>
                     
-                    <a href="#" class="nav-icon flex items-center gap-1.5 bg-[#1d1620] text-[#ec4899] px-3 py-1.5 rounded-full border border-[#ec4899]/20 shadow-sm">
+                    <a href="profile.html" class="nav-icon flex items-center gap-1.5 bg-[#1d1620] text-[#ec4899] px-3 py-1.5 rounded-full border border-[#ec4899]/20 shadow-sm">
                         <i class="fa-solid fa-circle-user text-[16px]"></i>
                         <span class="font-bold text-[10px] uppercase tracking-widest mt-0.5">Profile</span>
                     </a>
@@ -259,7 +259,6 @@
 
         let loggedInRole = localStorage.getItem("healspace_logged_role") || "user123"; 
         
-        // Refined profile state to accommodate inputs perfectly
         let userProfile = { 
             alias: "Hhj", 
             avatarInput: "fa-solid fa-moon",
@@ -327,7 +326,6 @@
                 ? userProfile.interests.map(i => `<div class="interest-chip">${i}</div>`).join('') 
                 : '<span class="text-gray-600 text-[10px] font-medium pl-1 italic">Tap to add what you love...</span>';
             
-            // Reverted Avatar logic to direct injection
             document.getElementById('avatarWrapper').innerHTML = userProfile.emoji;
 
             const bg = document.getElementById('ghostToggleBg');
@@ -368,7 +366,6 @@
             document.getElementById('modalTitle').innerText = mode.toUpperCase();
             let html = '';
 
-            // Input field mode for avatar exactly as requested
             if (mode === 'avatar') html = `
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Avatar URL, Icon Class, or Emoji</label>
                 <input type="text" id="inputAvatar" value="${userProfile.avatarInput || ''}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner" placeholder="E.g., https://..., fa-solid fa-cat, or 🎃">
@@ -429,7 +426,6 @@
             
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-[14px]"></i>';
 
-            // Parsing the Avatar Input to render seamlessly
             if(currentEditMode === 'avatar') {
                 const val = document.getElementById('inputAvatar').value.trim();
                 userProfile.avatarInput = val;
