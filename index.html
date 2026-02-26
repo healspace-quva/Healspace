@@ -69,7 +69,6 @@
         .chat-bubble-sent.grouped { border-top-right-radius: 4px; border-bottom-right-radius: 4px; margin-bottom: 2px !important; }
         .chat-bubble-recv.grouped { border-top-left-radius: 4px; border-bottom-left-radius: 4px; margin-bottom: 2px !important; }
 
-        /* Upgraded Profile Elements */
         .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
     </style>
 </head>
@@ -101,36 +100,14 @@
             </div>
 
             <div id="miniProfileModal" class="absolute inset-0 z-[200] bg-black/80 backdrop-blur-md hidden flex-col justify-end opacity-0 transition-opacity duration-300" onclick="closeMiniProfile(event)">
-                <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
+                <div class="bg-[#11131a] w-full rounded-t-[32px] p-6 shadow-2xl transform translate-y-full transition-transform duration-300 pb-safe flex flex-col items-center border-t border-gray-800" id="miniProfileSheet" onclick="event.stopPropagation()">
                     <div class="w-10 h-1 bg-gray-700 rounded-full mb-6 mx-auto"></div>
                     
-                    <div class="flex items-center gap-4 mb-5">
-                        <div class="w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-3xl overflow-hidden shadow-lg shrink-0" id="mpAvatar">👤</div>
-                        <div class="flex-1">
-                            <h2 class="text-white text-[22px] font-bold tracking-tight leading-tight" id="mpName">Username</h2>
-                            <p class="text-gray-400 text-[11px] font-medium mt-1 flex items-center gap-1"><i class="fa-solid fa-location-dot text-rose-500/70"></i> <span id="mpLocation">Location Unknown</span></p>
-                            <p class="text-gray-500 text-[10px] mt-0.5" id="mpJoined">Joined Recently</p>
-                        </div>
-                    </div>
-
-                    <p class="text-gray-300 text-[12px] font-medium italic mb-4 bg-black/40 px-3 py-2 rounded-xl border border-gray-800/50" id="mpVibe">Chilling right now ✨</p>
+                    <div class="w-20 h-20 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center text-3xl overflow-hidden shadow-lg shrink-0 mb-3" id="mpAvatar">👤</div>
+                    <h2 class="text-white text-[22px] font-bold tracking-tight leading-tight text-center" id="mpName">Username</h2>
                     
-                    <div class="grid grid-cols-2 gap-2 mb-5">
-                        <div class="glass-panel rounded-xl p-3 flex flex-col items-center justify-center">
-                            <span class="text-white font-bold text-[16px]" id="mpHearts">0</span>
-                            <span class="text-gray-500 text-[9px] uppercase tracking-widest font-bold">Hearts</span>
-                        </div>
-                        <div class="glass-panel rounded-xl p-3 flex flex-col items-center justify-center">
-                            <span class="text-white font-bold text-[16px]" id="mpConvos">0</span>
-                            <span class="text-gray-500 text-[9px] uppercase tracking-widest font-bold">Chats</span>
-                        </div>
-                    </div>
-
-                    <div class="mb-5">
-                        <h4 class="text-white text-[11px] uppercase tracking-widest font-bold mb-2">About Me</h4>
-                        <p class="text-gray-400 text-[12px] leading-relaxed" id="mpBio">Looking for genuine connections and deep conversations.</p>
-                    </div>
-
+                    <p class="text-gray-300 text-[12px] font-medium italic mt-3 mb-6 bg-black/40 px-4 py-2 rounded-xl border border-gray-800/50 text-center" id="mpVibe">Chilling right now ✨</p>
+                    
                     <button onclick="sendPrivateRequest()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-[14px] py-3.5 rounded-xl active:scale-95 transition flex items-center justify-center gap-2 shadow-lg mt-auto">
                         <i class="fa-solid fa-paper-plane text-xs"></i> Request Private Chat
                     </button>
@@ -588,7 +565,6 @@
             }
         }
 
-        // --- UPGRADED VAULT LOGIC ---
         function unlockVault() {
             const roomId = document.getElementById('vaultRoomId').value.trim();
             const pass = document.getElementById('vaultPassword').value.trim();
@@ -729,25 +705,18 @@
             const color = colors[idx];
             const age = 18 + (user.alias.length % 15);
             
-            let bio = "Here to connect, heal, and share good energy with pure souls.";
             let tags = ['Chat 💬', 'New Here'];
             let displayRole = 'Member';
 
-            if(user.role === 'seeker') { displayRole = 'Motivation Seeker'; tags = ['Listening Ear', 'Advice']; bio = "Looking for some motivation and a friendly ear today."; }
-            if(user.role === 'motivator') { displayRole = 'Verified Motivator'; tags = ['Mental Health', 'Support']; bio = "Here to listen without judgment. You are not alone."; }
-            if(user.role === 'lover') { displayRole = 'Heart/Couple Space'; tags = ['Relationships', 'Deep Talks']; bio = "Believes in love, healing, and moving forward."; }
-            if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; bio = "Let's talk about everything and nothing. Total chill vibes."; }
+            if(user.role === 'seeker') { displayRole = 'Motivation Seeker'; tags = ['Listening Ear', 'Advice']; }
+            if(user.role === 'motivator') { displayRole = 'Verified Motivator'; tags = ['Mental Health', 'Support']; }
+            if(user.role === 'lover') { displayRole = 'Heart/Couple Space'; tags = ['Relationships', 'Deep Talks']; }
+            if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; }
 
             const defaultLangs = [ { main: 'English 🇬🇧' }, { main: 'Hindi 🇮🇳' }, { main: 'Spanish 🇪🇸' } ];
             const mainLang = user.mainLanguage || defaultLangs[idx % defaultLangs.length].main;
 
-            const locations = ["New York", "London", "Tokyo", "Paris", "Berlin", "Dubai", "Sydney", "Mumbai", "Toronto"];
-            const location = locations[idx % locations.length];
-            const joined = `Joined ${2022 + (idx % 3)}`;
-            const hearts = 10 + (idx * 15);
-            const chats = 5 + (idx * 8);
-
-            return { color, age, bio, tags, displayRole, mainLang, location, joined, hearts, chats };
+            return { color, age, tags, displayRole, mainLang };
         }
 
         function filterAndRenderFeed(roleKey) {
@@ -762,7 +731,6 @@
             feedContainer.innerHTML = '';
 
             if (roleKey === 'lover_heartbreak') {
-                // CATEGORIZED HEARTBREAK VIEW
                 const healers = usersToFilter.filter(u => u.role === 'motivator');
                 const friends = usersToFilter.filter(u => u.role === 'friend');
                 const others = usersToFilter.filter(u => u.role !== 'motivator' && u.role !== 'friend');
@@ -776,7 +744,6 @@
                 renderCategoryBlock(feedContainer, others, "Community", "Others in this space");
 
             } else {
-                // STANDARD VIEW
                 let primary = [], secondary = [];
                 usersToFilter.forEach(u => {
                     if (roleKey === 'all') primary.push(u); 
@@ -825,18 +792,17 @@
             const isOnline = user.isOnline ? true : false;
             const onlineRingClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${d.color}-500 to-gray-500`;
 
-            // Passing full details to openMiniProfile stringified to avoid quotes issues
+            // Fix: Just pass the safely encoded alias. The function will look up the rest!
             const safeAlias = user.alias.replace(/'/g, "\\'");
-            const safeBio = d.bio.replace(/'/g, "\\'");
 
             return `
                 <div class="feed-card w-full bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-4 border border-gray-800/60 hover:border-${d.color}-500/40 transition-all animate-enter mb-3 relative" style="animation-delay: ${delay}s;" ondblclick="sendDoubleTapWave('${safeAlias}', event)">
                     <div class="flex items-start gap-3">
-                        <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${safeAlias}', '${avatarContent}', '${d.color}', '${d.location}', '${d.joined}', ${d.hearts}, ${d.chats}, '${safeBio}')">
+                        <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${safeAlias}')">
                             <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(avatarContent)}</div>
                             ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
                         </div>
-                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" onclick="openMiniProfile('${safeAlias}', '${avatarContent}', '${d.color}', '${d.location}', '${d.joined}', ${d.hearts}, ${d.chats}, '${safeBio}')">
+                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" onclick="openMiniProfile('${safeAlias}')">
                             <h3 class="feed-card-title text-white font-bold text-[15px] flex items-center gap-1.5 truncate transition-colors">
                                 ${user.alias} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${d.age}</span>
                             </h3>
@@ -845,7 +811,6 @@
                                 ${currentVibe ? `<p class="text-gray-400 text-[10px] font-medium italic truncate mb-0.5 leading-tight">"${currentVibe}"</p>` : ''}
                                 <p class="text-gray-500 text-[9px] font-medium flex items-center gap-2">
                                     <span><i class="fa-solid fa-globe text-${d.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></span>
-                                    <span><i class="fa-solid fa-location-dot text-rose-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.location}</span></span>
                                 </p>
                             </div>
                         </div>
@@ -903,18 +868,20 @@
             }
         }
 
-        function openMiniProfile(alias, avatarContent, color, location, joined, hearts, chats, bio) {
+        // Fix: Cleaned up Mini Profile Function that looks up user data safely!
+        function openMiniProfile(alias) {
             hapticFeedback();
+            
+            const user = allRealUsers.find(u => u.alias === alias);
+            if (!user) return; 
+
+            const d = getDeterministicCardData(user);
+            const avatarContent = user.avatar || user.emoji || '✨';
+
             document.getElementById('mpName').innerText = alias;
             document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(avatarContent);
-            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg shrink-0 border-2 border-${color}-500/30`;
+            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${d.color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg shrink-0 border-2 border-${d.color}-500/30`;
             
-            document.getElementById('mpLocation').innerText = location;
-            document.getElementById('mpJoined').innerText = joined;
-            document.getElementById('mpHearts').innerText = hearts;
-            document.getElementById('mpConvos').innerText = chats;
-            document.getElementById('mpBio').innerText = bio;
-
             let vibe = localStorage.getItem(`hs_remote_vibe_${alias}`) || "Chilling right now ✨";
             document.getElementById('mpVibe').innerText = `"${vibe}"`;
 
