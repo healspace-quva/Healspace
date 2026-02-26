@@ -24,7 +24,7 @@
         @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.2); } }
 
         /* Screen Transitions & Overflow Handling */
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 20px; padding-bottom: max(env(safe-area-inset-bottom), 16px); overflow: hidden; }
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; background-color: transparent; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease; z-index: 10; padding: 16px 20px; overflow: hidden; }
         .screen-hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
         .screen-hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
         .screen-active { transform: translateX(0); opacity: 1; z-index: 20; }
@@ -33,7 +33,6 @@
         .screen-active h2 { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .screen-active p { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; opacity: 0; }
         .screen-active .scroll-area { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
-        .screen-active .btn-bottom { animation: popSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
 
         @keyframes popSlideUp {
             0% { opacity: 0; transform: translateY(20px); }
@@ -47,8 +46,10 @@
             100% { transform: scale(1); opacity: 1; }
         }
         .anim-check { animation: bounceScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .white-glow { box-shadow: 0 0 14px rgba(255, 255, 255, 0.9); }
-        .gold-glow { box-shadow: 0 0 18px rgba(245, 158, 11, 1); }
+        
+        /* Ultra Bright Ticks with Glow */
+        .white-glow { background-color: #fff !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.9); }
+        .gold-glow { background-color: #f59e0b !important; box-shadow: 0 0 18px rgba(245, 158, 11, 1); }
 
         /* ALL ACCESS HIGHLIGHT ANIMATION */
         @keyframes pulseGold {
@@ -58,7 +59,7 @@
         .anim-pulse-gold { animation: pulseGold 2.5s infinite ease-in-out; }
 
         /* Inner Scrollable Area */
-        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 16px; z-index: 10; position: relative; }
+        .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 120px; z-index: 10; position: relative; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -67,7 +68,7 @@
         #progressBarFill { height: 100%; background: linear-gradient(90deg, #ec4899, #a855f7); width: 0%; transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 0 2px 2px 0; box-shadow: 0 0 10px rgba(236,72,153,0.5); }
 
         /* UI Components - SCALED DOWN SIZES */
-        .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 14px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-top: auto; border: none; outline: none; box-shadow: 0 4px 12px rgba(255,255,255,0.1); z-index: 10; position: relative; flex-shrink: 0; }
+        .btn-bottom { width: 100%; background-color: white; color: black; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 14px; text-align: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: none; outline: none; box-shadow: 0 4px 12px rgba(255,255,255,0.1); flex-shrink: 0; }
         .btn-bottom:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 0 16px rgba(255,255,255,0.3); }
         .btn-bottom:disabled { opacity: 0.4; cursor: not-allowed; transform: scale(1); box-shadow: none; }
 
@@ -80,7 +81,7 @@
 
         .option-card { width: 100%; border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: white; padding: 14px 16px; border-radius: 14px; text-align: left; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
         .option-card:active { transform: scale(0.97); }
-        .option-card.selected { border-color: #ec4899; background-color: rgba(236, 72, 153, 0.15); transform: scale(1.02); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
+        .option-card.selected { border-color: #ec4899; background-color: rgba(234, 179, 8, 0.15); transform: scale(1.02); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
 
         .grid-card { border: 2px solid #1f2937; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; height: 90px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .grid-card:active { transform: scale(0.95); }
@@ -89,6 +90,9 @@
         .chip { border: 1px solid #374151; background-color: rgba(31, 41, 55, 0.4); backdrop-filter: blur(5px); color: #9ca3af; padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 11px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 0 6px 6px 0; }
         .chip:active { transform: scale(0.93); }
         .chip.selected { border-color: #ec4899; color: white; background-color: rgba(236, 72, 153, 0.2); transform: scale(1.05); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2); }
+
+        /* Fixed Bottom Panel */
+        .glass-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px; padding-bottom: max(env(safe-area-inset-bottom), 16px); background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.02); z-index: 40; display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
@@ -111,17 +115,17 @@
                     <p class="text-gray-400 mt-3 text-center text-[12px] px-6 font-medium tracking-wide">A safe space to connect, heal, and grow together without judgment.</p>
                 </div>
 
-                <div class="w-full space-y-3 mt-auto relative z-20 pb-4">
+                <div class="glass-bottom-panel">
                     <button onclick="startSignup()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-extrabold text-[14px] py-3.5 rounded-[14px] shadow-[0_0_20px_rgba(236,72,153,0.3)] active:scale-95 transition">Create Account</button>
-                    <button onclick="showScreen('screen-login')" class="w-full border border-gray-700 bg-gray-900/50 backdrop-blur-md text-white font-extrabold text-[14px] py-3.5 rounded-[14px] hover:bg-gray-800 active:scale-95 transition">Sign In</button>
-                </div>
-
-                <div class="mt-2 text-center relative z-20">
-                    <div class="flex items-center justify-center gap-1.5 mb-1">
-                        <i class="fa-solid fa-leaf text-pink-500 text-[10px]"></i>
-                        <span class="text-[12px] font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">HealSpace</span>
+                    <button onclick="showScreen('screen-login')" class="w-full border border-gray-700 bg-gray-900/50 text-white font-extrabold text-[14px] py-3.5 rounded-[14px] hover:bg-gray-800 active:scale-95 transition">Sign In</button>
+                    
+                    <div class="mt-2 text-center">
+                        <div class="flex items-center justify-center gap-1.5 mb-1">
+                            <i class="fa-solid fa-leaf text-pink-500 text-[10px]"></i>
+                            <span class="text-[12px] font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">HealSpace</span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 font-medium">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
                     </div>
-                    <p class="text-[10px] text-gray-500 font-medium">Made with <i class="fa-solid fa-heart text-red-500 mx-0.5"></i> from Quva.</p>
                 </div>
             </div>
 
@@ -142,7 +146,9 @@
                     </div>
                 </div>
 
-                <button id="btnLogin" onclick="processLogin()" class="btn-bottom" disabled>Log In</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnLogin" onclick="processLogin()" class="btn-bottom" disabled>Log In</button>
+                </div>
             </div>
 
             <div id="screen-reg-creds" class="screen screen-hidden-right pt-8">
@@ -166,7 +172,9 @@
                     </div>
                 </div>
 
-                <button id="btnRegCreds" onclick="nextScreen('screen-reg-role')" class="btn-bottom" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnRegCreds" onclick="nextScreen('screen-reg-role')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-reg-role" class="screen screen-hidden-right pt-8">
@@ -178,30 +186,32 @@
                 <div class="scroll-area no-scrollbar">
                     <button class="option-card role-select" data-role="seeker">
                         <span>Need Motivation</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="motivator">
                         <span>Motivator</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="lover">
                         <span>Lovers / Heartbreak</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card role-select" data-role="friend">
                         <span>Looking for Friends</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
 
                     <div class="my-4 border-t border-gray-800"></div>
 
                     <button class="option-card role-select anim-pulse-gold border-amber-500/50 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 hover:border-amber-400 transition" data-role="all" style="border-width: 2px;">
                         <span class="font-extrabold tracking-wide">Access All Spaces ✨</span> 
-                        <div class="check-indicator hidden w-5 h-5 rounded-full bg-amber-400 items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                 </div>
 
-                <button id="btnRegRole" onclick="nextScreen('screen-q-name')" class="btn-bottom" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnRegRole" onclick="nextScreen('screen-q-name')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-q-name" class="screen screen-hidden-right pt-8">
@@ -214,7 +224,9 @@
                     <p class="text-gray-500 mt-4 text-center text-[11px] font-medium">This is how you'll appear. <br><span class="text-gray-400">HealSpace encourages anonymity.</span></p>
                 </div>
 
-                <button id="btnQName" onclick="nextScreen('screen-q-bday')" class="btn-bottom" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnQName" onclick="nextScreen('screen-q-bday')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-q-bday" class="screen screen-hidden-right pt-8">
@@ -227,7 +239,9 @@
                     <p class="text-gray-400 mt-4 text-center text-[11px] font-medium">Your profile shows your age, not your exact date of birth.</p>
                 </div>
 
-                <button id="btnQBday" onclick="nextScreen('screen-q-gender')" class="btn-bottom" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnQBday" onclick="nextScreen('screen-q-gender')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-q-gender" class="screen screen-hidden-right pt-8">
@@ -240,21 +254,23 @@
                 <p class="text-gray-400 mb-6 text-[11px] font-medium">Select one to help us show your profile to the right people.</p>
 
                 <div class="scroll-area no-scrollbar space-y-2.5">
-                    <button class="option-card gender-select" data-gender="Guy">
-                        <span>Guy</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                    <button class="option-card gender-select" data-gender="Boy">
+                        <span>Boy</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Girl">
-                        <span>Girl</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <span>Girl</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Non-binary">
-                        <span>Non-binary</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <span>Non-binary</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                     <button class="option-card gender-select" data-gender="Genderfluid">
-                        <span>Genderfluid</span> <div class="check-indicator hidden w-5 h-5 rounded-full bg-white items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
+                        <span>Genderfluid</span> <div class="check-indicator hidden w-5 h-5 rounded-full items-center justify-center"><i class="fa-solid fa-check text-black font-black text-[10px]"></i></div>
                     </button>
                 </div>
 
-                <button id="btnQGender" onclick="nextScreen('screen-q-looking')" class="btn-bottom" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnQGender" onclick="nextScreen('screen-q-looking')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-q-looking" class="screen screen-hidden-right pt-8">
@@ -283,7 +299,9 @@
                     </div>
                 </div>
 
-                <button id="btnQLooking" onclick="nextScreen('screen-q-vibes')" class="btn-bottom mt-3" disabled>Next</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnQLooking" onclick="nextScreen('screen-q-vibes')" class="btn-bottom" disabled>Next</button>
+                </div>
             </div>
 
             <div id="screen-q-vibes" class="screen screen-hidden-right pt-8">
@@ -319,7 +337,9 @@
                     </div>
                 </div>
 
-                <button onclick="nextScreen('screen-q-languages')" class="btn-bottom">Next</button>
+                <div class="glass-bottom-panel">
+                    <button onclick="nextScreen('screen-q-languages')" class="btn-bottom">Next</button>
+                </div>
             </div>
 
             <div id="screen-q-languages" class="screen screen-hidden-right pt-8">
@@ -362,7 +382,9 @@
                     </div>
                 </div>
 
-                <button onclick="nextScreen('screen-q-interests')" class="btn-bottom mt-3">Next</button>
+                <div class="glass-bottom-panel">
+                    <button onclick="nextScreen('screen-q-interests')" class="btn-bottom">Next</button>
+                </div>
             </div>
 
             <div id="screen-q-interests" class="screen screen-hidden-right pt-8">
@@ -392,7 +414,9 @@
                     </div>
                 </div>
 
-                <button id="btnFinal" onclick="submitFinalRegistration()" class="btn-bottom bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border-none mt-3">Complete Profile</button>
+                <div class="glass-bottom-panel">
+                    <button id="btnFinal" onclick="submitFinalRegistration()" class="btn-bottom bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border-none">Complete Profile</button>
+                </div>
             </div>
 
             <div id="loadingOverlay" class="absolute inset-0 bg-[#0B0E14]/90 backdrop-blur-md flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none">
@@ -515,7 +539,6 @@
                 const ind = this.querySelector('.check-indicator');
                 ind.classList.remove('hidden');
                 
-                // Add specific glowing class based on option
                 if(this.dataset.role === 'all') {
                     ind.classList.add('flex', 'anim-check', 'gold-glow');
                 } else {
