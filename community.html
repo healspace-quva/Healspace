@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0E14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HealSpace">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HealSpace - Community</title>
@@ -225,6 +238,8 @@
         let loggedInRole = localStorage.getItem("healspace_logged_role");
         const myAlias = localStorage.getItem("healspace_alias") || "User";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
+        
+        let globalPeer; // Declared for safe WebRTC connection
 
         if (!currentUserId || !loggedInRole) { window.location.replace("login.html"); }
 
@@ -248,16 +263,16 @@
             'all': { color: 'purple', hex: '#a855f7', glow: 'rgba(168,85,247,0.3)', tab1: 'Requests', tab2: 'Discover', sub1: 'Connections across all spaces.', sub2: 'Top users across HealSpace.' }
         };
 
-        // --- MOCK DATA ---
+        // --- FALLBACK MOCK DATA (In case script is slow) ---
         let mockRequests = [
             { id: 'req1', name: 'Jordan', age: 22, emoji: '🎧', intent: 'Needs Motivation', msg: '"Saw your profile, would love to chat!"', tags: ['Voice notes 🎙️'], color: 'blue', role: 'seeker' },
             { id: 'req2', name: 'Casey', age: 20, emoji: '🌙', intent: 'Venting', msg: '"Looking for someone to just listen tonight."', tags: ['Introvert'], color: 'purple', role: 'friend' }
         ];
 
         let mockDiscover = [
-            { name: 'Dr. Evelyn', age: 30, emoji: '🧠', rating: '4.9', sessions: '1.2k', title: 'Professional Coach', tags: ['Deep Talks', 'FaceTime'], color: 'emerald', match: '98%', role: 'motivator' },
-            { name: 'Marcus', age: 24, emoji: '⚡', rating: '4.8', sessions: '850', title: 'Verified Listener', tags: ['Mental Health', 'Extrovert'], color: 'blue', match: '94%', role: 'motivator' },
-            { name: 'Sarah', age: 21, emoji: '🎮', rating: '4.9', sessions: '920', title: 'Peer Supporter', tags: ['Gaming 🎮', 'Texter'], color: 'rose', match: '89%', role: 'friend' }
+            { name: 'Dr. Evelyn', age: 30, emoji: '🧠', rating: '4.9', sessions: '1.2k', title: 'Professional Coach', tags: ['Deep Talks', 'FaceTime'], color: 'emerald', match: '98%', role: 'motivator', mainLang: 'English 🇬🇧' },
+            { name: 'Marcus', age: 24, emoji: '⚡', rating: '4.8', sessions: '850', title: 'Verified Listener', tags: ['Mental Health', 'Extrovert'], color: 'blue', match: '94%', role: 'motivator', mainLang: 'Spanish 🇪🇸' },
+            { name: 'Sarah', age: 21, emoji: '🎮', rating: '4.9', sessions: '920', title: 'Peer Supporter', tags: ['Gaming 🎮', 'Texter'], color: 'rose', match: '89%', role: 'friend', mainLang: 'English 🇬🇧' }
         ];
 
         // --- INITIALIZATION ---
@@ -266,10 +281,38 @@
             
             loadUserData();
             applyRoleTheming(loggedInRole);
-            renderLists();
+            
+            // Render fast with local data
+            renderLists(); 
+            
+            // Fetch live data from backend seamlessly
+            fetchCommunityData();
+            
             initGlobalCore();
             initPullToRefresh();
         });
+
+        // --- FETCH LIVE SCRIPT DATA ---
+        async function fetchCommunityData() {
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "getCommunity", userId: currentUserId, role: loggedInRole })
+                });
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    if (result.requests && result.requests.length > 0) mockRequests = result.requests;
+                    if (result.discover && result.discover.length > 0) mockDiscover = result.discover;
+                    
+                    // Re-render UI now that live data is secured
+                    renderLists();
+                }
+            } catch (error) {
+                console.error("Live fetch skipped, using standard profiles.", error);
+            }
+        }
 
         // --- PULL TO REFRESH ---
         function initPullToRefresh() {
@@ -296,8 +339,12 @@
                     hapticFeedback(15);
                     ptrIndicator.style.height = '35px';
                     ptrIndicator.style.opacity = '1';
-                    // Simulated Refresh
-                    setTimeout(() => { ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0'; }, 800);
+                    
+                    // Trigger actual live refresh
+                    fetchCommunityData().then(() => {
+                        ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
+                    });
+                    
                 } else {
                     ptrIndicator.style.height = '0px'; ptrIndicator.style.opacity = '0';
                 }
@@ -400,7 +447,7 @@
 
             mockRequests.forEach((req, index) => {
                 const delay = 0.1 + (index * 0.1);
-                const tagHTML = req.tags.map(tag => `<span class="text-[8px] font-bold text-${req.color}-200 bg-${req.color}-900/40 px-2 py-1 rounded-md border border-${req.color}-700/50">${tag}</span>`).join('');
+                const tagHTML = (req.tags || []).map(tag => `<span class="text-[8px] font-bold text-${req.color}-200 bg-${req.color}-900/40 px-2 py-1 rounded-md border border-${req.color}-700/50">${tag}</span>`).join('');
 
                 const html = `
                     <div id="req-card-${req.id}" class="feed-card bg-[#11131a]/80 backdrop-blur-md rounded-[20px] p-3.5 border border-gray-800/60 animate-card shadow-sm" style="animation-delay: ${delay}s;">
@@ -472,7 +519,7 @@
                 discContainer.innerHTML = '';
                 mockDiscover.forEach((user, index) => {
                     const delay = 0.05 + (index * 0.05);
-                    const tagsHTML = user.tags.map(tag => `<span class="text-[9px] font-bold text-${user.color}-200 bg-${user.color}-900/30 px-2 py-1 rounded-lg border border-${user.color}-700/30 shadow-sm">${tag}</span>`).join('');
+                    const tagsHTML = (user.tags || []).map(tag => `<span class="text-[9px] font-bold text-${user.color}-200 bg-${user.color}-900/30 px-2 py-1 rounded-lg border border-${user.color}-700/30 shadow-sm">${tag}</span>`).join('');
                     
                     // Simulated online status
                     const isOnline = Math.random() > 0.5;
@@ -499,7 +546,7 @@
                                     </h3>
                                     <p class="text-gray-400 text-[9px] font-medium mt-0.5">${user.title}</p>
                                     <div class="mt-1 flex flex-col gap-0.5">
-                                        <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${user.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${user.mainLang}</span></p>
+                                        <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${user.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${user.mainLang || 'English 🇬🇧'}</span></p>
                                     </div>
                                     <div class="flex gap-1.5 mt-1.5 flex-wrap">${tagsHTML}</div>
                                 </div>
@@ -561,7 +608,13 @@
             btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i>';
             btnElement.disabled = true;
 
-            // Fake API Call Delay
+            // Trigger backend if needed
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "handleConnection", userId: currentUserId, reqId: reqId, status: action })
+            }).catch(e => console.log("Silent sync error", e));
+
             setTimeout(() => {
                 if(action === 'accept' && targetName) {
                     startChat(targetName, targetRole, btnElement);
