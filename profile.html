@@ -137,16 +137,16 @@
 
                     <div class="bg-[#12141c] border border-gray-800/60 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm mb-4 cursor-pointer status-chip" onclick="openEditModal('basics')">
                         <i class="fa-solid fa-face-smile text-[#eab308] text-[10px]"></i>
-                        <span class="text-gray-300 text-[9px] font-bold tracking-wider uppercase" id="roleText">Looking for friends</span>
+                        <span class="text-gray-300 text-[9px] font-bold tracking-wider uppercase" id="roleText">Loading...</span>
                     </div>
 
                     <div class="flex gap-2 w-full justify-center">
                         <div class="stat-card flex flex-col items-center justify-center px-4 py-3 rounded-2xl w-full max-w-[130px]">
-                            <span class="text-white font-bold text-[22px]" id="statConnections" data-target="14">0</span>
+                            <span class="text-white font-bold text-[22px]" id="statConnections" data-target="0">0</span>
                             <span class="text-gray-500 text-[8px] uppercase tracking-widest font-bold mt-0.5">Connections</span>
                         </div>
                         <div class="stat-card flex flex-col items-center justify-center px-4 py-3 rounded-2xl w-full max-w-[130px]">
-                            <span class="text-white font-bold text-[22px]"><span id="statTime" data-target="8">0</span><span class="text-sm ml-0.5 text-gray-400">h</span></span>
+                            <span class="text-white font-bold text-[22px]"><span id="statTime" data-target="0">0</span><span class="text-sm ml-0.5 text-gray-400">h</span></span>
                             <span class="text-gray-500 text-[8px] uppercase tracking-widest font-bold mt-0.5">Time Healed</span>
                         </div>
                     </div>
@@ -171,23 +171,23 @@
                     <div class="editable-section" onclick="openEditModal('basics')">
                         <i class="fa-solid fa-chevron-right edit-icon-corner"></i>
                         <h3 class="text-gray-600 font-bold mb-2.5 uppercase tracking-widest text-[9px]">The Basics</h3>
-                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-cake-candles text-pink-500 w-3 text-center"></i> Age</span><span class="info-value skeleton" id="valAge">0 yrs</span></div>
-                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-venus-mars text-blue-500 w-3 text-center"></i> Gender</span><span class="info-value skeleton" id="valGender">Guy</span></div>
-                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-compass text-purple-500 w-3 text-center"></i> Looking For</span><span class="info-value skeleton" id="valLooking">New friends</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-cake-candles text-pink-500 w-3 text-center"></i> Age</span><span class="info-value skeleton" id="valAge">--</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-venus-mars text-blue-500 w-3 text-center"></i> Gender</span><span class="info-value skeleton" id="valGender">--</span></div>
+                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-compass text-purple-500 w-3 text-center"></i> Looking For</span><span class="info-value skeleton" id="valLooking">--</span></div>
                     </div>
 
                     <div class="editable-section" onclick="openEditModal('vibes')">
                         <i class="fa-solid fa-chevron-right edit-icon-corner"></i>
                         <h3 class="text-gray-600 font-bold mb-2.5 uppercase tracking-widest text-[9px]">Vibe Check</h3>
-                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-comments text-emerald-500 w-3 text-center"></i> Communication</span><span class="info-value skeleton" id="valComm">Better in person</span></div>
-                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-battery-half text-[#eab308] w-3 text-center"></i> Social Battery</span><span class="info-value skeleton" id="valSocial">Extrovert</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-comments text-emerald-500 w-3 text-center"></i> Communication</span><span class="info-value skeleton" id="valComm">--</span></div>
+                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-battery-half text-[#eab308] w-3 text-center"></i> Social Battery</span><span class="info-value skeleton" id="valSocial">--</span></div>
                     </div>
 
                     <div class="editable-section" onclick="openEditModal('languages')">
                         <i class="fa-solid fa-chevron-right edit-icon-corner"></i>
                         <h3 class="text-gray-600 font-bold mb-2.5 uppercase tracking-widest text-[9px]">Languages</h3>
-                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-globe text-blue-400 w-3 text-center"></i> Native</span><span class="info-value skeleton" id="valMainLang">English 🇬🇧</span></div>
-                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-language text-purple-400 w-3 text-center"></i> Others</span><span class="info-value skeleton" id="valSpeaks">Hindi, Tamil</span></div>
+                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-globe text-blue-400 w-3 text-center"></i> Native</span><span class="info-value skeleton" id="valMainLang">--</span></div>
+                        <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-language text-purple-400 w-3 text-center"></i> Others</span><span class="info-value skeleton" id="valSpeaks">--</span></div>
                     </div>
 
                     <div class="editable-section" onclick="openEditModal('interests')">
@@ -260,37 +260,48 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
         
         const OPTIONS = {
-            gender: ['Guy', 'Girl', 'Non-binary', 'Secret'],
-            lookingFor: ['New friends', 'Dating', 'Networking', 'Chatting'],
-            communication: ['Better in person', 'Big time texter', 'Voice notes', 'FaceTime'],
-            social: ['Extrovert', 'Introvert', 'Ambivert', 'Homebody'],
-            interests: ['Anime/Manga', 'Art & Design', 'Mental Health', 'Gym/Fitness', 'Music', 'Gaming', 'Movies'],
-            mainLanguage: ['English 🇬🇧', 'Hindi 🇮🇳', 'Tamil 🇮🇳', 'Spanish 🇪🇸'],
-            languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Urdu', 'Spanish']
+            gender: ['Boy', 'Girl', 'Non-binary', 'Secret'],
+            lookingFor: ['New friends', 'Relationship', 'Support & Venting', 'Casual vibes', 'Not sure yet'],
+            communication: ['Better in person', 'Big time texter', 'Voice notes 🎙️', 'FaceTime enthusiast', 'Slow replier'],
+            social: ['Extrovert', 'Introvert', 'Ambivert', 'Homebody', 'Life of the party'],
+            interests: ['Music/Concerts', 'Gaming 🎮', 'TikTok/Reels', 'Anime/Manga', 'Movies & TV', 'Gym/Fitness', 'Mental Health', 'Art & Design', 'Coding/Tech', 'Thrifting 👕', 'Deep Talks', 'Memes', 'Pets 🐶'],
+            mainLanguage: ['English 🇬🇧', 'Hindi 🇮🇳', 'Tamil 🇮🇳', 'Telugu 🇮🇳', 'Malayalam 🇮🇳', 'Kannada 🇮🇳', 'Urdu 🇮🇳'],
+            languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Malyalam', 'Urdu', 'Kannada', 'Marathi', 'Gujarati', 'Sign Language']
         };
 
-        let loggedInRole = localStorage.getItem("healspace_logged_role") || "user123"; 
+        // Identification info
+        let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker"; 
+        let userId = localStorage.getItem("healspace_userId");
+        let currentAlias = localStorage.getItem("healspace_alias") || "Loading...";
+
+        // Load instantly from local storage (so changes apply across all pages fast)
+        let savedProfileStr = localStorage.getItem('healspace_user_profile');
+        let savedProfile = savedProfileStr ? JSON.parse(savedProfileStr) : {};
         
         let userProfile = { 
-            alias: "Hhj", 
-            avatarInput: "fa-solid fa-moon",
-            emoji: '<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>', 
-            age: '0 yrs', 
-            gender: 'Guy', 
-            lookingFor: 'New friends', 
-            vibes: { communication: 'Better in person', social: 'Extrovert' }, 
-            interests: ['Anime/Manga', 'Art & Design', 'Mental Health', 'Gym/Fitness'], 
-            mainLanguage: 'English 🇬🇧', 
-            languages: ['Hindi', 'Tamil'], 
-            ghostMode: false,
-            connections: 14,
-            timeHealed: 8
+            alias: savedProfile.alias || currentAlias, 
+            avatarInput: savedProfile.avatarInput || "fa-solid fa-moon",
+            emoji: savedProfile.emoji || '<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>', 
+            age: savedProfile.age || '---', 
+            gender: savedProfile.gender || '---', 
+            lookingFor: savedProfile.lookingFor || '---', 
+            vibes: savedProfile.vibes || { communication: '---', social: '---' }, 
+            interests: savedProfile.interests || [], 
+            mainLanguage: savedProfile.mainLanguage || '---', 
+            languages: savedProfile.languages || [], 
+            ghostMode: savedProfile.ghostMode || false,
+            connections: savedProfile.connections || 0,
+            timeHealed: savedProfile.timeHealed || 0
         };
         let currentEditMode = '';
 
         document.addEventListener('DOMContentLoaded', () => {
+            // First update with local data so user doesn't wait
+            updateUI(); 
+            
+            // Fetch live data from Google Apps Script
             initAppScriptSync(); 
-            animateStats();      
+            
             updateNotificationStatus(); 
             setupScrollListener(); 
         });
@@ -308,30 +319,59 @@
             });
         }
 
+        // --- FETCH LIVE DATA FROM GOOGLE APPS SCRIPT ---
         async function initAppScriptSync() {
-            try {
-                setTimeout(() => {
-                    updateUI();
-                    document.querySelectorAll('.skeleton').forEach(el => {
-                        el.classList.remove('skeleton');
-                        el.style.color = ''; 
-                    });
-                }, 800);
-            } catch(e) {
-                console.error("AppScript fetch failed.", e);
-                updateUI();
+            if (!userId) {
+                removeSkeletons();
+                return;
             }
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "getProfile", userId: userId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === "success" && result.profileData) {
+                    // Update userProfile with live data from database
+                    userProfile = { ...userProfile, ...result.profileData };
+                    
+                    // Save to local storage for other pages to read instantly
+                    localStorage.setItem('healspace_user_profile', JSON.stringify(userProfile));
+                    if(result.profileData.alias) localStorage.setItem("healspace_alias", result.profileData.alias);
+                }
+            } catch(e) {
+                console.error("AppScript fetch failed, relying on local data.", e);
+            } finally {
+                updateUI();
+                removeSkeletons();
+                animateStats();
+            }
+        }
+
+        function removeSkeletons() {
+            document.querySelectorAll('.skeleton').forEach(el => {
+                el.classList.remove('skeleton');
+                el.style.color = ''; 
+            });
         }
 
         function updateUI() {
             document.getElementById('profileName').innerText = userProfile.alias;
-            document.getElementById('valAge').innerText = userProfile.age || '---';
+            document.getElementById('roleText').innerText = userProfile.lookingFor !== '---' ? userProfile.lookingFor : loggedInRole;
+            document.getElementById('valAge').innerText = userProfile.age !== '---' ? userProfile.age + ' yrs' : '---';
             document.getElementById('valGender').innerText = userProfile.gender || '---';
             document.getElementById('valLooking').innerText = userProfile.lookingFor || '---';
             document.getElementById('valComm').innerText = userProfile.vibes.communication || '---';
             document.getElementById('valSocial').innerText = userProfile.vibes.social || '---';
             document.getElementById('valMainLang').innerText = userProfile.mainLanguage || '---';
             document.getElementById('valSpeaks').innerText = (userProfile.languages && userProfile.languages.length > 0) ? userProfile.languages.join(', ') : '---';
+            
+            document.getElementById('statConnections').setAttribute('data-target', userProfile.connections || 0);
+            document.getElementById('statTime').setAttribute('data-target', userProfile.timeHealed || 0);
 
             const container = document.getElementById('interestsContainer');
             container.innerHTML = (userProfile.interests && userProfile.interests.length > 0) 
@@ -354,8 +394,9 @@
         function animateStats() {
             const els = [document.getElementById('statConnections'), document.getElementById('statTime')];
             els.forEach(el => {
-                const target = parseInt(el.getAttribute('data-target'));
+                const target = parseInt(el.getAttribute('data-target')) || 0;
                 let current = 0;
+                if(target === 0) { el.innerText = "0"; return; }
                 const timer = setInterval(() => {
                     current += Math.ceil(target / 15);
                     if (current >= target) { el.innerText = target; clearInterval(timer); }
@@ -385,7 +426,7 @@
             else if (mode === 'name') html = `<input type="text" id="inputName" value="${userProfile.alias}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner">`;
             else if (mode === 'basics') html = `
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Age</label>
-                <input type="text" id="inputAge" value="${userProfile.age}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
+                <input type="number" id="inputAge" value="${userProfile.age !== '---' ? userProfile.age : ''}" placeholder="E.g. 21" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Gender</label>
                 <div class="grid grid-cols-2 gap-2 mb-3">${generateChips('gender', OPTIONS.gender, userProfile.gender)}</div>
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Looking For</label>
@@ -494,13 +535,28 @@
             document.getElementById('mainProfileScroll').classList.remove('ios-scale-bg');
         }
 
-        function syncToBackend() {
-            fetch(SCRIPT_URL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ action: "updateFullProfile", role: loggedInRole, profileData: userProfile }) 
-            }).catch(e=>{ console.log("Silent sync error", e) });
+        // --- PUSH CHANGES TO GOOGLE APPS SCRIPT AND LOCAL STORAGE ---
+        async function syncToBackend() {
+            // Save to LocalStorage immediately so it instantly applies to chat.html and other pages
+            localStorage.setItem('healspace_user_profile', JSON.stringify(userProfile));
+            localStorage.setItem("healspace_alias", userProfile.alias); 
+
+            if (!userId) return; // Do not push if user is not fully logged in
+
+            try {
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify({ 
+                        action: "updateFullProfile", 
+                        userId: userId, 
+                        role: loggedInRole, 
+                        profileData: userProfile 
+                    }) 
+                });
+            } catch(e) { 
+                console.log("Silent sync error", e) 
+            }
         }
 
         function toggleGlobalNotifications() {
