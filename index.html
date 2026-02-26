@@ -9,7 +9,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js');
+                navigator.serviceWorker.register('./sw.js').catch(()=>{});
             });
         }
     </script>
@@ -24,10 +24,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
 
+        /* Minimal Reset & Strict Mobile Lock */
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #030408; font-family: 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
         #app-wrapper { position: fixed; inset: 0; display: flex; justify-content: center; z-index: 9999; background: #030408; }
         #mobile-container { width: 100%; max-width: 448px; height: 100%; background-color: #080a10; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,1); transition: background-color 0.5s ease, filter 0.5s ease; }
 
+        /* Smooth Cinematic Animations */
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
 
@@ -37,15 +39,18 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* Dynamic Category Animations */
         @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px rgba(0,0,0,0.4); } 50% { box-shadow: 0 0 25px var(--glow-color); } }
         .theme-pulse { animation: pulseGlow 4s infinite ease-in-out; }
 
+        /* Stealth Incognito Mode */
         .incognito-active { background-color: #020202 !important; }
         .incognito-active::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, transparent 20%, rgba(88, 28, 135, 0.12) 100%); pointer-events: none; z-index: 1; }
         .incognito-active header, .incognito-active .search-bar-container { background-color: rgba(2,2,2,0.85) !important; border-bottom-color: rgba(255,255,255,0.03) !important; }
         .incognito-active nav { background-color: rgba(17, 19, 26, 0.95) !important; border-color: rgba(255,255,255,0.05) !important; }
         .incognito-active .feed-card { background-color: #050505 !important; border-color: rgba(147, 51, 234, 0.2) !important; box-shadow: 0 4px 20px rgba(147, 51, 234, 0.05) !important; }
         
+        /* Premium Minimal Feed Cards */
         .feed-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); transform: translateZ(0); }
         .feed-card:active { transform: scale(0.97); filter: brightness(1.1); }
         
@@ -159,8 +164,8 @@
                 </div>
 
                 <div class="mb-4 px-1 animate-enter shrink-0" style="animation-delay: 0.05s;">
-                    <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Good Morning,<br>we're here.</h2>
-                    <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Connect with people who match your energy.</p>
+                    <h2 id="pageTitle" class="text-[24px] font-bold text-white leading-tight tracking-tight drop-shadow-md">Welcome to<br>the Hub.</h2>
+                    <p id="pageSubtitle" class="text-gray-400 text-[11px] mt-1 font-medium tracking-wide">Explore all spaces across HealSpace.</p>
                 </div>
 
                 <div id="affirmationBox" class="mb-5 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-white/5 rounded-2xl p-3 flex items-center gap-3 shadow-md backdrop-blur-sm animate-enter px-1 mx-1 shrink-0" style="animation-delay: 0.08s;">
@@ -229,11 +234,11 @@
 
                         <div id="vaultCreateView" class="space-y-4 hidden">
                             <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-copy hover:bg-black/50 transition" onclick="copyVaultData()">
+                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-pointer hover:bg-black/50 transition" onclick="copyVaultData()">
                                     <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Vault ID</p>
                                     <h2 class="text-xl font-black text-rose-400 tracking-wider" id="genVaultId">------</h2>
                                 </div>
-                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-copy hover:bg-black/50 transition" onclick="copyVaultData()">
+                                <div class="bg-black/30 border border-rose-900/50 rounded-xl p-4 text-center cursor-pointer hover:bg-black/50 transition" onclick="copyVaultData()">
                                     <p class="text-gray-400 text-[9px] uppercase font-bold tracking-widest mb-1">Password</p>
                                     <h2 class="text-md font-bold text-white mt-1 tracking-wider" id="genVaultPass">------</h2>
                                 </div>
@@ -344,7 +349,7 @@
                 all: { title: "Welcome to <br>the Hub.", subtitle: "Explore all spaces across HealSpace." }
             };
 
-            const data = roleTexts[role] || roleTexts['seeker'];
+            const data = roleTexts[role] || roleTexts['all'];
             document.getElementById('pageTitle').innerHTML = data.title;
             document.getElementById('pageSubtitle').innerText = data.subtitle;
 
@@ -409,6 +414,7 @@
                 document.getElementById('homeFilterChips').classList.add('hidden');
                 switchLoverTab('couple'); 
             } else {
+                setDynamicGreeting(currentRole || 'seeker');
                 fetchRealFeed(currentRole || 'seeker');
             }
 
@@ -709,7 +715,7 @@
             const text = `Join my secure space on HealSpace!\nRoom ID: ${id}\nPassword: ${pass}`;
             
             if (navigator.share) {
-                navigator.share({ title: 'HealSpace Vault', text: text });
+                navigator.share({ title: 'HealSpace Vault', text: text }).catch(()=>{});
             } else {
                 copyVaultData();
             }
@@ -761,6 +767,7 @@
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
                 
+                // CRITICAL FIX: Ensure Feed is NEVER empty
                 if (Array.isArray(data) && data.length > 0) {
                     processUsersData(data, roleKey);
                 } else {
@@ -783,6 +790,13 @@
                 
                 return !isDuplicate;
             });
+
+            // CRITICAL FIX: If allRealUsers is empty (meaning only myAlias was in the DB), use fallback data
+            if (allRealUsers.length === 0 && data !== fallbackUsers) {
+                processUsersData(fallbackUsers, roleKey);
+                return;
+            }
+
             filterAndRenderFeed(roleKey);
         }
 
@@ -792,19 +806,18 @@
             const color = colors[idx];
             const age = 18 + (user.alias.length % 15);
             
-            let bio = "Here to connect and share good vibes.";
             let tags = ['Chat 💬', 'New Here'];
-            let displayRole = 'Member';
+            let displayRole = 'MEMBER';
 
-            if(user.role === 'seeker') { displayRole = 'Motivation Seeker'; tags = ['Listening Ear', 'Advice']; }
-            if(user.role === 'motivator') { displayRole = 'Verified Motivator'; tags = ['Mental Health', 'Support']; }
-            if(user.role === 'lover') { displayRole = 'Heart/Couple Space'; tags = ['Relationships', 'Deep Talks']; }
-            if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; }
+            if(user.role === 'seeker') { displayRole = 'SEEKER'; tags = ['Listening Ear', 'Advice']; }
+            if(user.role === 'motivator') { displayRole = 'VERIFIED LISTENER'; tags = ['Mental Health', 'Support']; }
+            if(user.role === 'lover') { displayRole = 'HEART SPACE'; tags = ['Relationships', 'Deep Talks']; }
+            if(user.role === 'friend') { displayRole = 'LOOKING FOR FRIENDS'; tags = ['Extrovert', 'Gaming 🎮']; }
 
             const defaultLangs = [ { main: 'English 🇬🇧' }, { main: 'Hindi 🇮🇳' }, { main: 'Spanish 🇪🇸' } ];
             const mainLang = user.mainLanguage || defaultLangs[idx % defaultLangs.length].main;
 
-            return { color, age, bio, tags, displayRole, mainLang };
+            return { color, age, tags, displayRole, mainLang };
         }
 
         function filterAndRenderFeed(roleKey) {
@@ -818,13 +831,24 @@
             if (roleKey === 'lover_heartbreak') {
                 primary = pool.filter(u => u.role === 'motivator');
                 secondary = pool.filter(u => u.role === 'friend' || u.role === 'seeker');
+            } else if (roleKey === 'all') {
+                primary = pool;
             } else {
                 pool.forEach(u => {
-                    if (roleKey === 'all') primary.push(u); 
-                    else if (roleKey.startsWith('lover')) { if (u.role === 'lover') primary.push(u); }
-                    else if(roleKey === 'seeker') { if (u.role === 'motivator') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
-                    else if (roleKey === 'motivator') { if (u.role === 'seeker') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
-                    else if (roleKey === 'friend') { if (u.role === 'friend') primary.push(u); else if (u.role !== 'lover') secondary.push(u); } 
+                    if (roleKey === 'seeker') { 
+                        if (u.role === 'motivator') primary.push(u); 
+                        else if (u.role !== 'lover') secondary.push(u); 
+                    } 
+                    else if (roleKey === 'motivator') { 
+                        if (u.role === 'seeker') primary.push(u); 
+                        else if (u.role !== 'lover') secondary.push(u); 
+                    } 
+                    else if (roleKey === 'friend') { 
+                        if (u.role === 'friend') primary.push(u); 
+                        else if (u.role !== 'lover') secondary.push(u); 
+                    } else {
+                        primary.push(u);
+                    }
                 });
             }
 
@@ -833,6 +857,11 @@
                 primary = primary.filter(u => u.alias.toLowerCase().includes(searchQ));
                 secondary = secondary.filter(u => u.alias.toLowerCase().includes(searchQ));
             }
+
+            // SORTING: Push Online users to the top
+            primary.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+            secondary.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+
             renderFeedCards(primary, secondary, roleKey);
         }
 
@@ -867,31 +896,32 @@
                         <i class="fa-solid fa-paper-plane text-white text-2xl"></i>
                     </div>
 
-                    <div class="flex items-start gap-3 bg-transparent relative z-10" id="card-inner-${user.alias}">
-                        <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
-                            <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user.alias)}</div>
-                            ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
-                        </div>
-                        <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" 
-                             onmousedown="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
-                             onmouseup="stopProfilePeek()" 
-                             ontouchstart="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
-                             ontouchend="stopProfilePeek()">
-                            <h3 class="feed-card-title text-white font-bold text-[15px] flex items-center gap-1.5 truncate transition-colors">
-                                ${user.alias} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${d.age}</span>
-                            </h3>
-                            <p class="text-${d.color}-400 text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-90">${d.displayRole}</p>
-                            <div class="mt-1 flex flex-col gap-0.5 pointer-events-none">
-                                ${currentVibe ? `<p class="text-gray-400 text-[10px] font-medium italic truncate mb-0.5 leading-tight">"${currentVibe}"</p>` : ''}
-                                <p class="text-gray-500 text-[9px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[8px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
+                    <div class="flex items-start justify-between gap-3 bg-transparent relative z-10" id="card-inner-${user.alias}">
+                        <div class="flex items-start gap-3">
+                            <div class="w-[50px] h-[50px] rounded-full ${onlineRingClass} p-[2px] shadow-sm flex-shrink-0 cursor-pointer" onclick="openMiniProfile('${user.alias}', '${avatarContent}', '${d.color}')">
+                                <div class="w-full h-full bg-[#080a10] rounded-full overflow-hidden flex items-center justify-center">${getInnerAvatarHTML(user.alias)}</div>
+                                ${isOnline ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-[2px] border-[#080a10] rounded-full"></div>` : ''}
+                            </div>
+                            <div class="flex-1 overflow-hidden cursor-pointer pt-0.5" 
+                                 onmousedown="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
+                                 onmouseup="stopProfilePeek()" 
+                                 ontouchstart="startProfilePeek('${user.alias}', '${currentVibe}', event)" 
+                                 ontouchend="stopProfilePeek()">
+                                <h3 class="feed-card-title text-white font-bold text-[16px] flex items-center gap-2 truncate transition-colors">
+                                    ${user.alias} <span class="text-gray-400 text-[10px] font-bold bg-white/10 px-1.5 py-0.5 rounded-md">${d.age}</span>
+                                </h3>
+                                <p class="text-${d.color}-400 text-[10px] font-extrabold uppercase tracking-widest mt-1">${d.displayRole}</p>
+                                <div class="mt-1 flex flex-col gap-0.5 pointer-events-none">
+                                    <p class="text-gray-400 text-[10px] font-medium flex items-center gap-1"><i class="fa-solid fa-globe text-${d.color}-500/70 text-[9px]"></i> <span class="text-gray-300 font-semibold">${d.mainLang}</span></p>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-1.5 flex-shrink-0 pt-0.5">
-                            <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-9 h-9 rounded-full bg-${d.color}-500/10 text-${d.color}-400 flex items-center justify-center hover:bg-${d.color}-500 hover:text-white transition-all disabled:opacity-50 border border-${d.color}-500/20 active:scale-90 shadow-sm">
-                                <i class="fa-solid fa-paper-plane text-[12px]"></i>
+                        <div class="flex flex-col gap-2 flex-shrink-0">
+                            <button onclick="startChat('${user.alias}', '${user.role}', this)" class="w-10 h-10 rounded-full bg-[#0d9488]/20 text-[#14b8a6] flex items-center justify-center hover:bg-[#0d9488] hover:text-white transition-all active:scale-90 shadow-sm border border-[#0d9488]/30">
+                                <i class="fa-solid fa-paper-plane text-[13px] ml-[-2px]"></i>
                             </button>
-                            <button onclick="sendWave('${user.alias}', this)" class="w-9 h-7 rounded-full bg-gray-800/50 text-gray-400 flex items-center justify-center hover:bg-gray-700 hover:text-white transition-all border border-gray-700/50 active:scale-90 shadow-sm text-[12px]">
+                            <button onclick="sendWave('${user.alias}', this)" class="w-10 h-10 rounded-full bg-yellow-500/10 text-yellow-500 flex items-center justify-center hover:bg-yellow-500 hover:text-black transition-all border border-yellow-500/30 active:scale-90 shadow-sm text-[14px]">
                                 👋
                             </button>
                         </div>
@@ -910,7 +940,7 @@
                 hapticFeedback(20);
                 const peek = document.getElementById('profilePeek');
                 document.getElementById('peekName').innerText = name;
-                document.getElementById('peekBio').innerText = bio ? `"${bio}"` : "No bio provided.";
+                document.getElementById('peekBio').innerText = bio && bio !== 'undefined' ? `"${bio}"` : "No bio provided.";
                 
                 let x = e.touches ? e.touches[0].clientX : e.clientX;
                 let y = e.touches ? e.touches[0].clientY : e.clientY;
@@ -918,7 +948,7 @@
                 peek.style.left = `${x}px`;
                 peek.style.top = `${y - 20}px`;
                 peek.classList.remove('opacity-0', 'pointer-events-none');
-            }, 400); // 400ms long press
+            }, 400); 
         }
         function stopProfilePeek() {
             clearTimeout(peekTimer);
@@ -930,7 +960,7 @@
                 const cards = document.querySelectorAll('.feed-card');
                 cards.forEach(card => {
                     let startX = 0;
-                    let inner = card.querySelector('.flex.items-start'); // the inner wrapper
+                    let inner = card.querySelector('.flex.items-start'); 
                     
                     card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
                     card.addEventListener('touchmove', e => { 
@@ -958,7 +988,6 @@
             feedContainer.innerHTML = ''; 
             onlineUsersTray.innerHTML = '';
 
-            // Handle the Online Horizontal Tray
             const allActiveUsers = [...primaryUsers, ...secondaryUsers].filter(u => u.isOnline);
             if (allActiveUsers.length > 0 && currentRole !== 'lover') {
                 onlineTrayContainer.classList.remove('hidden');
@@ -970,37 +999,41 @@
             }
 
             if(primaryUsers.length === 0 && secondaryUsers.length === 0) {
-                feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[12px] font-medium">No users found.</div>`; return;
+                feedContainer.innerHTML = `<div class="text-center text-gray-600 py-10 text-[13px] font-medium">No users found in this category.</div>`; return;
             }
 
             if (primaryUsers.length > 0) {
-                let headerText = "Recommended Matches";
-                if (roleKey === 'lover_heartbreak') headerText = "Recommended Healers";
-                else if (roleKey.startsWith('lover')) headerText = "Heartbreak Space";
-                else if (roleKey === 'all') headerText = "All Users";
+                let headerText = "ALL USERS";
+                if (roleKey === 'seeker') headerText = "RECOMMENDED LISTENERS";
+                if (roleKey === 'motivator') headerText = "SEEKING MOTIVATION";
+                if (roleKey === 'friend') headerText = "YOUR SQUAD";
+                if (roleKey === 'lover_heartbreak') headerText = "HEALERS & FRIENDS";
+                if (currentFilter !== 'all') headerText = currentFilter.toUpperCase() + "S";
+
+                let primaryOnlineCount = primaryUsers.filter(u => u.isOnline).length;
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-2.5 px-1 animate-enter border-t border-white/5 pt-4 mt-2">
-                        <h3 class="text-white font-bold text-[12px] tracking-wide uppercase">${headerText}</h3>
-                        <span class="text-gray-500 text-[9px] font-bold bg-gray-800/40 px-1.5 py-0.5 rounded border border-gray-800/50">${primaryUsers.length} RESULTS</span>
+                    <div class="flex justify-between items-end mb-3 px-1 animate-enter border-t border-white/5 pt-4 mt-2">
+                        <h3 class="text-white font-extrabold text-[13px] tracking-wide uppercase">${headerText}</h3>
+                        <span class="text-gray-400 text-[10px] font-bold bg-white/5 px-2 py-1 rounded-md border border-white/10 shadow-sm">${primaryOnlineCount} ONLINE</span>
                     </div>
                 `;
                 primaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
             if (secondaryUsers.length > 0 && !roleKey.startsWith('lover_couple') && roleKey !== 'all') {
-                let secHeader = "Explore Community";
+                let secHeader = "OTHER ACTIVE USERS";
                 if(roleKey === 'lover_heartbreak') secHeader = "Find new friends & Distractions";
 
                 feedContainer.innerHTML += `
-                    <div class="flex justify-between items-end mb-2.5 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
-                        <h3 class="text-gray-500 font-bold text-[11px] tracking-wide uppercase">${secHeader}</h3>
+                    <div class="flex justify-between items-end mb-3 mt-6 px-1 animate-enter border-t border-gray-800/50 pt-5">
+                        <h3 class="text-gray-500 font-extrabold text-[12px] tracking-wide uppercase">${secHeader}</h3>
                     </div>
                 `;
                 secondaryUsers.forEach((user, index) => { feedContainer.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
             }
 
-            setupSwipeToChat(); // Activate gesture on newly rendered cards
+            setupSwipeToChat(); 
         }
 
         // --- INTERACTIONS ---
@@ -1022,7 +1055,6 @@
             btnElement.innerHTML = '<i class="fa-solid fa-check text-green-400"></i>';
             btnElement.disabled = true;
             
-            // Spray small stars
             const rect = btnElement.getBoundingClientRect();
             sendDoubleTapWave(targetName, {clientX: rect.left, clientY: rect.top});
 
@@ -1036,7 +1068,6 @@
         function sendDoubleTapWave(targetName, event) {
             hapticFeedback([10, 20]);
             
-            // Multiple mini particles instead of one wave
             for(let i=0; i<3; i++) {
                 const wave = document.createElement('div');
                 wave.innerHTML = '✨'; wave.className = 'floating-wave';
