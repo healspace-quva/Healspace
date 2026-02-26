@@ -130,10 +130,12 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1.5 mb-2 cursor-pointer group" onclick="openEditModal('name')">
+                    <div class="flex items-center gap-1.5 mb-1 cursor-pointer group" onclick="openEditModal('name')">
                         <h2 class="text-white text-[22px] font-bold tracking-tight" id="profileName">Loading...</h2>
                         <i class="fa-solid fa-chevron-right text-gray-600 text-[10px] mt-1"></i>
                     </div>
+
+                    <span class="text-[#eab308] text-[10px] font-bold uppercase tracking-widest bg-[#eab308]/10 px-3 py-1 rounded-full border border-[#eab308]/20 mb-3" id="profileRoleBadge">Role</span>
 
                     <div class="bg-[#12141c] border border-gray-800/60 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm mb-4 cursor-pointer status-chip" onclick="openEditModal('basics')">
                         <i class="fa-solid fa-face-smile text-[#eab308] text-[10px]"></i>
@@ -171,6 +173,7 @@
                     <div class="editable-section" onclick="openEditModal('basics')">
                         <i class="fa-solid fa-chevron-right edit-icon-corner"></i>
                         <h3 class="text-gray-600 font-bold mb-2.5 uppercase tracking-widest text-[9px]">The Basics</h3>
+                        <div class="info-row"><span class="info-label"><i class="fa-solid fa-signature text-yellow-500 w-3 text-center"></i> Alias</span><span class="info-value skeleton" id="valAlias">--</span></div>
                         <div class="info-row"><span class="info-label"><i class="fa-solid fa-cake-candles text-pink-500 w-3 text-center"></i> Age</span><span class="info-value skeleton" id="valAge">--</span></div>
                         <div class="info-row"><span class="info-label"><i class="fa-solid fa-venus-mars text-blue-500 w-3 text-center"></i> Gender</span><span class="info-value skeleton" id="valGender">--</span></div>
                         <div class="info-row mb-0"><span class="info-label"><i class="fa-solid fa-compass text-purple-500 w-3 text-center"></i> Looking For</span><span class="info-value skeleton" id="valLooking">--</span></div>
@@ -375,7 +378,9 @@
 
         function updateUI() {
             document.getElementById('profileName').innerText = userProfile.alias;
+            document.getElementById('profileRoleBadge').innerText = loggedInRole; // Role after logo
             document.getElementById('roleText').innerText = userProfile.lookingFor !== '---' ? userProfile.lookingFor : loggedInRole;
+            document.getElementById('valAlias').innerText = userProfile.alias || '---';
             document.getElementById('valAge').innerText = userProfile.age !== '---' ? userProfile.age + ' yrs' : '---';
             document.getElementById('valGender').innerText = userProfile.gender || '---';
             document.getElementById('valLooking').innerText = userProfile.lookingFor || '---';
@@ -439,6 +444,8 @@
             `;
             else if (mode === 'name') html = `<input type="text" id="inputName" value="${userProfile.alias}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner">`;
             else if (mode === 'basics') html = `
+                <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Alias / Name</label>
+                <input type="text" id="inputAliasBasics" value="${userProfile.alias || ''}" placeholder="E.g. Jack" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Age</label>
                 <input type="number" id="inputAge" value="${userProfile.age !== '---' ? userProfile.age : ''}" placeholder="E.g. 21" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Gender</label>
@@ -507,8 +514,9 @@
                     userProfile.emoji = `<span class="text-[32px] leading-none">${val}</span>`;
                 }
             }
-            else if(currentEditMode === 'name') userProfile.alias = document.getElementById('inputName').value.trim();
+            else if(currentEditMode === 'name') userProfile.alias = document.getElementById('inputName').value.trim() || userProfile.alias;
             else if(currentEditMode === 'basics') {
+                userProfile.alias = document.getElementById('inputAliasBasics').value.trim() || userProfile.alias;
                 userProfile.age = document.getElementById('inputAge').value;
                 userProfile.gender = document.querySelector('.single-chip[data-group="gender"].selected')?.dataset.value || userProfile.gender;
                 userProfile.lookingFor = document.querySelector('.single-chip[data-group="lookingFor"].selected')?.dataset.value || userProfile.lookingFor;
@@ -557,10 +565,16 @@
             localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
             localStorage.setItem("healspace_alias", userProfile.alias); 
 
+            // Standardize avatar update in localstorage so the chat immediately catches it
+            if(userProfile.emoji) {
+                localStorage.setItem(`hs_avatar_${userProfile.alias}`, userProfile.emoji);
+            }
+
             if (!userId) return;
 
             // 2. PUSH TO GOOGLE SHEETS
             try {
+                // Primary profile JSON dump
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     headers: { "Content-Type": "text/plain;charset=utf-8" }, 
@@ -568,11 +582,25 @@
                         action: "updateFullProfile", 
                         userId: userId, 
                         role: loggedInRole, 
+                        alias: userProfile.alias, // Added explicit alias exposure to fix syncing issue
                         profileData: userProfile 
                     }) 
                 });
+                
+                // Secondary trigger to guarantee root columns in Users sheet update seamlessly
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify({ 
+                        action: "update_profile", 
+                        userId: userId, 
+                        alias: userProfile.alias, 
+                        vibe: localStorage.getItem(`hs_vibe_${userProfile.alias}`) || "",
+                        avatar: userProfile.emoji
+                    }) 
+                });
             } catch(e) { 
-                console.log("Silent sync error", e) 
+                console.log("Silent sync error", e);
             }
         }
 
