@@ -269,37 +269,49 @@
             languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Malyalam', 'Urdu', 'Kannada', 'Marathi', 'Gujarati', 'Sign Language']
         };
 
-        // Identification info
+        // --- FIX: UNIFIED DATA SOURCE ---
+        // We ensure we read from the specific saved accounts dictionary, not a disconnected variable.
         let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker"; 
         let userId = localStorage.getItem("healspace_userId");
-        let currentAlias = localStorage.getItem("healspace_alias") || "Loading...";
 
-        // Load instantly from local storage (so changes apply across all pages fast)
-        let savedProfileStr = localStorage.getItem('healspace_user_profile');
-        let savedProfile = savedProfileStr ? JSON.parse(savedProfileStr) : {};
-        
+        let savedAccounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+        let localProfile = savedAccounts[loggedInRole] || {};
+
+        // Helper to convert birthday to age securely if age is missing
+        function getAge(profile) {
+            if (profile.age && profile.age !== '---') return profile.age;
+            if (profile.birthday) {
+                let bDay = new Date(profile.birthday);
+                if (!isNaN(bDay)) {
+                    let ageDate = new Date(Date.now() - bDay.getTime());
+                    return Math.abs(ageDate.getUTCFullYear() - 1970);
+                }
+            }
+            return '---';
+        }
+
         let userProfile = { 
-            alias: savedProfile.alias || currentAlias, 
-            avatarInput: savedProfile.avatarInput || "fa-solid fa-moon",
-            emoji: savedProfile.emoji || '<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>', 
-            age: savedProfile.age || '---', 
-            gender: savedProfile.gender || '---', 
-            lookingFor: savedProfile.lookingFor || '---', 
-            vibes: savedProfile.vibes || { communication: '---', social: '---' }, 
-            interests: savedProfile.interests || [], 
-            mainLanguage: savedProfile.mainLanguage || '---', 
-            languages: savedProfile.languages || [], 
-            ghostMode: savedProfile.ghostMode || false,
-            connections: savedProfile.connections || 0,
-            timeHealed: savedProfile.timeHealed || 0
+            alias: localProfile.alias || localStorage.getItem("healspace_alias") || "User", 
+            avatarInput: localProfile.avatarInput || "fa-solid fa-moon",
+            emoji: localProfile.emoji || '<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>', 
+            age: getAge(localProfile), 
+            gender: localProfile.gender || '---', 
+            lookingFor: localProfile.lookingFor || '---', 
+            vibes: localProfile.vibes || { communication: '---', social: '---' }, 
+            interests: localProfile.interests || [], 
+            mainLanguage: localProfile.mainLanguage || '---', 
+            languages: localProfile.languages || [], 
+            ghostMode: localProfile.ghostMode || false,
+            connections: localProfile.connections || 0,
+            timeHealed: localProfile.timeHealed || 0
         };
         let currentEditMode = '';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // First update with local data so user doesn't wait
+            // Instantly render whatever data we currently have
             updateUI(); 
             
-            // Fetch live data from Google Apps Script
+            // Sync with backend to ensure it's up to date
             initAppScriptSync(); 
             
             updateNotificationStatus(); 
@@ -339,9 +351,11 @@
                     // Update userProfile with live data from database
                     userProfile = { ...userProfile, ...result.profileData };
                     
-                    // Save to local storage for other pages to read instantly
-                    localStorage.setItem('healspace_user_profile', JSON.stringify(userProfile));
-                    if(result.profileData.alias) localStorage.setItem("healspace_alias", result.profileData.alias);
+                    // SAVE TO MASTER DICTIONARY SO ALL PAGES SEE IT
+                    let accounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+                    accounts[loggedInRole] = userProfile;
+                    localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
+                    if(userProfile.alias) localStorage.setItem("healspace_alias", userProfile.alias);
                 }
             } catch(e) {
                 console.error("AppScript fetch failed, relying on local data.", e);
@@ -535,14 +549,17 @@
             document.getElementById('mainProfileScroll').classList.remove('ios-scale-bg');
         }
 
-        // --- PUSH CHANGES TO GOOGLE APPS SCRIPT AND LOCAL STORAGE ---
+        // --- PUSH CHANGES TO GOOGLE APPS SCRIPT AND MASTER DICTIONARY ---
         async function syncToBackend() {
-            // Save to LocalStorage immediately so it instantly applies to chat.html and other pages
-            localStorage.setItem('healspace_user_profile', JSON.stringify(userProfile));
+            // 1. SAVE TO MASTER DICTIONARY SO ALL PAGES SEE IT INSTANTLY
+            let accounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+            accounts[loggedInRole] = userProfile;
+            localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
             localStorage.setItem("healspace_alias", userProfile.alias); 
 
-            if (!userId) return; // Do not push if user is not fully logged in
+            if (!userId) return;
 
+            // 2. PUSH TO GOOGLE SHEETS
             try {
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
