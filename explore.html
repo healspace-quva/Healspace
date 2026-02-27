@@ -458,9 +458,10 @@
         // BACKEND POLLING & UPDATES
         // ==========================================
         async function notifyServerOfRoomEntry(roomName) {
-            if(!myPeerId) return; // Wait for PeerJS to connect
+            if(!myPeerId) return; 
             try {
-                await fetch(`${SCRIPT_URL}?action=update_peer&userId=${currentUserId}&alias=${myAlias}&peerId=${myPeerId}&room=${encodeURIComponent(roomName)}`);
+                // Sending the avatar in the URL payload here!
+                await fetch(`${SCRIPT_URL}?action=update_peer&userId=${currentUserId}&alias=${myAlias}&peerId=${myPeerId}&room=${encodeURIComponent(roomName)}&avatar=${encodeURIComponent(myAvatarData)}`);
             } catch(e) { console.error("Failed to update server"); }
         }
 
@@ -561,8 +562,13 @@
 
         function getInnerAvatarHTML(alias) {
             if (alias === myAlias) return getRawAvatarHTML(myAvatarData);
-            // Return dynamically synced avatar or fallback
-            return getRawAvatarHTML(networkUserAvatars[alias] || localStorage.getItem(`hs_avatar_${alias}`));
+            
+            // Search the active network users list we got from the backend for their avatar
+            let userObj = allNetworkUsers.find(u => u.alias === alias);
+            let backendAvatar = userObj ? userObj.avatar : null;
+
+            // Return dynamically synced avatar from P2P, OR the Backend, OR fallback
+            return getRawAvatarHTML(networkUserAvatars[alias] || backendAvatar || localStorage.getItem(`hs_avatar_${alias}`));
         }
 
         // ==========================================
