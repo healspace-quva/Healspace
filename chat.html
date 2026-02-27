@@ -227,7 +227,7 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-4 overflow-x-auto no-scrollbar px-2 mb-6 pb-2" id="vibesList"></div>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar px-2 mb-6 pt-6 pb-2 mt-2" id="vibesList"></div>
                     
                     <div class="px-3 mb-3 flex justify-between items-center text-white">
                         <h2 class="font-extrabold text-[18px] tracking-tight drop-shadow-sm">Messages</h2>
@@ -469,12 +469,11 @@
                 </div>
             </div>
             
-            <audio id="sndRingtone" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" loop></audio>
+            <audio id="sndCall" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" loop></audio>
+            <audio id="sndMsg" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
 
         </div>
     </div>
-
-    <audio id="sndPop" src="https://actions.google.com/sounds/v1/water/water_drop.ogg"></audio>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
@@ -937,7 +936,7 @@
                     document.getElementById('incomingCallPopup').classList.remove('-translate-y-[150%]');
                     
                     try { 
-                        const ringtone = document.getElementById('sndRingtone'); 
+                        const ringtone = document.getElementById('sndCall'); 
                         ringtone.play().catch(e => console.log("Audio blocked by browser autoplay rules")); 
                     } catch(e) {}
                     
@@ -981,7 +980,7 @@
                             if (activeChatUser === data.sender) { const msgEl = document.getElementById(`msg-${data.msgId}`); if (msgEl) { msgEl.classList.add('msg-unsend'); setTimeout(()=>msgEl.remove(), 400); } }
                         }
                         else if (data.action === 'call_declined') {
-                            if (currentCall) { endCall(); alert("Call was declined by " + data.sender); }
+                            endCall(); alert("Call was declined by " + data.sender); 
                         }
                         else if (data.action === 'call_emoji') {
                             showCallEmojiLocally(data.emoji);
@@ -1054,7 +1053,7 @@
                 renderInbox(true); 
                 try { if(globalPeer && !globalPeer.destroyed && globalPeer.open && !isSecret) { const receiptConn = globalPeer.connect("hs_" + sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true }); receiptConn.on('open', () => { receiptConn.send({ action: 'delivered', sender: myAlias, msgId: msgData.id }); }); } } catch(e) {}
             }
-            try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
+            try { document.getElementById('sndMsg').play().catch(()=>{}); } catch(e){}
         }
 
         function showGlobalNotification(sender, text, isCall = false) {
@@ -1118,7 +1117,7 @@
 
         function renderNewMessageUsers(users) {
             const list = document.getElementById('suggestedUsersList'); list.innerHTML = '';
-            if(users.length === 0) { list.innerHTML = `<div class="text-center text-gray-500 mt-10 text-[13px] font-medium">No users found on network.</div>`; return; }
+            if(users.length === 0) { list.innerHTML = `<div class="text-center text-gray-500 mt-12 text-[13px] font-medium">No users found on network.</div>`; return; }
             users.forEach(u => {
                 list.innerHTML += `<div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/5 cursor-pointer transition active:scale-95 border-b border-white/5" onclick="startNewChat('${u.alias}')"><div class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-800 flex items-center justify-center border border-white/10 shadow-md">${getInnerAvatarHTML(u.alias)}</div><div class="flex flex-col"><span class="text-white font-bold text-[15px] tracking-wide">${u.alias}</span></div></div>`;
             });
@@ -1402,7 +1401,7 @@
                             try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: msgObj, isSecret: isSecretChat }); }); } catch(e){}
                         }
                         
-                        try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
+                        try { document.getElementById('sndMsg').play().catch(()=>{}); } catch(e){}
                         
                         stream.getTracks().forEach(track => track.stop());
                     };
@@ -1496,7 +1495,7 @@
                     const targetPeerId = "hs_" + activeChatUser.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
                     try { const conn = globalPeer.connect(targetPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'chat_sync', sender: myAlias, msgData: msgObj, isSecret: isSecretChat }); }); } catch(e){}
                 }
-                try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
+                try { document.getElementById('sndMsg').play().catch(()=>{}); } catch(e){}
             }, 400); // Wait for 100% anim to finish
         }
 
@@ -1517,7 +1516,7 @@
                     } catch(e){}
                 }
                 if (!isSecretChat) { fetch(SCRIPT_URL, { method: 'POST', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'send_chat', sender: myAlias, receiver: activeChatUser, msgData: JSON.stringify(msgObj) }) }).catch(e => console.log("Background backup pending...")); }
-                try { document.getElementById('sndPop').play().catch(()=>{}); } catch(e){}
+                try { document.getElementById('sndMsg').play().catch(()=>{}); } catch(e){}
             } catch (err) {}
         }
 
@@ -1717,7 +1716,7 @@
         }
         function stopCallTimer() { clearInterval(callTimerInterval); }
 
-        function hideIncomingCallPopup() { try { const ringtone = document.getElementById('sndRingtone'); if(ringtone) { ringtone.pause(); ringtone.currentTime = 0; } } catch(e) {} document.getElementById('incomingCallPopup').classList.add('-translate-y-[150%]'); }
+        function hideIncomingCallPopup() { try { const ringtone = document.getElementById('sndCall'); if(ringtone) { ringtone.pause(); ringtone.currentTime = 0; } } catch(e) {} document.getElementById('incomingCallPopup').classList.add('-translate-y-[150%]'); }
         
         function declineIncomingCall() { hapticFeedback(30); hideIncomingCallPopup(); if(incomingCallObj && globalPeer && !globalPeer.destroyed) { const callerPeerId = incomingCallObj.peer; try { const conn = globalPeer.connect(callerPeerId, { reliable: true }); conn.on('open', () => { conn.send({ action: 'call_declined', sender: myAlias }); }); } catch(e){} incomingCallObj.close(); incomingCallObj = null; } }
 
