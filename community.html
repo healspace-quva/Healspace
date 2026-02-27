@@ -131,7 +131,7 @@
                         <button onclick="closeSwitchAccountModal()" class="text-gray-400 hover:text-white text-xl bg-gray-800 w-7 h-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button>
                     </div>
                     <div id="accountList" class="space-y-2 mb-5 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
-                    <button onclick="window.location.href='index.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[14px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
+                    <button onclick="window.location.href='login.html'" class="w-full bg-transparent border border-gray-700 text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-800 transition flex items-center justify-center gap-2 text-[14px]"><i class="fa-solid fa-plus text-[12px]"></i> Add Account</button>
                 </div>
             </div>
 
@@ -233,15 +233,29 @@
     <div class="hidden text-blue-200 bg-blue-900/40 border-blue-700/50 text-blue-400 bg-blue-600 shadow-blue-500/20 hover:bg-blue-500 from-blue-500 hover:border-blue-500/50 from-blue-400 bg-blue-500/10 text-emerald-200 bg-emerald-900/40 border-emerald-700/50 text-emerald-400 bg-emerald-600 shadow-emerald-500/20 hover:bg-emerald-500 from-emerald-500 hover:border-emerald-500/50 from-emerald-400 bg-emerald-500/10 text-rose-200 bg-rose-900/40 border-rose-700/50 text-rose-400 bg-rose-600 shadow-rose-500/20 hover:bg-rose-500 from-rose-500 hover:border-rose-500/50 from-rose-400 bg-rose-500/10 text-purple-200 bg-purple-900/40 border-purple-700/50 text-purple-400 bg-purple-600 shadow-purple-500/20 hover:bg-purple-500 from-purple-500 hover:border-purple-500/50 from-purple-400 bg-purple-500/10 text-yellow-200 bg-yellow-900/40 border-yellow-700/50 text-yellow-400 bg-yellow-600 shadow-yellow-500/20 hover:bg-yellow-500 from-yellow-500 hover:border-yellow-500/50 from-yellow-400 bg-yellow-500/10"></div>
 
     <script>
-        // --- CORE GUARD ---
-        const currentUserId = localStorage.getItem("healspace_userId");
-        let loggedInRole = localStorage.getItem("healspace_logged_role");
+        // --- CORE GUARD & ACCOUNTS ---
+        const activeUserId = localStorage.getItem("healspace_userId");
+        let loggedInRole = localStorage.getItem("healspace_logged_role") || "seeker";
+        
+        if (!activeUserId || !loggedInRole) { window.location.replace("login.html"); }
+
         const myAlias = localStorage.getItem("healspace_alias") || "User";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu8wRTBfPp6_zITGbtENbYR6J5OclmdLIbjQfwVvzueMGad5ny87hkpibxmMdJUbm1/exec";
         
         let globalPeer; 
 
-        if (!currentUserId || !loggedInRole) { window.location.replace("login.html"); }
+        // Fix: Clean up phantom accounts and ensure active user exists in map
+        let savedAccounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+        Object.keys(savedAccounts).forEach(key => {
+            if (key === "undefined" || key === "null" || savedAccounts[key].alias === "User" || savedAccounts[key].alias?.startsWith("Guest_") || savedAccounts[key].alias?.startsWith("DemoUser")) {
+                delete savedAccounts[key];
+            }
+        });
+        localStorage.setItem('healspace_saved_accounts', JSON.stringify(savedAccounts));
+        
+        if (activeUserId && !savedAccounts[activeUserId]) {
+            savedAccounts[activeUserId] = { userId: activeUserId, role: loggedInRole, alias: myAlias };
+        }
 
         // --- HARDWARE & HAPTICS ---
         function hapticFeedback(pattern = 10) { if (navigator.vibrate) navigator.vibrate(pattern); }
@@ -279,7 +293,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             document.body.addEventListener('click', () => { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); }, { once: true });
             
-            loadUserData(); // Correctly loads from the unified source
+            loadUserData(); // Loads robustly from activeUserId 
             applyRoleTheming(loggedInRole);
             
             renderLists(); 
@@ -295,7 +309,7 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "getCommunity", userId: currentUserId, role: loggedInRole })
+                    body: JSON.stringify({ action: "getCommunity", userId: activeUserId, role: loggedInRole })
                 });
                 const result = await response.json();
                 
@@ -346,13 +360,11 @@
             });
         }
 
-        // --- THEME & DATA (FIXED FOR UNIFIED SYNC) ---
+        // --- THEME & DATA ---
         function loadUserData() {
-            // This safely pulls exactly what Profile.html saved!
-            const savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
-            const activeProfile = savedAccounts[loggedInRole] || {};
+            const accounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
+            const activeProfile = accounts[activeUserId] || {}; 
             
-            // Check avatarInput first (images/icons), then emoji, fallback to default stars
             const avatarData = activeProfile.avatarInput || activeProfile.emoji || '✨';
             
             document.getElementById('headerAvatarContainer').innerHTML = getInnerAvatarHTML(avatarData);
@@ -362,12 +374,8 @@
 
         function getInnerAvatarHTML(avatarData) {
             if (!avatarData) return `<i class="fa-solid fa-user text-gray-500 text-[14px]"></i>`;
-            
-            // If the user typed an fa- icon class in profile.html, render the icon
             if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[16px]"></i>`;
-            // If it's a URL, show the image
             if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-            // Otherwise, it's a raw emoji
             return `<span class="w-full h-full flex items-center justify-center text-[16px]">${avatarData}</span>`;
         }
 
@@ -461,7 +469,7 @@
                                     ${getInnerAvatarHTML(req.emoji)}
                                 </div>
                             </div>
-                            <div class="flex-1 overflow-hidden" onclick="openMiniProfile('${req.name}', '${req.emoji}', '${req.color}')">
+                            <div class="flex-1 overflow-hidden cursor-pointer" onclick="openMiniProfile('${req.name}', '${req.emoji}', '${req.color}')">
                                 <h3 class="text-white font-bold text-[14px] truncate flex items-center gap-1.5">
                                     ${req.name} <span class="text-gray-500 text-[9px] font-bold bg-gray-800/50 px-1.5 py-0.5 rounded border border-gray-700/50">${req.age}</span>
                                 </h3>
@@ -525,7 +533,6 @@
                     const delay = 0.05 + (index * 0.05);
                     const tagsHTML = (user.tags || []).map(tag => `<span class="text-[9px] font-bold text-${user.color}-200 bg-${user.color}-900/30 px-2 py-1 rounded-lg border border-${user.color}-700/30 shadow-sm">${tag}</span>`).join('');
                     
-                    // Simulated online status
                     const isOnline = Math.random() > 0.5;
                     const ringClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${user.color}-500 to-gray-500`;
 
@@ -565,7 +572,7 @@
             }, 600);
         }
 
-        // --- NEW PARTICLE EXPLOSION SYSTEM ---
+        // --- PARTICLE EXPLOSION SYSTEM ---
         function triggerConfetti(x, y) {
             const colors = ['#f43f5e', '#3b82f6', '#10b981', '#facc15', '#a855f7', '#ffffff'];
             const container = document.body;
@@ -612,11 +619,10 @@
             btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i>';
             btnElement.disabled = true;
 
-            // Trigger backend if needed
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "handleConnection", userId: currentUserId, reqId: reqId, status: action })
+                body: JSON.stringify({ action: "handleConnection", userId: activeUserId, reqId: reqId, status: action })
             }).catch(e => console.log("Silent sync error", e));
 
             setTimeout(() => {
@@ -663,7 +669,7 @@
             hapticFeedback();
             document.getElementById('mpName').innerText = alias;
             document.getElementById('mpAvatar').innerHTML = getInnerAvatarHTML(avatarContent);
-            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3`;
+            document.getElementById('mpAvatar').className = `w-20 h-20 rounded-full bg-gradient-to-tr from-${color || 'blue'}-500 to-gray-600 p-[2px] flex items-center justify-center text-3xl overflow-hidden shadow-lg mb-3`;
             
             let vibe = localStorage.getItem(`hs_remote_vibe_${alias}`) || "Looking for connections ✨";
             document.getElementById('mpVibe').innerText = vibe;
@@ -689,22 +695,71 @@
             setTimeout(() => { window.location.href = `chat.html?chatWith=${encodeURIComponent(targetUser)}`; }, 300);
         }
 
-        // --- ACCOUNT SWITCHER ---
+        // --- ACCOUNT SWITCHER (SYNCED WITH REST OF APP) ---
         function openSwitchAccountModal() {
             hapticFeedback();
             const savedAccounts = safeParseJSON(localStorage.getItem('healspace_saved_accounts'), {});
             const list = document.getElementById('accountList'); list.innerHTML = '';
-            Object.keys(savedAccounts).forEach(roleKey => { const acc = savedAccounts[roleKey]; const isActive = (roleKey === loggedInRole); list.innerHTML += `<div onclick="executeAccountSwitch('${roleKey}')" class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition border border-transparent ${isActive ? 'border-gray-700/50' : ''}"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">${getInnerAvatarHTML(acc.avatarInput || acc.emoji)}</div><div><h4 class="text-white font-bold text-[14px]">${acc.alias}</h4></div></div>${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}</div>`; });
+            Object.keys(savedAccounts).forEach(uid => { 
+                const acc = savedAccounts[uid]; 
+                const isActive = (uid === activeUserId); 
+                list.innerHTML += `
+                <div class="flex items-center justify-between p-3.5 rounded-2xl ${isActive ? 'bg-[#2c2c2e]' : 'hover:bg-[#2c2c2e]'} cursor-pointer transition border border-transparent ${isActive ? 'border-gray-700/50' : ''}">
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="executeAccountSwitch('${uid}')">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl border border-gray-600 overflow-hidden">
+                            ${getInnerAvatarHTML(acc.avatarInput || acc.emoji)}
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-[14px]">${acc.alias}</h4>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${isActive ? '<div class="w-4 h-4 rounded-full border-[3px] border-blue-500 bg-transparent shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>' : '<div class="w-4 h-4 rounded-full border-2 border-gray-600 bg-transparent"></div>'}
+                        <button onclick="deleteAccount('${uid}', event)" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition active:scale-90">
+                            <i class="fa-solid fa-trash-can text-[12px]"></i>
+                        </button>
+                    </div>
+                </div>`; 
+            });
             document.getElementById('switchAccountModal').classList.remove('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.remove('translate-y-full');
         }
+        
         function closeSwitchAccountModal() { document.getElementById('switchAccountModal').classList.add('opacity-0', 'pointer-events-none'); document.getElementById('switchAccountContent').classList.add('translate-y-full'); }
-        function executeAccountSwitch(targetRole) { localStorage.setItem("healspace_logged_role", targetRole); window.location.reload(); }
+        
+        function deleteAccount(uid, event) {
+            event.stopPropagation();
+            hapticFeedback(30);
+            if(confirm("Remove this account from device?")) {
+                let accounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+                delete accounts[uid];
+                localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
+                
+                if(uid === activeUserId) {
+                    localStorage.removeItem('healspace_userId');
+                    localStorage.removeItem('healspace_alias');
+                    window.location.href = 'login.html';
+                } else {
+                    openSwitchAccountModal(); 
+                }
+            }
+        }
+        
+        function executeAccountSwitch(uid) { 
+            hapticFeedback(15);
+            localStorage.setItem("healspace_userId", uid); 
+            let accounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+            if(accounts[uid]) {
+                localStorage.setItem("healspace_alias", accounts[uid].alias);
+                localStorage.setItem("healspace_logged_role", accounts[uid].role || 'seeker');
+            }
+            window.location.reload(); 
+        }
 
         // ==========================================
         // UNIFIED GLOBAL CORE STUB (Background sync)
         // ==========================================
         function initGlobalCore() {
-            if (!myAlias || myAlias === "User" || myAlias === "Anonymous") return;
+            if (!myAlias || myAlias === "User" || myAlias === "Anonymous" || myAlias.includes("Guest_")) return;
             const myPeerId = "hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             globalPeer = new Peer(myPeerId);
             globalPeer.on('connection', (conn) => {
