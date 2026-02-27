@@ -308,14 +308,15 @@
 
             <nav id="mainNav" class="fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] bg-[#11131a]/90 backdrop-blur-xl rounded-[32px] border border-gray-800/50 h-[64px] z-30 shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-colors duration-400 pb-0">
                 <ul class="flex justify-between items-center h-full px-4">
-                    <a href="index.html" class="flex items-center gap-1.5 bg-[#1a1c23] text-pink-500 px-3 py-2 rounded-full transition-all shadow-sm border border-pink-500/10">
-                        <i class="fa-solid fa-house text-[16px]"></i>
-                        <span class="font-normal text-[13px] tracking-widest" style="font-family: 'Metal Mania', cursive; margin-top: 1px;">Home</span>
+                    <a href="index.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
+                        <i class="fa-solid fa-house text-[18px]"></i>
                     </a>
 
-                    <a href="explore.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
-                        <i class="fa-solid fa-compass text-[18px]"></i>
+                    <a href="explore.html" class="flex items-center gap-1.5 bg-[#1a1c23] text-pink-500 px-3 py-2 rounded-full transition-all shadow-sm border border-pink-500/10">
+                        <i class="fa-solid fa-compass text-[16px]"></i>
+                        <span class="font-bold text-[10px] uppercase tracking-widest mt-0.5">Explore</span>
                     </a>
+                    
                     <a href="community.html" class="flex flex-col items-center text-gray-500 hover:text-white transition-all p-2 active:scale-90">
                         <i class="fa-solid fa-user-group text-[18px]"></i>
                     </a>
@@ -411,6 +412,21 @@
     <audio id="sndLeave" src="https://actions.google.com/sounds/v1/ui/button_click.ogg"></audio>
 
     <script>
+        // --- UNIFIED AVATAR HTML FETCHER ---
+        function getInnerAvatarHTML(avatarData) {
+            const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
+            if (!avatarData || avatarData === 'null' || avatarData === '---') return fallbackIcon;
+            
+            if (avatarData.startsWith('fa-')) {
+                return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
+            }
+            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) {
+                return `<img src="${avatarData}" class="w-full h-full object-cover rounded-full">`;
+            }
+            return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
+        }
+        // -----------------------------------
+
         // --- CORE GUARD & ACCOUNT LOGIC ---
         const currentUserId = localStorage.getItem("healspace_userId");
         let currentRole = localStorage.getItem("healspace_logged_role");
@@ -677,6 +693,19 @@
             return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : null;
         }
 
+        function setDynamicGreeting(roleKey) {
+            const timeGreet = new Date().getHours() < 12 ? "Good morning," : "Good afternoon,";
+            document.getElementById('pageTitle').innerHTML = `${timeGreet}<br>we're here.`;
+
+            if(roleKey === 'lover_couple') {
+                document.getElementById('pageTitle').innerHTML = `Couple Space.`;
+                document.getElementById('pageSubtitle').innerText = `End-to-end encrypted rooms.`;
+            } else if (roleKey === 'lover_heartbreak') {
+                document.getElementById('pageTitle').innerHTML = `Heal your heart.`;
+                document.getElementById('pageSubtitle').innerText = `People looking for motivation today.`;
+            }
+        }
+
         function switchLoverTab(tab) {
             hapticFeedback(); activeLoverTab = tab;
             const bC = document.getElementById('tabCouple'); const bH = document.getElementById('tabHeartbreak');
@@ -923,13 +952,6 @@
                 </div>
             `;
             users.forEach((user, index) => { container.insertAdjacentHTML('beforeend', generateCardHTML(user, index)); });
-        }
-
-        function getInnerAvatarHTML(avatarData) {
-            if (!avatarData || avatarData === 'null') return `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
-            if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-            if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
-            return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
         }
 
         function generateCardHTML(user, index) {
@@ -1214,7 +1236,9 @@
         function populateStageWithRealUsers() {
             const stage = document.getElementById('voiceStageAvatars');
             stage.innerHTML = '';
-            let usersToShow = allNetworkUsers.sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            // Wait a moment for allNetworkUsers to be fetched from feed
+            let usersToShow = allRealUsers.sort(() => 0.5 - Math.random()).slice(0, 3);
             
             if(usersToShow.length === 0) { document.getElementById('listenerCount').innerText = `1 active`; } 
             else {
@@ -1222,9 +1246,9 @@
                 usersToShow.forEach((u, idx) => {
                     let hostBadge = idx === 0 ? `<span class="text-[9px] text-gray-200 font-bold mt-1.5 flex items-center gap-1"><i class="fa-solid fa-crown text-yellow-400 text-[8px]"></i> Host</span>` : `<span class="text-[9px] text-gray-400 font-medium mt-1.5 truncate max-w-[50px]">${u.alias}</span>`;
                     stage.innerHTML += `
-                        <div class="flex flex-col items-center flex-shrink-0 relative cursor-pointer" data-alias="${u.alias}" onclick="openMiniProfile('${u.alias}', '${u.avatar || u.emoji}')">
+                        <div class="flex flex-col items-center flex-shrink-0 relative cursor-pointer" data-alias="${u.alias}" onclick="openMiniProfile('${u.alias}')">
                             <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-600 flex items-center justify-center text-lg overflow-hidden relative z-10 hover:border-blue-500 transition">
-                                ${getInnerAvatarHTML(u.alias)}
+                                ${getInnerAvatarHTML(u.avatar || u.emoji)}
                             </div>
                             ${hostBadge}
                         </div>`;
