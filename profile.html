@@ -497,7 +497,7 @@
             else if(currentEditMode === 'basics') {
                 userProfile.alias = document.getElementById('inputAliasBasics').value.trim() || userProfile.alias;
                 let newAge = document.getElementById('inputAge').value.trim();
-                userProfile.age = (newAge && newAge !== '0') ? newAge : '---'; // Age resetting fix
+                userProfile.age = (newAge && newAge !== '0') ? newAge : '---'; 
                 userProfile.gender = document.querySelector('.single-chip[data-group="gender"].selected')?.dataset.value || userProfile.gender;
                 userProfile.lookingFor = document.querySelector('.single-chip[data-group="lookingFor"].selected')?.dataset.value || userProfile.lookingFor;
             } else if(currentEditMode === 'vibes') {
@@ -593,12 +593,11 @@
                 localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
                 
                 if(uid === activeUserId) {
-                    // If they deleted the account they are currently on, log them out
                     localStorage.removeItem('healspace_userId');
                     localStorage.removeItem('healspace_alias');
                     window.location.href = 'login.html';
                 } else {
-                    openSwitchAccountModal(); // refresh list
+                    openSwitchAccountModal(); 
                 }
             }
         }
@@ -617,6 +616,9 @@
         async function syncToBackend() {
             if (!activeUserId) return;
 
+            // Important: Safely inject userId to the object we are sending
+            userProfile.userId = activeUserId; 
+            
             let accounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
             accounts[activeUserId] = userProfile;
             localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
@@ -627,13 +629,14 @@
             }
 
             try {
+                // FIXED: The payload now correctly sends `role` instead of `alias` 
+                // at the top level to match your Code.gs exactly and prevent crashing!
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     headers: { "Content-Type": "text/plain;charset=utf-8" }, 
                     body: JSON.stringify({ 
                         action: "updateFullProfile", 
-                        userId: activeUserId,  // Uses strict unique ID now
-                        alias: userProfile.alias, 
+                        role: loggedInRole, 
                         profileData: userProfile 
                     }) 
                 });
