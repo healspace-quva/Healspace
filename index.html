@@ -264,19 +264,17 @@
 
         // --- HEALSPACE SAVED ACCOUNTS LOGIC ---
         try {
-            let savedAccounts = JSON.parse(localStorage.getItem("healspace_saved_accounts") || "[]");
-            let accountIndex = savedAccounts.findIndex(acc => acc.userId === currentUserId);
+            let savedAccounts = JSON.parse(localStorage.getItem("healspace_saved_accounts") || "{}");
             let accountData = {
                 userId: currentUserId,
                 role: currentRole,
                 alias: myAlias,
                 lastActive: Date.now()
             };
-            if (accountIndex !== -1) {
-                savedAccounts[accountIndex] = Object.assign(savedAccounts[accountIndex], accountData);
-            } else {
-                savedAccounts.push(accountData);
-            }
+            
+            // Fix: Store accurately in the master object by UserId
+            savedAccounts[currentUserId] = Object.assign(savedAccounts[currentUserId] || {}, accountData);
+            
             localStorage.setItem("healspace_saved_accounts", JSON.stringify(savedAccounts));
         } catch(e) {}
         // --------------------------------------
@@ -402,7 +400,7 @@
         let globalPeer;
 
         function initGlobalCore() {
-            if (!myAlias || myAlias === "User" || myAlias === "Anonymous") return;
+            if (!myAlias || myAlias === "User" || myAlias === "Anonymous" || myAlias.includes("Guest_")) return;
 
             setInterval(async () => {
                 try {
@@ -418,37 +416,43 @@
                 } catch(e) {}
             }, 5000);
 
-            globalPeer = new Peer("hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
-            globalPeer.on('disconnected', () => { globalPeer.reconnect(); });
+            try {
+                globalPeer = new Peer("hs_" + myAlias.replace(/[^a-zA-Z0-9]/g, '').toLowerCase());
+                globalPeer.on('disconnected', () => { globalPeer.reconnect(); });
 
-            globalPeer.on('connection', (conn) => {
-                conn.on('data', (data) => {
-                    if (data.action === 'ping') {
-                        try {
-                            const pongConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true });
-                            pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); });
-                        } catch(e) {}
-                    }
-                    else if (data.action === 'chat_sync' && !data.isSecret) {
-                        saveMessageLocally(data.sender, data.msgData);
-                        showGlobalNotification(data.sender, data.msgData.text || "Attachment", false);
-                        try {
-                            const receiptConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true });
-                            receiptConn.on('open', () => { receiptConn.send({ action: 'delivered', sender: myAlias, msgId: data.msgData.id }); });
-                        } catch(e) {}
-                    }
+                globalPeer.on('connection', (conn) => {
+                    conn.on('data', (data) => {
+                        if (data.action === 'ping') {
+                            try {
+                                const pongConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true });
+                                pongConn.on('open', () => { pongConn.send({ action: 'pong', sender: myAlias }); });
+                            } catch(e) {}
+                        }
+                        else if (data.action === 'chat_sync' && !data.isSecret) {
+                            saveMessageLocally(data.sender, data.msgData);
+                            showGlobalNotification(data.sender, data.msgData.text || "Attachment", false);
+                            try {
+                                const receiptConn = globalPeer.connect("hs_" + data.sender.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(), { reliable: true });
+                                receiptConn.on('open', () => { receiptConn.send({ action: 'delivered', sender: myAlias, msgId: data.msgData.id }); });
+                            } catch(e) {}
+                        }
+                    });
                 });
-            });
 
-            globalPeer.on('call', (call) => {
-                showGlobalNotification(call.peer.replace('hs_',''), "Incoming Call...", true);
-            });
+                globalPeer.on('call', (call) => {
+                    showGlobalNotification(call.peer.replace('hs_',''), "Incoming Call...", true);
+                });
+            } catch(e) {
+                console.log("PeerJS issue on index, falling back to db sync.");
+            }
         }
 
         function safeParseJSON(str, fallback) { try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; } }
         function getChatHistory(alias) { return safeParseJSON(localStorage.getItem(`hs_chat_${myAlias}_${alias}`), []); }
 
         function saveMessageLocally(sender, newMsg) {
+            if(sender.includes("Guest_") || sender.includes("DemoUser")) return;
+            
             let history = getChatHistory(sender);
             if (!history.find(m => m.id === newMsg.id)) {
                 newMsg.type = 'recv'; newMsg.read = false; 
@@ -457,6 +461,14 @@
                 history.push(historyMsg);
                 history.sort((a,b) => parseInt(a.id) - parseInt(b.id));
                 localStorage.setItem(`hs_chat_${myAlias}_${sender}`, JSON.stringify(history));
+                
+                // Add to interacted users so they show up in Inbox
+                let interacted = safeParseJSON(localStorage.getItem(`hs_interacted_${myAlias}`), []);
+                if(!interacted.includes(sender)) {
+                    interacted.push(sender);
+                    localStorage.setItem(`hs_interacted_${myAlias}`, JSON.stringify(interacted));
+                }
+
                 const chatDot = document.getElementById('navChatDot');
                 if(chatDot) chatDot.classList.remove('hidden');
             }
@@ -675,6 +687,7 @@
             feedContainer.innerHTML = skeletonHTML;
 
             try {
+                // Now fetching strictly by AppScript to match backend variables
                 const response = await fetch(`${SCRIPT_URL}?action=get_users`);
                 const data = await response.json();
                 processUsersData(data, roleKey);
@@ -691,7 +704,7 @@
         function processUsersData(data, roleKey) {
             const seenAliases = new Set();
             allRealUsers = data.filter(user => {
-                if (!user.alias || user.alias === myAlias) return false;
+                if (!user.alias || user.alias === myAlias || user.alias.includes('Guest_') || user.alias.includes('DemoUser')) return false;
                 const isDuplicate = seenAliases.has(user.alias);
                 seenAliases.add(user.alias);
                 return !isDuplicate;
@@ -714,7 +727,7 @@
             if(user.role === 'friend') { displayRole = 'Looking for Friends'; tags = ['Extrovert', 'Gaming 🎮']; }
 
             const defaultLangs = [ { main: 'English 🇬🇧' }, { main: 'Hindi 🇮🇳' }, { main: 'Spanish 🇪🇸' } ];
-            const mainLang = user.mainLanguage || defaultLangs[idx % defaultLangs.length].main;
+            const mainLang = user.mainLanguage && user.mainLanguage !== 'Not set' ? user.mainLanguage : defaultLangs[idx % defaultLangs.length].main;
 
             return { color, age, tags, displayRole, mainLang };
         }
@@ -780,7 +793,8 @@
         function getInnerAvatarHTML(avatarData) {
             if (!avatarData) return `<i class="fa-solid fa-user text-gray-500 text-[16px]"></i>`;
             if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) return `<img src="${avatarData}" class="w-full h-full object-cover">`;
-            else return `<span class="w-full h-full flex items-center justify-center text-[22px]">${avatarData}</span>`;
+            if (avatarData.startsWith('fa-')) return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
+            return `<span class="w-full h-full flex items-center justify-center text-[22px]">${avatarData}</span>`;
         }
 
         function generateCardHTML(user, index) {
@@ -792,7 +806,6 @@
             const isOnline = user.isOnline ? true : false;
             const onlineRingClass = isOnline ? 'insta-ring' : `bg-gradient-to-tr from-${d.color}-500 to-gray-500`;
 
-            // Fix: Just pass the safely encoded alias. The function will look up the rest!
             const safeAlias = user.alias.replace(/'/g, "\\'");
 
             return `
@@ -868,7 +881,6 @@
             }
         }
 
-        // Fix: Cleaned up Mini Profile Function that looks up user data safely!
         function openMiniProfile(alias) {
             hapticFeedback();
             
