@@ -267,7 +267,23 @@
 
         // --- SAFE JSON ---
         function safeParseJSON(str, fallback) { try { if (!str || str === "undefined" || str === "null") return fallback; return JSON.parse(str) || fallback; } catch(e) { return fallback; } }
-
+        // --- UNIFIED AVATAR HTML FETCHER ---
+function getInnerAvatarHTML(avatarData) {
+    const fallbackIcon = `<i class="fa-solid fa-user-astronaut text-white/50 text-[20px]"></i>`;
+    if (!avatarData || avatarData === 'null' || avatarData === '---') return fallbackIcon;
+    
+    // 1. If it's a FontAwesome icon
+    if (avatarData.startsWith('fa-')) {
+        return `<i class="${avatarData} text-[#eab308] text-[20px]"></i>`;
+    }
+    // 2. If it's an uploaded Image from Google Drive or a direct link
+    if (avatarData.startsWith('http') || avatarData.startsWith('data:image')) {
+        return `<img src="${avatarData}" class="w-full h-full object-cover rounded-full">`;
+    }
+    // 3. If it's just a standard Emoji
+    return `<span class="w-full h-full flex items-center justify-center text-[22px] drop-shadow-md">${avatarData}</span>`;
+}
+// -----------------------------------
         // --- ROLE CONFIGS ---
         const roleConfigs = {
             'seeker': { color: 'blue', hex: '#3b82f6', glow: 'rgba(59,130,246,0.3)', tab1: 'Requests', tab2: 'Top Healers', sub1: 'People reaching out to you.', sub2: 'Verified listeners ready to help.' },
