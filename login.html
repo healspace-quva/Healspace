@@ -649,6 +649,7 @@
             });
         });
 
+        // --- FIXED LOGIN PROCESS ---
         async function processLogin() {
             playClickSound();
             toggleLoading(true, "Verifying...");
@@ -664,13 +665,15 @@
 
                 const result = await response.json();
                 if (result.status === "success") {
+                    
+                    // SAVE USER ID GLOBALLY
                     localStorage.setItem("healspace_userId", result.userId);
                     localStorage.setItem("healspace_logged_role", result.role);
                     localStorage.setItem("healspace_alias", result.alias);
                     
-                    // FIX: Rebuild the local dictionary on login so profile isn't blank!
+                    // REBUILD LOCAL DICTIONARY WITH CORRECT USERID KEY
                     let savedAccounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
-                    savedAccounts[result.role] = result.profileData || { alias: result.alias, emoji: '✨' };
+                    savedAccounts[result.userId] = result.profileData || { alias: result.alias, role: result.role, emoji: '✨' };
                     localStorage.setItem('healspace_saved_accounts', JSON.stringify(savedAccounts));
 
                     window.location.href = "index.html"; 
@@ -684,6 +687,7 @@
             }
         }
 
+        // --- FIXED REGISTRATION PROCESS ---
         async function submitFinalRegistration() {
             playClickSound();
             toggleLoading(true, "Building your HealSpace profile...");
@@ -703,12 +707,6 @@
                 mainLanguage: registrationData.mainLanguage, languages: registrationData.languages, interests: registrationData.interests
             };
 
-            let savedAccounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
-            savedAccounts[registrationData.role] = newProfileObj;
-            localStorage.setItem('healspace_saved_accounts', JSON.stringify(savedAccounts));
-            localStorage.setItem("healspace_logged_role", registrationData.role);
-            localStorage.setItem("healspace_alias", registrationData.alias);
-
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -718,7 +716,24 @@
 
                 const result = await response.json();
                 if (result.status === "success") {
-                    if (result.userId) localStorage.setItem("healspace_userId", result.userId);
+                    
+                    // IF SUCCESS, STORE UNDER NEW USERID KEY
+                    if (result.userId) {
+                        localStorage.setItem("healspace_userId", result.userId);
+                        
+                        let savedAccounts = JSON.parse(localStorage.getItem('healspace_saved_accounts')) || {};
+                        
+                        // Add userId into the profile object itself before saving
+                        newProfileObj.userId = result.userId;
+                        newProfileObj.role = registrationData.role;
+                        
+                        savedAccounts[result.userId] = newProfileObj;
+                        localStorage.setItem('healspace_saved_accounts', JSON.stringify(savedAccounts));
+                    }
+                    
+                    localStorage.setItem("healspace_logged_role", registrationData.role);
+                    localStorage.setItem("healspace_alias", registrationData.alias);
+                    
                     window.location.href = "index.html"; 
                 } else {
                     toggleLoading(false);
