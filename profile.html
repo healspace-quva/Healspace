@@ -306,6 +306,44 @@
             });
         }
 
+        // Helper to convert birthday to standard number
+        function calculateAge(ageData) {
+            if (!ageData || ageData === '---' || ageData === '0' || ageData === 0) return '';
+            if (typeof ageData === 'string' && ageData.includes('-')) {
+                const bDate = new Date(ageData);
+                if (!isNaN(bDate.getTime())) {
+                    const diff = Date.now() - bDate.getTime();
+                    return Math.abs(new Date(diff).getUTCFullYear() - 1970).toString();
+                }
+            }
+            return ageData.toString();
+        }
+
+        // Helper to render the raw string into HTML, exactly like chat.html expects
+        function renderAvatar(data) {
+            const fallback = `<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>`;
+            if (!data || data === 'null' || data === '---') return fallback;
+            if (data.startsWith('fa-')) return `<i class="${data} text-[32px] text-[#eab308]"></i>`;
+            if (data.startsWith('http') || data.startsWith('data:image')) return `<img src="${data}" class="w-full h-full object-cover">`;
+            return `<span class="text-[32px] leading-none">${data}</span>`;
+        }
+
+        // Handle Avatar File Upload inside Modal
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) { 
+                alert('Image is too large! Please upload an image under 2MB.'); 
+                return; 
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('inputAvatar').value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         // --- FETCH LIVE DATA FROM GOOGLE APPS SCRIPT ---
         async function initAppScriptSync() {
             if (!activeUserId) {
@@ -352,12 +390,9 @@
             document.getElementById('roleText').innerText = (userProfile.lookingFor && userProfile.lookingFor !== '---') ? userProfile.lookingFor : loggedInRole;
             document.getElementById('valAlias').innerText = userProfile.alias || '---';
             
-            // Age reset fix - prevent showing "0 yrs" for blank
-            let displayAge = '---';
-            if (userProfile.age && userProfile.age !== '---' && userProfile.age !== '0' && userProfile.age !== 0) {
-                displayAge = userProfile.age + ' yrs';
-            }
-            document.getElementById('valAge').innerText = displayAge;
+            // Age parsing fix
+            let calcAge = calculateAge(userProfile.age);
+            document.getElementById('valAge').innerText = calcAge ? calcAge + ' yrs' : '---';
             
             document.getElementById('valGender').innerText = userProfile.gender || '---';
             document.getElementById('valLooking').innerText = userProfile.lookingFor || '---';
@@ -376,7 +411,8 @@
                 ? userProfile.interests.map(i => `<div class="interest-chip">${i}</div>`).join('') 
                 : '<span class="text-gray-600 text-[10px] font-medium pl-1 italic">Tap to add what you love...</span>';
             
-            document.getElementById('avatarWrapper').innerHTML = userProfile.emoji || '<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>';
+            // Unified Avatar/Emoji render
+            document.getElementById('avatarWrapper').innerHTML = renderAvatar(userProfile.emoji || userProfile.avatarInput);
 
             const bg = document.getElementById('ghostToggleBg');
             const knob = document.getElementById('ghostToggleKnob');
@@ -417,16 +453,22 @@
             document.getElementById('modalTitle').innerText = mode.toUpperCase();
             let html = '';
 
+            let calcAge = calculateAge(userProfile.age);
+
             if (mode === 'avatar') html = `
-                <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Avatar URL, Icon Class, or Emoji</label>
-                <input type="text" id="inputAvatar" value="${userProfile.avatarInput || ''}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner" placeholder="E.g., https://..., fa-solid fa-cat, or 🎃">
+                <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Avatar URL, Icon Class, Emoji, or Upload</label>
+                <div class="flex gap-2">
+                    <input type="text" id="inputAvatar" value="${userProfile.emoji || userProfile.avatarInput || ''}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner" placeholder="E.g., https://..., fa-solid fa-cat, or 🎃">
+                    <button onclick="document.getElementById('avatarUpload').click()" class="bg-[#12141c] border border-gray-800 rounded-xl px-4 text-gray-400 hover:text-white transition active:scale-95 flex items-center justify-center shrink-0"><i class="fa-solid fa-upload"></i></button>
+                    <input type="file" id="avatarUpload" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
+                </div>
             `;
             else if (mode === 'name') html = `<input type="text" id="inputName" value="${userProfile.alias}" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl px-3 py-2.5 text-white outline-none font-bold text-[14px] focus:border-[#eab308] transition shadow-inner">`;
             else if (mode === 'basics') html = `
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Alias / Name</label>
                 <input type="text" id="inputAliasBasics" value="${userProfile.alias || ''}" placeholder="E.g. Jack" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Age</label>
-                <input type="number" id="inputAge" value="${userProfile.age && userProfile.age !== '---' ? userProfile.age : ''}" placeholder="E.g. 21" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
+                <input type="number" id="inputAge" value="${calcAge}" placeholder="E.g. 21" class="w-full bg-[#0b0d14] border border-gray-800 rounded-xl p-2.5 text-white mb-3 outline-none focus:border-[#eab308] text-[13px]">
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Gender</label>
                 <div class="grid grid-cols-2 gap-2 mb-3">${generateChips('gender', OPTIONS.gender, userProfile.gender)}</div>
                 <label class="text-gray-500 text-[8px] font-bold uppercase mb-1.5 block">Looking For</label>
@@ -481,17 +523,10 @@
 
             if(currentEditMode === 'avatar') {
                 const val = document.getElementById('inputAvatar').value.trim();
-                userProfile.avatarInput = val;
                 
-                if(!val) {
-                    userProfile.emoji = `<i class="fa-solid fa-moon text-[32px] text-[#eab308]"></i>`;
-                } else if(val.startsWith('http')) {
-                    userProfile.emoji = `<img src="${val}" class="w-full h-full object-cover">`;
-                } else if(val.startsWith('fa-')) {
-                    userProfile.emoji = `<i class="${val} text-[32px] text-[#eab308]"></i>`;
-                } else {
-                    userProfile.emoji = `<span class="text-[32px] leading-none">${val}</span>`;
-                }
+                // Store identically as raw string (works securely with chat.html too)
+                userProfile.avatarInput = val; 
+                userProfile.emoji = val;
             }
             else if(currentEditMode === 'name') userProfile.alias = document.getElementById('inputName').value.trim() || userProfile.alias;
             else if(currentEditMode === 'basics') {
@@ -555,7 +590,7 @@
                 <div class="flex items-center justify-between p-3 rounded-[20px] ${isActive ? 'bg-white/10 border border-white/10 shadow-inner' : 'hover:bg-white/5 border border-transparent'} transition">
                     <div class="flex items-center gap-4 cursor-pointer flex-1" onclick="executeAccountSwitch('${uid}')">
                         <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-2xl border-2 border-white/10 overflow-hidden shadow-md">
-                            ${acc.emoji || '<i class="fa-solid fa-user text-gray-500"></i>'}
+                            ${renderAvatar(acc.emoji || acc.avatarInput)}
                         </div>
                         <div>
                             <h4 class="text-white font-bold text-[15px] tracking-wide">${acc.alias}</h4>
@@ -624,13 +659,12 @@
             localStorage.setItem('healspace_saved_accounts', JSON.stringify(accounts));
             localStorage.setItem("healspace_alias", userProfile.alias); 
 
+            // Make it available to chat.html natively 
             if(userProfile.emoji) {
                 localStorage.setItem(`hs_avatar_${userProfile.alias}`, userProfile.emoji);
             }
 
             try {
-                // FIXED: The payload now correctly sends `role` instead of `alias` 
-                // at the top level to match your Code.gs exactly and prevent crashing!
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     headers: { "Content-Type": "text/plain;charset=utf-8" }, 
